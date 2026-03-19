@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 import { createClient } from "@supabase/supabase-js";
-import { sampleLeague } from "../../lib/sample-data";
+import { sampleLeague } from "../lib/sample-data";
 
 export default async function HomePage() {
   const league = sampleLeague;
@@ -166,6 +166,17 @@ export default async function HomePage() {
 
   const teamNames = Object.keys(rostersByTeam).sort();
 
+  const upcomingGames = games.filter((game) => game.status !== "Final");
+  const finalGames = games.filter((game) => game.status === "Final").reverse();
+
+  function formatResultType(resultType) {
+    if (!resultType) return "";
+    if (resultType === "overtime") return "OT";
+    if (resultType === "shootout") return "SO";
+    if (resultType === "tie") return "Tie";
+    return "Regulation";
+  }
+
   return (
     <main style={{ maxWidth: 1200, margin: "0 auto", padding: 24 }}>
       <section
@@ -252,11 +263,11 @@ export default async function HomePage() {
 
           {gamesError ? (
             <p style={{ color: "#fca5a5" }}>Could not load schedule: {gamesError}</p>
-          ) : games.length === 0 ? (
-            <p style={{ color: "#cbd5e1" }}>No games posted yet.</p>
+          ) : upcomingGames.length === 0 ? (
+            <p style={{ color: "#cbd5e1" }}>No upcoming games posted yet.</p>
           ) : (
             <div style={{ display: "grid", gap: 12 }}>
-              {games.map((game) => (
+              {upcomingGames.map((game) => (
                 <div
                   key={game.id}
                   style={{
@@ -272,9 +283,6 @@ export default async function HomePage() {
                   </div>
                   <div style={{ color: "#cbd5e1" }}>
                     {game.game_time || "TBD"} • {game.rink || "Codey Arena"} • {game.status}
-                    {game.home_score !== null && game.away_score !== null
-                      ? ` • ${game.home_score}-${game.away_score}`
-                      : ""}
                   </div>
                 </div>
               ))}
@@ -307,6 +315,46 @@ export default async function HomePage() {
             ))}
           </div>
         </div>
+      </section>
+
+      <section
+        style={{
+          padding: 20,
+          borderRadius: 20,
+          background: "#0f172a",
+          border: "1px solid #1e293b",
+          marginBottom: 24
+        }}
+      >
+        <h2>Recent Results</h2>
+
+        {gamesError ? (
+          <p style={{ color: "#fca5a5" }}>Could not load results: {gamesError}</p>
+        ) : finalGames.length === 0 ? (
+          <p style={{ color: "#cbd5e1" }}>No final results yet.</p>
+        ) : (
+          <div style={{ display: "grid", gap: 12, marginTop: 16 }}>
+            {finalGames.map((game) => (
+              <div
+                key={game.id}
+                style={{
+                  padding: 16,
+                  borderRadius: 16,
+                  background: "#111827",
+                  border: "1px solid #1f2937"
+                }}
+              >
+                <div style={{ color: "#67e8f9", fontSize: 14 }}>{game.game_date}</div>
+                <div style={{ fontSize: 22, fontWeight: 700 }}>
+                  {game.home_team?.name} {game.home_score} - {game.away_score} {game.away_team?.name}
+                </div>
+                <div style={{ color: "#cbd5e1" }}>
+                  {game.game_time || "TBD"} • {game.rink || "Codey Arena"} • {formatResultType(game.result_type)}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </section>
 
       <section
