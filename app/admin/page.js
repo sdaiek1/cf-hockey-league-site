@@ -10,7 +10,12 @@ export default function AdminPage() {
   async function signIn(e) {
     e.preventDefault();
     setMessage("Sending sign-in link...");
-    const { error } = await supabase.auth.signInWithOtp({ email });
+const { error } = await supabase.auth.signInWithOtp({
+  email,
+  options: {
+    emailRedirectTo: `${window.location.origin}/admin`
+  }
+});
     if (error) {
       setMessage(error.message);
     } else {
