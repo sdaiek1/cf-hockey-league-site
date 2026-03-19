@@ -1,34 +1,41 @@
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 import { createClient } from "@supabase/supabase-js";
 import { sampleLeague } from "../lib/sample-data";
 
 export default async function HomePage() {
   const league = sampleLeague;
 
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  );
-
   let games = [];
   let gamesError = null;
 
-  const { data, error } = await supabase
-    .from("games")
-    .select(`
-      id,
-      game_date,
-      game_time,
-      rink,
-      status,
-      home_team:home_team_id(name),
-      away_team:away_team_id(name)
-    `)
-    .order("game_date", { ascending: true });
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  if (error) {
-    gamesError = error.message;
+  if (!supabaseUrl || !supabaseKey) {
+    gamesError = "Missing Supabase environment variables.";
   } else {
-    games = data || [];
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    const { data, error } = await supabase
+      .from("games")
+      .select(`
+        id,
+        game_date,
+        game_time,
+        rink,
+        status,
+        home_team:home_team_id(name),
+        away_team:away_team_id(name)
+      `)
+      .order("game_date", { ascending: true });
+
+    if (error) {
+      gamesError = error.message;
+    } else {
+      games = data || [];
+    }
   }
 
   return (
