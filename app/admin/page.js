@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 import { createClient } from "@supabase/supabase-js";
-import { sampleLeague } from "../lib/sample-data";
+import { sampleLeague } from "../../lib/sample-data";
 
 export default async function HomePage() {
   const league = sampleLeague;
