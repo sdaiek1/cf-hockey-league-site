@@ -1,316 +1,126 @@
-"use client";
+import { createClient } from "@supabase/supabase-js";
+import { sampleLeague } from "../lib/sample-data";
 
-import { useEffect, useState } from "react";
-import { supabase } from "../../lib/supabase-client";
+export default async function HomePage() {
+  const league = sampleLeague;
 
-export default function AdminPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
-  const [session, setSession] = useState(null);
-  const [games, setGames] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  );
 
-  const [form, setForm] = useState({
-    game_date: "",
-    game_time: "",
-    home_team_name: "",
-    away_team_name: "",
-    rink: "Codey Arena",
-    status: "Scheduled"
-  });
+  let games = [];
+  let gamesError = null;
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session ?? null);
-    });
+  const { data, error } = await supabase
+    .from("games")
+    .select(`
+      id,
+      game_date,
+      game_time,
+      rink,
+      status,
+      home_team:home_team_id(name),
+      away_team:away_team_id(name)
+    `)
+    .order("game_date", { ascending: true });
 
-    const {
-      data: { subscription }
-    } = supabase.auth.onAuthStateChange((_event, newSession) => {
-      setSession(newSession);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  useEffect(() => {
-    if (session) {
-      loadGames();
-    } else {
-      setLoading(false);
-    }
-  }, [session]);
-
-  async function signIn(e) {
-    e.preventDefault();
-    setMessage("Signing in...");
-
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    });
-
-    if (error) {
-      setMessage(error.message);
-    } else {
-      setMessage("Signed in.");
-    }
-  }
-
-  async function signOut() {
-    await supabase.auth.signOut();
-    setSession(null);
-    setGames([]);
-    setMessage("Signed out.");
-  }
-
-  async function loadGames() {
-    setLoading(true);
-
-    const { data, error } = await supabase
-      .from("games")
-      .select(`
-        id,
-        game_date,
-        game_time,
-        rink,
-        status,
-        home_score,
-        away_score,
-        notes,
-        home_team:home_team_id(name),
-        away_team:away_team_id(name)
-      `)
-      .order("game_date", { ascending: true });
-
-    if (error) {
-      setMessage(error.message);
-      setLoading(false);
-      return;
-    }
-
-    setGames(data || []);
-    setLoading(false);
-  }
-
-  async function addGame(e) {
-    e.preventDefault();
-    setMessage("Saving game...");
-
-    if (!form.home_team_name || !form.away_team_name || !form.game_date) {
-      setMessage("Please fill in date, home team, and away team.");
-      return;
-    }
-
-    if (form.home_team_name === form.away_team_name) {
-      setMessage("Home and away teams cannot be the same.");
-      return;
-    }
-
-    const { data: teams, error: teamError } = await supabase
-      .from("teams")
-      .select("id, name")
-      .in("name", [form.home_team_name, form.away_team_name]);
-
-    if (teamError) {
-      setMessage(teamError.message);
-      return;
-    }
-
-    const homeTeam = teams.find((t) => t.name === form.home_team_name);
-    const awayTeam = teams.find((t) => t.name === form.away_team_name);
-
-    if (!homeTeam || !awayTeam) {
-      setMessage("One or both team names were not found in the teams table.");
-      return;
-    }
-
-    const { error } = await supabase.from("games").insert({
-      game_date: form.game_date,
-      game_time: form.game_time || null,
-      home_team_id: homeTeam.id,
-      away_team_id: awayTeam.id,
-      rink: form.rink || "Codey Arena",
-      status: form.status
-    });
-
-    if (error) {
-      setMessage(error.message);
-      return;
-    }
-
-    setForm({
-      game_date: "",
-      game_time: "",
-      home_team_name: "",
-      away_team_name: "",
-      rink: "Codey Arena",
-      status: "Scheduled"
-    });
-
-    setMessage("Game added.");
-    loadGames();
-  }
-
-  async function deleteGame(id) {
-    const confirmed = window.confirm("Delete this game?");
-    if (!confirmed) return;
-
-    const { error } = await supabase.from("games").delete().eq("id", id);
-
-    if (error) {
-      setMessage(error.message);
-      return;
-    }
-
-    setMessage("Game deleted.");
-    loadGames();
-  }
-
-  function handleChange(e) {
-    setForm((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }));
-  }
-
-  if (!session) {
-    return (
-      <main style={{ maxWidth: 760, margin: "0 auto", padding: 24 }}>
-        <div style={{ padding: 24, borderRadius: 20, background: "#0f172a", border: "1px solid #1e293b" }}>
-          <h1>Admin Sign-In</h1>
-          <p style={{ color: "#cbd5e1" }}>
-            Sign in to manage the league schedule.
-          </p>
-
-          <form onSubmit={signIn} style={{ display: "grid", gap: 12, marginTop: 20 }}>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Admin email"
-              style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }}
-            />
-
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Password"
-              style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }}
-            />
-
-            <button
-              type="submit"
-              style={{ padding: 12, borderRadius: 12, border: 0, background: "#22d3ee", color: "#082f49", fontWeight: 700 }}
-            >
-              Sign In
-            </button>
-          </form>
-
-          {message ? <p style={{ marginTop: 16, color: "#67e8f9" }}>{message}</p> : null}
-        </div>
-      </main>
-    );
+  if (error) {
+    gamesError = error.message;
+  } else {
+    games = data || [];
   }
 
   return (
-    <main style={{ maxWidth: 1100, margin: "0 auto", padding: 24 }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-        <div>
-          <h1 style={{ marginBottom: 4 }}>Schedule Editor</h1>
-          <p style={{ color: "#cbd5e1", margin: 0 }}>Add and manage league games.</p>
-        </div>
-        <button
-          onClick={signOut}
-          style={{ padding: "10px 14px", borderRadius: 12, border: "1px solid #334155", background: "#0f172a", color: "white" }}
+    <main style={{ maxWidth: 1200, margin: "0 auto", padding: 24 }}>
+      <section
+        style={{
+          padding: 24,
+          border: "1px solid #1e293b",
+          borderRadius: 20,
+          background: "linear-gradient(135deg, #082f49, #020617)",
+          marginBottom: 24
+        }}
+      >
+        <div
+          style={{
+            display: "inline-block",
+            padding: "6px 12px",
+            borderRadius: 999,
+            background: "#0f172a",
+            color: "#7dd3fc",
+            border: "1px solid #164e63"
+          }}
         >
-          Sign Out
-        </button>
-      </div>
-
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1.2fr", gap: 20 }}>
-        <div style={{ padding: 20, borderRadius: 20, background: "#0f172a", border: "1px solid #1e293b", height: "fit-content" }}>
-          <h2>Add Game</h2>
-
-          <form onSubmit={addGame} style={{ display: "grid", gap: 12, marginTop: 16 }}>
-            <input
-              name="game_date"
-              type="date"
-              value={form.game_date}
-              onChange={handleChange}
-              style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }}
-            />
-
-            <input
-              name="game_time"
-              type="text"
-              value={form.game_time}
-              onChange={handleChange}
-              placeholder="7:10 PM"
-              style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }}
-            />
-
-            <input
-              name="home_team_name"
-              type="text"
-              value={form.home_team_name}
-              onChange={handleChange}
-              placeholder="Home team"
-              style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }}
-            />
-
-            <input
-              name="away_team_name"
-              type="text"
-              value={form.away_team_name}
-              onChange={handleChange}
-              placeholder="Away team"
-              style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }}
-            />
-
-            <input
-              name="rink"
-              type="text"
-              value={form.rink}
-              onChange={handleChange}
-              placeholder="Rink"
-              style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }}
-            />
-
-            <select
-              name="status"
-              value={form.status}
-              onChange={handleChange}
-              style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }}
-            >
-              <option value="Scheduled">Scheduled</option>
-              <option value="Final">Final</option>
-              <option value="Postponed">Postponed</option>
-              <option value="Canceled">Canceled</option>
-            </select>
-
-            <button
-              type="submit"
-              style={{ padding: 12, borderRadius: 12, border: 0, background: "#22d3ee", color: "#082f49", fontWeight: 700 }}
-            >
-              Save Game
-            </button>
-          </form>
-
-          {message ? <p style={{ marginTop: 16, color: "#67e8f9" }}>{message}</p> : null}
+          Adult Summer Hockey
         </div>
 
-        <div style={{ padding: 20, borderRadius: 20, background: "#0f172a", border: "1px solid #1e293b" }}>
-          <h2>Current Schedule</h2>
+        <h1 style={{ fontSize: 44, marginBottom: 12 }}>
+          {league.name}
+        </h1>
 
-          {loading ? (
-            <p style={{ color: "#cbd5e1" }}>Loading...</p>
+        <p style={{ fontSize: 18, color: "#cbd5e1", maxWidth: 850 }}>
+          Schedules, standings, rosters, player stats, rules, playoff information, and league updates all in one place.
+        </p>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))",
+            gap: 12,
+            marginTop: 24
+          }}
+        >
+          {[
+            ["Teams", "6"],
+            ["Games", "14"],
+            ["Playoff Spots", "4"],
+            ["Team Cost", "$6,000"]
+          ].map(([label, value]) => (
+            <div
+              key={label}
+              style={{
+                padding: 16,
+                borderRadius: 16,
+                background: "#0f172a",
+                border: "1px solid #1e293b"
+              }}
+            >
+              <div style={{ color: "#94a3b8", fontSize: 12, textTransform: "uppercase" }}>
+                {label}
+              </div>
+              <div style={{ color: "#67e8f9", fontSize: 28, fontWeight: 700 }}>
+                {value}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section
+        style={{
+          display: "grid",
+          gridTemplateColumns: "2fr 1fr",
+          gap: 20,
+          marginBottom: 24
+        }}
+      >
+        <div
+          style={{
+            padding: 20,
+            borderRadius: 20,
+            background: "#0f172a",
+            border: "1px solid #1e293b"
+          }}
+        >
+          <h2>Upcoming Schedule</h2>
+
+          {gamesError ? (
+            <p style={{ color: "#fca5a5" }}>Could not load schedule: {gamesError}</p>
           ) : games.length === 0 ? (
-            <p style={{ color: "#cbd5e1" }}>No games added yet.</p>
+            <p style={{ color: "#cbd5e1" }}>No games posted yet.</p>
           ) : (
-            <div style={{ display: "grid", gap: 12, marginTop: 16 }}>
+            <div style={{ display: "grid", gap: 12 }}>
               {games.map((game) => (
                 <div
                   key={game.id}
@@ -321,39 +131,154 @@ export default function AdminPage() {
                     border: "1px solid #1f2937"
                   }}
                 >
-                  <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
-                    <div>
-                      <div style={{ color: "#67e8f9", fontSize: 14 }}>
-                        {game.game_date} {game.game_time ? `• ${game.game_time}` : ""}
-                      </div>
-                      <div style={{ fontSize: 20, fontWeight: 700 }}>
-                        {game.home_team?.name} vs {game.away_team?.name}
-                      </div>
-                      <div style={{ color: "#cbd5e1" }}>
-                        {game.rink} • {game.status}
-                      </div>
-                    </div>
-
-                    <button
-                      onClick={() => deleteGame(game.id)}
-                      style={{
-                        padding: "8px 12px",
-                        borderRadius: 10,
-                        border: "1px solid #7f1d1d",
-                        background: "#450a0a",
-                        color: "#fecaca",
-                        height: "fit-content"
-                      }}
-                    >
-                      Delete
-                    </button>
+                  <div style={{ color: "#67e8f9", fontSize: 14 }}>{game.game_date}</div>
+                  <div style={{ fontSize: 22, fontWeight: 700 }}>
+                    {game.home_team?.name} vs {game.away_team?.name}
+                  </div>
+                  <div style={{ color: "#cbd5e1" }}>
+                    {game.game_time || "TBD"} • {game.rink || "Codey Arena"} • {game.status}
                   </div>
                 </div>
               ))}
             </div>
           )}
         </div>
-      </div>
+
+        <div
+          style={{
+            padding: 20,
+            borderRadius: 20,
+            background: "#0f172a",
+            border: "1px solid #1e293b"
+          }}
+        >
+          <h2>League Updates</h2>
+          <div style={{ display: "grid", gap: 10 }}>
+            {league.announcements.map((item) => (
+              <div
+                key={item}
+                style={{
+                  padding: 14,
+                  borderRadius: 14,
+                  background: "#111827",
+                  color: "#e2e8f0"
+                }}
+              >
+                {item}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: 20,
+          marginBottom: 24
+        }}
+      >
+        <div
+          style={{
+            padding: 20,
+            borderRadius: 20,
+            background: "#0f172a",
+            border: "1px solid #1e293b",
+            overflowX: "auto"
+          }}
+        >
+          <h2>Standings</h2>
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead>
+              <tr style={{ color: "#94a3b8", textAlign: "left" }}>
+                <th>Team</th>
+                <th>GP</th>
+                <th>W</th>
+                <th>L</th>
+                <th>OTL</th>
+                <th>PTS</th>
+              </tr>
+            </thead>
+            <tbody>
+              {league.standings.map((row) => (
+                <tr key={row.team}>
+                  <td style={{ padding: "8px 0" }}>{row.team}</td>
+                  <td>{row.gp}</td>
+                  <td>{row.w}</td>
+                  <td>{row.l}</td>
+                  <td>{row.otl}</td>
+                  <td style={{ color: "#67e8f9", fontWeight: 700 }}>{row.pts}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div
+          style={{
+            padding: 20,
+            borderRadius: 20,
+            background: "#0f172a",
+            border: "1px solid #1e293b",
+            overflowX: "auto"
+          }}
+        >
+          <h2>Player Stats</h2>
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead>
+              <tr style={{ color: "#94a3b8", textAlign: "left" }}>
+                <th>Player</th>
+                <th>#</th>
+                <th>Team</th>
+                <th>G</th>
+                <th>A</th>
+                <th>PTS</th>
+                <th>PIM</th>
+              </tr>
+            </thead>
+            <tbody>
+              {league.stats.map((row) => (
+                <tr key={row.player}>
+                  <td style={{ padding: "8px 0" }}>{row.player}</td>
+                  <td>{row.number}</td>
+                  <td>{row.team}</td>
+                  <td>{row.g}</td>
+                  <td>{row.a}</td>
+                  <td style={{ color: "#67e8f9", fontWeight: 700 }}>{row.pts}</td>
+                  <td>{row.pim}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section
+        style={{
+          padding: 20,
+          borderRadius: 20,
+          background: "#0f172a",
+          border: "1px solid #1e293b"
+        }}
+      >
+        <h2>Rules & Info</h2>
+        <ul>
+          {league.rules.map((rule) => (
+            <li key={rule} style={{ marginBottom: 8 }}>
+              {rule}
+            </li>
+          ))}
+        </ul>
+
+        <p style={{ color: "#cbd5e1", marginTop: 20 }}>
+          League Contact: {league.contactName} — {league.contactEmail}
+        </p>
+
+        <p style={{ color: "#67e8f9" }}>
+          Admin login: /admin
+        </p>
+      </section>
     </main>
   );
 }
