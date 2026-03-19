@@ -5,6 +5,7 @@ import { supabase } from "../../lib/supabase-client";
 
 export default function AdminPage() {
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [session, setSession] = useState(null);
   const [games, setGames] = useState([]);
@@ -43,18 +44,17 @@ export default function AdminPage() {
 
   async function signIn(e) {
     e.preventDefault();
-    setMessage("Sending sign-in link...");
-    const { error } = await supabase.auth.signInWithOtp({
+    setMessage("Signing in...");
+
+    const { error } = await supabase.auth.signInWithPassword({
       email,
-      options: {
-        emailRedirectTo: `${window.location.origin}/admin`
-      }
+      password
     });
 
     if (error) {
       setMessage(error.message);
     } else {
-      setMessage("Check your email for the sign-in link.");
+      setMessage("Signed in.");
     }
   }
 
@@ -192,11 +192,20 @@ export default function AdminPage() {
               placeholder="Admin email"
               style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }}
             />
+
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
+              style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }}
+            />
+
             <button
               type="submit"
               style={{ padding: 12, borderRadius: 12, border: 0, background: "#22d3ee", color: "#082f49", fontWeight: 700 }}
             >
-              Send magic link
+              Sign In
             </button>
           </form>
 
