@@ -6,23 +6,21 @@ import { supabase } from "../../lib/supabase-client";
 export default function AdminPage() {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
-
-  async function signIn(e) {
-    e.preventDefault();
-    setMessage("Sending sign-in link...");
-const { error } = await supabase.auth.signInWithOtp({
-  email,
-  options: {
-    emailRedirectTo: `${window.location.origin}/admin`
-  }
-});
-    if (error) {
-      setMessage(error.message);
-    } else {
-      setMessage("Check your email for the sign-in link.");
+async function signIn(e) {
+  e.preventDefault();
+  setMessage("Sending sign-in link...");
+  const { error } = await supabase.auth.signInWithOtp({
+    email,
+    options: {
+      emailRedirectTo: `${window.location.origin}/admin`
     }
+  });
+  if (error) {
+    setMessage(error.message);
+  } else {
+    setMessage("Check your email for the sign-in link.");
   }
-
+}
   return (
     <main style={{ maxWidth: 760, margin: "0 auto", padding: 24 }}>
       <div style={{ padding: 24, borderRadius: 20, background: "#0f172a", border: "1px solid #1e293b" }}>
