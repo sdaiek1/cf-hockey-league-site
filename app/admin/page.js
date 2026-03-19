@@ -1,112 +1,27 @@
-"use client";
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
-import { useEffect, useState } from "react";
-import { supabase } from "../../lib/supabase-client";
+import { createClient } from "@supabase/supabase-js";
+import { sampleLeague } from "../lib/sample-data";
 
-export default function AdminPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
-  const [session, setSession] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [tab, setTab] = useState("schedule");
+export default async function HomePage() {
+  const league = sampleLeague;
 
-  const [games, setGames] = useState([]);
-  const [teams, setTeams] = useState([]);
-  const [players, setPlayers] = useState([]);
+  let games = [];
+  let players = [];
+  let gamesError = null;
+  let playersError = null;
 
-  const [gameForm, setGameForm] = useState({
-    game_date: "",
-    game_time: "",
-    home_team_name: "",
-    away_team_name: "",
-    rink: "Codey Arena",
-    status: "Scheduled"
-  });
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  const [playerForm, setPlayerForm] = useState({
-    team_name: "",
-    player_name: "",
-    jersey_number: ""
-  });
+  if (!supabaseUrl || !supabaseKey) {
+    gamesError = "Missing Supabase environment variables.";
+    playersError = "Missing Supabase environment variables.";
+  } else {
+    const supabase = createClient(supabaseUrl, supabaseKey);
 
-  const [statsForm, setStatsForm] = useState({
-    player_id: "",
-    games_played: "",
-    goals: "",
-    assists: "",
-    penalty_minutes: ""
-  });
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session ?? null);
-    });
-
-    const {
-      data: { subscription }
-    } = supabase.auth.onAuthStateChange((_event, newSession) => {
-      setSession(newSession);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  useEffect(() => {
-    if (session) {
-      loadEverything();
-    } else {
-      setLoading(false);
-    }
-  }, [session]);
-
-  async function loadEverything() {
-    setLoading(true);
-    await Promise.all([loadTeams(), loadGames(), loadPlayers()]);
-    setLoading(false);
-  }
-
-  async function signIn(e) {
-    e.preventDefault();
-    setMessage("Signing in...");
-
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    });
-
-    if (error) {
-      setMessage(error.message);
-    } else {
-      setMessage("Signed in.");
-    }
-  }
-
-  async function signOut() {
-    await supabase.auth.signOut();
-    setSession(null);
-    setGames([]);
-    setTeams([]);
-    setPlayers([]);
-    setMessage("Signed out.");
-  }
-
-  async function loadTeams() {
-    const { data, error } = await supabase
-      .from("teams")
-      .select("id, name")
-      .order("name", { ascending: true });
-
-    if (error) {
-      setMessage(error.message);
-      return;
-    }
-
-    setTeams(data || []);
-  }
-
-  async function loadGames() {
-    const { data, error } = await supabase
+    const { data: gameData, error: gameError } = await supabase
       .from("games")
       .select(`
         id,
@@ -119,16 +34,13 @@ export default function AdminPage() {
       `)
       .order("game_date", { ascending: true });
 
-    if (error) {
-      setMessage(error.message);
-      return;
+    if (gameError) {
+      gamesError = gameError.message;
+    } else {
+      games = gameData || [];
     }
 
-    setGames(data || []);
-  }
-
-  async function loadPlayers() {
-    const { data, error } = await supabase
+    const { data: playerData, error: playerError } = await supabase
       .from("players")
       .select(`
         id,
@@ -141,496 +53,339 @@ export default function AdminPage() {
         penalty_minutes,
         team:team_id(name)
       `)
-      .order("player_name", { ascending: true });
+      .order("points", { ascending: false })
+      .order("goals", { ascending: false })
+      .order("assists", { ascending: false });
 
-    if (error) {
-      setMessage(error.message);
-      return;
+    if (playerError) {
+      playersError = playerError.message;
+    } else {
+      players = playerData || [];
     }
-
-    setPlayers(data || []);
   }
 
-  async function addGame(e) {
-    e.preventDefault();
-    setMessage("Saving game...");
+  const rostersByTeam = players.reduce((acc, player) => {
+    const teamName = player.team?.name || "No Team";
+    if (!acc[teamName]) acc[teamName] = [];
+    acc[teamName].push(player);
+    return acc;
+  }, {});
 
-    if (!gameForm.home_team_name || !gameForm.away_team_name || !gameForm.game_date) {
-      setMessage("Please fill in date, home team, and away team.");
-      return;
-    }
-
-    if (gameForm.home_team_name === gameForm.away_team_name) {
-      setMessage("Home and away teams cannot be the same.");
-      return;
-    }
-
-    const homeTeam = teams.find((t) => t.name === gameForm.home_team_name);
-    const awayTeam = teams.find((t) => t.name === gameForm.away_team_name);
-
-    if (!homeTeam || !awayTeam) {
-      setMessage("One or both team names were not found.");
-      return;
-    }
-
-    const { error } = await supabase.from("games").insert({
-      game_date: gameForm.game_date,
-      game_time: gameForm.game_time || null,
-      home_team_id: homeTeam.id,
-      away_team_id: awayTeam.id,
-      rink: gameForm.rink || "Codey Arena",
-      status: gameForm.status
-    });
-
-    if (error) {
-      setMessage(error.message);
-      return;
-    }
-
-    setGameForm({
-      game_date: "",
-      game_time: "",
-      home_team_name: "",
-      away_team_name: "",
-      rink: "Codey Arena",
-      status: "Scheduled"
-    });
-
-    setMessage("Game added.");
-    loadGames();
-  }
-
-  async function deleteGame(id) {
-    const confirmed = window.confirm("Delete this game?");
-    if (!confirmed) return;
-
-    const { error } = await supabase.from("games").delete().eq("id", id);
-
-    if (error) {
-      setMessage(error.message);
-      return;
-    }
-
-    setMessage("Game deleted.");
-    loadGames();
-  }
-
-  async function addPlayer(e) {
-    e.preventDefault();
-    setMessage("Saving player...");
-
-    if (!playerForm.team_name || !playerForm.player_name || !playerForm.jersey_number) {
-      setMessage("Please fill in team, player name, and jersey number.");
-      return;
-    }
-
-    const team = teams.find((t) => t.name === playerForm.team_name);
-
-    if (!team) {
-      setMessage("Team not found.");
-      return;
-    }
-
-    const { error } = await supabase.from("players").insert({
-      team_id: team.id,
-      player_name: playerForm.player_name,
-      jersey_number: Number(playerForm.jersey_number),
-      games_played: 0,
-      goals: 0,
-      assists: 0,
-      penalty_minutes: 0,
-      is_active: true
-    });
-
-    if (error) {
-      setMessage(error.message);
-      return;
-    }
-
-    setPlayerForm({
-      team_name: "",
-      player_name: "",
-      jersey_number: ""
-    });
-
-    setMessage("Player added.");
-    loadPlayers();
-  }
-
-  async function deletePlayer(id) {
-    const confirmed = window.confirm("Delete this player?");
-    if (!confirmed) return;
-
-    const { error } = await supabase.from("players").delete().eq("id", id);
-
-    if (error) {
-      setMessage(error.message);
-      return;
-    }
-
-    setMessage("Player deleted.");
-    loadPlayers();
-  }
-
-  async function updateStats(e) {
-    e.preventDefault();
-    setMessage("Saving stats...");
-
-    if (!statsForm.player_id) {
-      setMessage("Please select a player.");
-      return;
-    }
-
-    const { error } = await supabase
-      .from("players")
-      .update({
-        games_played: Number(statsForm.games_played || 0),
-        goals: Number(statsForm.goals || 0),
-        assists: Number(statsForm.assists || 0),
-        penalty_minutes: Number(statsForm.penalty_minutes || 0)
-      })
-      .eq("id", statsForm.player_id);
-
-    if (error) {
-      setMessage(error.message);
-      return;
-    }
-
-    setMessage("Stats updated.");
-    setStatsForm({
-      player_id: "",
-      games_played: "",
-      goals: "",
-      assists: "",
-      penalty_minutes: ""
-    });
-    loadPlayers();
-  }
-
-  function handleGameChange(e) {
-    setGameForm((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }));
-  }
-
-  function handlePlayerChange(e) {
-    setPlayerForm((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }));
-  }
-
-  function handleStatsChange(e) {
-    setStatsForm((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }));
-  }
-
-  if (!session) {
-    return (
-      <main style={{ maxWidth: 760, margin: "0 auto", padding: 24 }}>
-        <div style={{ padding: 24, borderRadius: 20, background: "#0f172a", border: "1px solid #1e293b" }}>
-          <h1>Admin Sign-In</h1>
-          <p style={{ color: "#cbd5e1" }}>Sign in to manage the league.</p>
-
-          <form onSubmit={signIn} style={{ display: "grid", gap: 12, marginTop: 20 }}>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Admin email"
-              style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }}
-            />
-
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Password"
-              style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }}
-            />
-
-            <button
-              type="submit"
-              style={{ padding: 12, borderRadius: 12, border: 0, background: "#22d3ee", color: "#082f49", fontWeight: 700 }}
-            >
-              Sign In
-            </button>
-          </form>
-
-          {message ? <p style={{ marginTop: 16, color: "#67e8f9" }}>{message}</p> : null}
-        </div>
-      </main>
-    );
-  }
+  const teamNames = Object.keys(rostersByTeam).sort();
 
   return (
-    <main style={{ maxWidth: 1180, margin: "0 auto", padding: 24 }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20, gap: 12 }}>
-        <div>
-          <h1 style={{ marginBottom: 4 }}>League Admin</h1>
-          <p style={{ color: "#cbd5e1", margin: 0 }}>Manage schedule, rosters, and stats.</p>
+    <main style={{ maxWidth: 1200, margin: "0 auto", padding: 24 }}>
+      <section
+        style={{
+          padding: 24,
+          border: "1px solid #1e293b",
+          borderRadius: 20,
+          background: "linear-gradient(135deg, #082f49, #020617)",
+          marginBottom: 24
+        }}
+      >
+        <div
+          style={{
+            display: "inline-block",
+            padding: "6px 12px",
+            borderRadius: 999,
+            background: "#0f172a",
+            color: "#7dd3fc",
+            border: "1px solid #164e63"
+          }}
+        >
+          Adult Summer Hockey
         </div>
-        <button
-          onClick={signOut}
-          style={{ padding: "10px 14px", borderRadius: 12, border: "1px solid #334155", background: "#0f172a", color: "white" }}
-        >
-          Sign Out
-        </button>
-      </div>
 
-      <div style={{ display: "flex", gap: 12, marginBottom: 20, flexWrap: "wrap" }}>
-        <button
-          onClick={() => setTab("schedule")}
+        <h1 style={{ fontSize: 44, marginBottom: 12 }}>
+          {league.name}
+        </h1>
+
+        <p style={{ fontSize: 18, color: "#cbd5e1", maxWidth: 850 }}>
+          Schedules, standings, rosters, player stats, rules, playoff information, and league updates all in one place.
+        </p>
+
+        <div
           style={{
-            padding: "10px 14px",
-            borderRadius: 12,
-            border: 0,
-            background: tab === "schedule" ? "#22d3ee" : "#0f172a",
-            color: tab === "schedule" ? "#082f49" : "white",
-            fontWeight: 700
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))",
+            gap: 12,
+            marginTop: 24
           }}
         >
-          Schedule Editor
-        </button>
-        <button
-          onClick={() => setTab("rosters")}
-          style={{
-            padding: "10px 14px",
-            borderRadius: 12,
-            border: 0,
-            background: tab === "rosters" ? "#22d3ee" : "#0f172a",
-            color: tab === "rosters" ? "#082f49" : "white",
-            fontWeight: 700
-          }}
-        >
-          Roster Editor
-        </button>
-        <button
-          onClick={() => setTab("stats")}
-          style={{
-            padding: "10px 14px",
-            borderRadius: 12,
-            border: 0,
-            background: tab === "stats" ? "#22d3ee" : "#0f172a",
-            color: tab === "stats" ? "#082f49" : "white",
-            fontWeight: 700
-          }}
-        >
-          Stats Editor
-        </button>
-      </div>
-
-      {message ? <p style={{ marginBottom: 16, color: "#67e8f9" }}>{message}</p> : null}
-      {loading ? <p style={{ color: "#cbd5e1" }}>Loading...</p> : null}
-
-      {tab === "schedule" && (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1.2fr", gap: 20 }}>
-          <div style={{ padding: 20, borderRadius: 20, background: "#0f172a", border: "1px solid #1e293b", height: "fit-content" }}>
-            <h2>Add Game</h2>
-
-            <form onSubmit={addGame} style={{ display: "grid", gap: 12, marginTop: 16 }}>
-              <input name="game_date" type="date" value={gameForm.game_date} onChange={handleGameChange} style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }} />
-              <input name="game_time" type="text" value={gameForm.game_time} onChange={handleGameChange} placeholder="7:10 PM" style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }} />
-
-              <select name="home_team_name" value={gameForm.home_team_name} onChange={handleGameChange} style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }}>
-                <option value="">Select home team</option>
-                {teams.map((team) => <option key={team.id} value={team.name}>{team.name}</option>)}
-              </select>
-
-              <select name="away_team_name" value={gameForm.away_team_name} onChange={handleGameChange} style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }}>
-                <option value="">Select away team</option>
-                {teams.map((team) => <option key={team.id} value={team.name}>{team.name}</option>)}
-              </select>
-
-              <input name="rink" type="text" value={gameForm.rink} onChange={handleGameChange} placeholder="Rink" style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }} />
-
-              <select name="status" value={gameForm.status} onChange={handleGameChange} style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }}>
-                <option value="Scheduled">Scheduled</option>
-                <option value="Final">Final</option>
-                <option value="Postponed">Postponed</option>
-                <option value="Canceled">Canceled</option>
-              </select>
-
-              <button type="submit" style={{ padding: 12, borderRadius: 12, border: 0, background: "#22d3ee", color: "#082f49", fontWeight: 700 }}>
-                Save Game
-              </button>
-            </form>
-          </div>
-
-          <div style={{ padding: 20, borderRadius: 20, background: "#0f172a", border: "1px solid #1e293b" }}>
-            <h2>Current Schedule</h2>
-
-            {games.length === 0 ? (
-              <p style={{ color: "#cbd5e1" }}>No games added yet.</p>
-            ) : (
-              <div style={{ display: "grid", gap: 12, marginTop: 16 }}>
-                {games.map((game) => (
-                  <div key={game.id} style={{ padding: 16, borderRadius: 16, background: "#111827", border: "1px solid #1f2937" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
-                      <div>
-                        <div style={{ color: "#67e8f9", fontSize: 14 }}>{game.game_date} {game.game_time ? `• ${game.game_time}` : ""}</div>
-                        <div style={{ fontSize: 20, fontWeight: 700 }}>{game.home_team?.name} vs {game.away_team?.name}</div>
-                        <div style={{ color: "#cbd5e1" }}>{game.rink} • {game.status}</div>
-                      </div>
-
-                      <button
-                        onClick={() => deleteGame(game.id)}
-                        style={{ padding: "8px 12px", borderRadius: 10, border: "1px solid #7f1d1d", background: "#450a0a", color: "#fecaca", height: "fit-content" }}
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                ))}
+          {[
+            ["Teams", "6"],
+            ["Games", "14"],
+            ["Playoff Spots", "4"],
+            ["Team Cost", "$6,000"]
+          ].map(([label, value]) => (
+            <div
+              key={label}
+              style={{
+                padding: 16,
+                borderRadius: 16,
+                background: "#0f172a",
+                border: "1px solid #1e293b"
+              }}
+            >
+              <div style={{ color: "#94a3b8", fontSize: 12, textTransform: "uppercase" }}>
+                {label}
               </div>
-            )}
-          </div>
-        </div>
-      )}
-
-      {tab === "rosters" && (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1.2fr", gap: 20 }}>
-          <div style={{ padding: 20, borderRadius: 20, background: "#0f172a", border: "1px solid #1e293b", height: "fit-content" }}>
-            <h2>Add Player</h2>
-
-            <form onSubmit={addPlayer} style={{ display: "grid", gap: 12, marginTop: 16 }}>
-              <select name="team_name" value={playerForm.team_name} onChange={handlePlayerChange} style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }}>
-                <option value="">Select team</option>
-                {teams.map((team) => <option key={team.id} value={team.name}>{team.name}</option>)}
-              </select>
-
-              <input name="player_name" type="text" value={playerForm.player_name} onChange={handlePlayerChange} placeholder="Player name" style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }} />
-              <input name="jersey_number" type="number" value={playerForm.jersey_number} onChange={handlePlayerChange} placeholder="Jersey number" style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }} />
-
-              <button type="submit" style={{ padding: 12, borderRadius: 12, border: 0, background: "#22d3ee", color: "#082f49", fontWeight: 700 }}>
-                Save Player
-              </button>
-            </form>
-          </div>
-
-          <div style={{ padding: 20, borderRadius: 20, background: "#0f172a", border: "1px solid #1e293b" }}>
-            <h2>Current Players</h2>
-
-            {players.length === 0 ? (
-              <p style={{ color: "#cbd5e1" }}>No players added yet.</p>
-            ) : (
-              <div style={{ display: "grid", gap: 12, marginTop: 16 }}>
-                {players.map((player) => (
-                  <div key={player.id} style={{ padding: 16, borderRadius: 16, background: "#111827", border: "1px solid #1f2937" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
-                      <div>
-                        <div style={{ fontSize: 20, fontWeight: 700 }}>{player.player_name} #{player.jersey_number}</div>
-                        <div style={{ color: "#cbd5e1" }}>{player.team?.name || "No team"}</div>
-                      </div>
-
-                      <button
-                        onClick={() => deletePlayer(player.id)}
-                        style={{ padding: "8px 12px", borderRadius: 10, border: "1px solid #7f1d1d", background: "#450a0a", color: "#fecaca", height: "fit-content" }}
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                ))}
+              <div style={{ color: "#67e8f9", fontSize: 28, fontWeight: 700 }}>
+                {value}
               </div>
-            )}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section
+        style={{
+          display: "grid",
+          gridTemplateColumns: "2fr 1fr",
+          gap: 20,
+          marginBottom: 24
+        }}
+      >
+        <div
+          style={{
+            padding: 20,
+            borderRadius: 20,
+            background: "#0f172a",
+            border: "1px solid #1e293b"
+          }}
+        >
+          <h2>Upcoming Schedule</h2>
+
+          {gamesError ? (
+            <p style={{ color: "#fca5a5" }}>Could not load schedule: {gamesError}</p>
+          ) : games.length === 0 ? (
+            <p style={{ color: "#cbd5e1" }}>No games posted yet.</p>
+          ) : (
+            <div style={{ display: "grid", gap: 12 }}>
+              {games.map((game) => (
+                <div
+                  key={game.id}
+                  style={{
+                    padding: 16,
+                    borderRadius: 16,
+                    background: "#111827",
+                    border: "1px solid #1f2937"
+                  }}
+                >
+                  <div style={{ color: "#67e8f9", fontSize: 14 }}>{game.game_date}</div>
+                  <div style={{ fontSize: 22, fontWeight: 700 }}>
+                    {game.home_team?.name} vs {game.away_team?.name}
+                  </div>
+                  <div style={{ color: "#cbd5e1" }}>
+                    {game.game_time || "TBD"} • {game.rink || "Codey Arena"} • {game.status}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div
+          style={{
+            padding: 20,
+            borderRadius: 20,
+            background: "#0f172a",
+            border: "1px solid #1e293b"
+          }}
+        >
+          <h2>League Updates</h2>
+          <div style={{ display: "grid", gap: 10 }}>
+            {league.announcements.map((item) => (
+              <div
+                key={item}
+                style={{
+                  padding: 14,
+                  borderRadius: 14,
+                  background: "#111827",
+                  color: "#e2e8f0"
+                }}
+              >
+                {item}
+              </div>
+            ))}
           </div>
         </div>
-      )}
+      </section>
 
-      {tab === "stats" && (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1.2fr", gap: 20 }}>
-          <div style={{ padding: 20, borderRadius: 20, background: "#0f172a", border: "1px solid #1e293b", height: "fit-content" }}>
-            <h2>Update Player Stats</h2>
+      <section
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: 20,
+          marginBottom: 24
+        }}
+      >
+        <div
+          style={{
+            padding: 20,
+            borderRadius: 20,
+            background: "#0f172a",
+            border: "1px solid #1e293b",
+            overflowX: "auto"
+          }}
+        >
+          <h2>Standings</h2>
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead>
+              <tr style={{ color: "#94a3b8", textAlign: "left" }}>
+                <th>Team</th>
+                <th>GP</th>
+                <th>W</th>
+                <th>L</th>
+                <th>OTL</th>
+                <th>PTS</th>
+              </tr>
+            </thead>
+            <tbody>
+              {league.standings.map((row) => (
+                <tr key={row.team}>
+                  <td style={{ padding: "8px 0" }}>{row.team}</td>
+                  <td>{row.gp}</td>
+                  <td>{row.w}</td>
+                  <td>{row.l}</td>
+                  <td>{row.otl}</td>
+                  <td style={{ color: "#67e8f9", fontWeight: 700 }}>{row.pts}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
-            <form onSubmit={updateStats} style={{ display: "grid", gap: 12, marginTop: 16 }}>
-              <select
-                name="player_id"
-                value={statsForm.player_id}
-                onChange={handleStatsChange}
-                style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }}
-              >
-                <option value="">Select player</option>
-                {players.map((player) => (
-                  <option key={player.id} value={player.id}>
-                    {player.player_name} #{player.jersey_number} ({player.team?.name || "No team"})
-                  </option>
+        <div
+          style={{
+            padding: 20,
+            borderRadius: 20,
+            background: "#0f172a",
+            border: "1px solid #1e293b",
+            overflowX: "auto"
+          }}
+        >
+          <h2>Player Stats</h2>
+
+          {playersError ? (
+            <p style={{ color: "#fca5a5" }}>Could not load stats: {playersError}</p>
+          ) : players.length === 0 ? (
+            <p style={{ color: "#cbd5e1" }}>No player stats yet.</p>
+          ) : (
+            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+              <thead>
+                <tr style={{ color: "#94a3b8", textAlign: "left" }}>
+                  <th>Player</th>
+                  <th>#</th>
+                  <th>Team</th>
+                  <th>GP</th>
+                  <th>G</th>
+                  <th>A</th>
+                  <th>PTS</th>
+                  <th>PIM</th>
+                </tr>
+              </thead>
+              <tbody>
+                {players.map((row) => (
+                  <tr key={row.id}>
+                    <td style={{ padding: "8px 0" }}>{row.player_name}</td>
+                    <td>{row.jersey_number}</td>
+                    <td>{row.team?.name || ""}</td>
+                    <td>{row.games_played}</td>
+                    <td>{row.goals}</td>
+                    <td>{row.assists}</td>
+                    <td style={{ color: "#67e8f9", fontWeight: 700 }}>{row.points}</td>
+                    <td>{row.penalty_minutes}</td>
+                  </tr>
                 ))}
-              </select>
+              </tbody>
+            </table>
+          )}
+        </div>
+      </section>
 
-              <input
-                name="games_played"
-                type="number"
-                value={statsForm.games_played}
-                onChange={handleStatsChange}
-                placeholder="Games played"
-                style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }}
-              />
+      <section
+        style={{
+          padding: 20,
+          borderRadius: 20,
+          background: "#0f172a",
+          border: "1px solid #1e293b",
+          marginBottom: 24
+        }}
+      >
+        <h2>Team Rosters</h2>
 
-              <input
-                name="goals"
-                type="number"
-                value={statsForm.goals}
-                onChange={handleStatsChange}
-                placeholder="Goals"
-                style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }}
-              />
-
-              <input
-                name="assists"
-                type="number"
-                value={statsForm.assists}
-                onChange={handleStatsChange}
-                placeholder="Assists"
-                style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }}
-              />
-
-              <input
-                name="penalty_minutes"
-                type="number"
-                value={statsForm.penalty_minutes}
-                onChange={handleStatsChange}
-                placeholder="Penalty minutes"
-                style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }}
-              />
-
-              <button
-                type="submit"
-                style={{ padding: 12, borderRadius: 12, border: 0, background: "#22d3ee", color: "#082f49", fontWeight: 700 }}
+        {playersError ? (
+          <p style={{ color: "#fca5a5" }}>Could not load rosters: {playersError}</p>
+        ) : teamNames.length === 0 ? (
+          <p style={{ color: "#cbd5e1" }}>No players added yet.</p>
+        ) : (
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+              gap: 16,
+              marginTop: 16
+            }}
+          >
+            {teamNames.map((teamName) => (
+              <div
+                key={teamName}
+                style={{
+                  padding: 16,
+                  borderRadius: 16,
+                  background: "#111827",
+                  border: "1px solid #1f2937"
+                }}
               >
-                Save Stats
-              </button>
-            </form>
-          </div>
-
-          <div style={{ padding: 20, borderRadius: 20, background: "#0f172a", border: "1px solid #1e293b" }}>
-            <h2>Current Player Stats</h2>
-
-            {players.length === 0 ? (
-              <p style={{ color: "#cbd5e1" }}>No players added yet.</p>
-            ) : (
-              <div style={{ display: "grid", gap: 12, marginTop: 16 }}>
-                {players.map((player) => (
-                  <div key={player.id} style={{ padding: 16, borderRadius: 16, background: "#111827", border: "1px solid #1f2937" }}>
-                    <div style={{ fontSize: 20, fontWeight: 700 }}>
+                <h3 style={{ marginTop: 0 }}>{teamName}</h3>
+                <div style={{ display: "grid", gap: 8 }}>
+                  {rostersByTeam[teamName].map((player) => (
+                    <div
+                      key={player.id}
+                      style={{
+                        padding: 10,
+                        borderRadius: 12,
+                        background: "#0b1220",
+                        color: "#e2e8f0"
+                      }}
+                    >
                       {player.player_name} #{player.jersey_number}
                     </div>
-                    <div style={{ color: "#cbd5e1", marginBottom: 8 }}>
-                      {player.team?.name || "No team"}
-                    </div>
-                    <div style={{ color: "#e2e8f0" }}>
-                      GP: {player.games_played} • G: {player.goals} • A: {player.assists} • PTS: {player.points} • PIM: {player.penalty_minutes}
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            )}
+            ))}
           </div>
-        </div>
-      )}
+        )}
+      </section>
+
+      <section
+        style={{
+          padding: 20,
+          borderRadius: 20,
+          background: "#0f172a",
+          border: "1px solid #1e293b"
+        }}
+      >
+        <h2>Rules & Info</h2>
+        <ul>
+          {league.rules.map((rule) => (
+            <li key={rule} style={{ marginBottom: 8 }}>
+              {rule}
+            </li>
+          ))}
+        </ul>
+
+        <p style={{ color: "#cbd5e1", marginTop: 20 }}>
+          League Contact: {league.contactName} — {league.contactEmail}
+        </p>
+
+        <p style={{ color: "#67e8f9" }}>
+          Admin login: /admin
+        </p>
+      </section>
     </main>
   );
 }
