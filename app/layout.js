@@ -22,18 +22,42 @@ export default function RootLayout({ children }) {
         style={{
           margin: 0,
           fontFamily: "Arial, sans-serif",
-          background: "#020617",
-          color: "white"
+          color: "white",
+          minHeight: "100vh",
+          backgroundColor: "#020617",
+          backgroundImage: `
+            radial-gradient(circle at top left, rgba(34,211,238,0.14) 0%, rgba(2,6,23,0) 28%),
+            radial-gradient(circle at top right, rgba(59,130,246,0.10) 0%, rgba(2,6,23,0) 30%),
+            radial-gradient(circle at center, rgba(14,116,144,0.08) 0%, rgba(2,6,23,0) 45%),
+            linear-gradient(180deg, #031525 0%, #020617 55%, #01040d 100%)
+          `,
+          backgroundAttachment: "fixed"
         }}
       >
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            pointerEvents: "none",
+            opacity: 0.22,
+            backgroundImage: `
+              linear-gradient(rgba(125,211,252,0.06) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(125,211,252,0.06) 1px, transparent 1px)
+            `,
+            backgroundSize: "48px 48px",
+            maskImage: "linear-gradient(to bottom, rgba(0,0,0,0.5), transparent 85%)",
+            WebkitMaskImage: "linear-gradient(to bottom, rgba(0,0,0,0.5), transparent 85%)"
+          }}
+        />
+
         <header
           style={{
             position: "sticky",
             top: 0,
             zIndex: 50,
-            background: "rgba(15, 23, 42, 0.94)",
-            borderBottom: "1px solid #1e293b",
-            backdropFilter: "blur(10px)"
+            background: "rgba(15, 23, 42, 0.84)",
+            borderBottom: "1px solid rgba(30, 41, 59, 0.9)",
+            backdropFilter: "blur(14px)"
           }}
         >
           <div
@@ -60,7 +84,8 @@ export default function RootLayout({ children }) {
                     borderRadius: 12,
                     background: "#0b1220",
                     border: "1px solid #1e293b",
-                    padding: 6
+                    padding: 6,
+                    boxShadow: "0 0 18px rgba(34,211,238,0.16)"
                   }}
                 />
               </a>
@@ -97,12 +122,13 @@ export default function RootLayout({ children }) {
                   style={{
                     textDecoration: "none",
                     color: "#e2e8f0",
-                    background: "#111827",
+                    background: "rgba(17, 24, 39, 0.75)",
                     border: "1px solid #1f2937",
                     padding: "10px 14px",
                     borderRadius: 999,
                     fontSize: 14,
-                    fontWeight: 700
+                    fontWeight: 700,
+                    boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.02)"
                   }}
                 >
                   {link.label}
@@ -117,7 +143,8 @@ export default function RootLayout({ children }) {
                   padding: "10px 14px",
                   borderRadius: 999,
                   fontSize: 14,
-                  fontWeight: 800
+                  fontWeight: 800,
+                  boxShadow: "0 0 16px rgba(34,211,238,0.24)"
                 }}
               >
                 Admin
@@ -126,7 +153,9 @@ export default function RootLayout({ children }) {
           </div>
         </header>
 
-        {children}
+        <div style={{ position: "relative", zIndex: 1 }}>
+          {children}
+        </div>
       </body>
     </html>
   );
