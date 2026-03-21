@@ -51,7 +51,7 @@ export default function RootLayout({ children }) {
             <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
               <a href="/" style={{ display: "inline-flex", alignItems: "center" }}>
                 <img
-                  src="/logo.png"
+                  src="/logo1.png"
                   alt="Cold Fusion Summer Hockey League logo"
                   style={{
                     width: 64,
