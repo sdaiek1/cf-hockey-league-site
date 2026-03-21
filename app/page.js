@@ -131,29 +131,33 @@ export default async function HomePage() {
     maxWidth: 1220,
     margin: "0 auto",
     padding: 20,
-    color: "#ffffff"
+    color: "#ffffff",
+    position: "relative",
+    zIndex: 1
   };
 
   const card = {
-    background: "rgba(15, 23, 42, 0.88)",
+    background: "rgba(15, 23, 42, 0.78)",
     border: "1px solid rgba(51, 65, 85, 0.9)",
     borderRadius: 22,
     padding: 22,
-    boxShadow: "0 10px 30px rgba(2, 6, 23, 0.28)",
-    backdropFilter: "blur(8px)"
+    boxShadow: "0 18px 45px rgba(0, 0, 0, 0.28)",
+    backdropFilter: "blur(10px)"
   };
 
   const subCard = {
-    background: "rgba(17, 24, 39, 0.92)",
+    background: "linear-gradient(180deg, rgba(17,24,39,0.95) 0%, rgba(10,15,28,0.98) 100%)",
     border: "1px solid rgba(31, 41, 55, 1)",
     borderRadius: 18,
-    padding: 16
+    padding: 16,
+    boxShadow: "inset 0 1px 0 rgba(255,255,255,0.03)"
   };
 
   const sectionTitle = {
     fontSize: 28,
     marginTop: 0,
-    marginBottom: 8
+    marginBottom: 8,
+    letterSpacing: "-0.02em"
   };
 
   const sectionText = {
@@ -167,28 +171,60 @@ export default async function HomePage() {
     <main
       style={{
         minHeight: "100vh",
+        position: "relative",
+        overflow: "hidden",
         background: `
-          radial-gradient(circle at top left, rgba(34,211,238,0.10) 0%, rgba(34,211,238,0.00) 28%),
-          radial-gradient(circle at top right, rgba(59,130,246,0.10) 0%, rgba(59,130,246,0.00) 24%),
+          radial-gradient(circle at top left, rgba(34,211,238,0.14) 0%, rgba(34,211,238,0.00) 26%),
+          radial-gradient(circle at top right, rgba(59,130,246,0.14) 0%, rgba(59,130,246,0.00) 22%),
+          radial-gradient(circle at 50% 0%, rgba(125,211,252,0.08) 0%, rgba(125,211,252,0) 30%),
           linear-gradient(180deg, #020617 0%, #07111f 38%, #020617 100%)
         `,
         paddingBottom: 28
       }}
     >
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          pointerEvents: "none",
+          opacity: 0.08,
+          backgroundImage: `
+            linear-gradient(115deg, rgba(255,255,255,0.08) 0%, transparent 22%, transparent 75%, rgba(255,255,255,0.06) 100%),
+            repeating-linear-gradient(
+              0deg,
+              rgba(255,255,255,0.04) 0px,
+              rgba(255,255,255,0.04) 1px,
+              transparent 1px,
+              transparent 38px
+            )
+          `
+        }}
+      />
+
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          pointerEvents: "none",
+          background: `
+            radial-gradient(circle at 15% 20%, rgba(34,211,238,0.10) 0%, rgba(34,211,238,0) 24%),
+            radial-gradient(circle at 85% 18%, rgba(59,130,246,0.08) 0%, rgba(59,130,246,0) 20%)
+          `
+        }}
+      />
+
       <div style={shell}>
         <section
           style={{
             ...card,
             position: "relative",
             overflow: "hidden",
-            background: `
-              linear-gradient(135deg, #0b3a5a 0%, #07233a 40%, #020617 100%)
-            `,
+            background: "linear-gradient(135deg, #0b3a5a 0%, #07233a 35%, #031220 70%, #020617 100%)",
             border: "1px solid #164e63",
-            padding: 30,
+            padding: 34,
             marginBottom: 24,
             boxShadow:
-              "0 0 40px rgba(34,211,238,0.08), inset 0 1px 0 rgba(255,255,255,0.03)"
+              "0 0 60px rgba(34,211,238,0.10), 0 24px 60px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.03)"
           }}
         >
           <div
@@ -196,9 +232,9 @@ export default async function HomePage() {
               position: "absolute",
               inset: 0,
               background: `
-                radial-gradient(circle at 18% 45%, rgba(34,211,238,0.28) 0%, rgba(34,211,238,0.10) 18%, rgba(2,6,23,0) 38%),
-                radial-gradient(circle at 78% 18%, rgba(59,130,246,0.20) 0%, rgba(2,6,23,0) 30%),
-                linear-gradient(120deg, rgba(125,211,252,0.08) 0%, rgba(125,211,252,0) 35%)
+                radial-gradient(circle at 18% 45%, rgba(34,211,238,0.32) 0%, rgba(34,211,238,0.12) 18%, rgba(2,6,23,0) 40%),
+                radial-gradient(circle at 78% 18%, rgba(59,130,246,0.22) 0%, rgba(2,6,23,0) 30%),
+                linear-gradient(120deg, rgba(125,211,252,0.10) 0%, rgba(125,211,252,0) 35%)
               `,
               pointerEvents: "none"
             }}
@@ -210,7 +246,7 @@ export default async function HomePage() {
               inset: 0,
               opacity: 0.08,
               backgroundImage: `
-                linear-gradient(115deg, rgba(255,255,255,0.16) 0%, transparent 22%, transparent 74%, rgba(255,255,255,0.10) 100%),
+                linear-gradient(115deg, rgba(255,255,255,0.15) 0%, transparent 22%, transparent 74%, rgba(255,255,255,0.08) 100%),
                 repeating-linear-gradient(
                   0deg,
                   rgba(255,255,255,0.05) 0px,
@@ -219,6 +255,20 @@ export default async function HomePage() {
                   transparent 34px
                 )
               `,
+              pointerEvents: "none"
+            }}
+          />
+
+          <div
+            style={{
+              position: "absolute",
+              right: -120,
+              top: -120,
+              width: 320,
+              height: 320,
+              borderRadius: "50%",
+              background: "rgba(34,211,238,0.08)",
+              filter: "blur(40px)",
               pointerEvents: "none"
             }}
           />
@@ -235,17 +285,17 @@ export default async function HomePage() {
           >
             <div
               style={{
-                minHeight: 260,
-                borderRadius: 24,
+                minHeight: 280,
+                borderRadius: 28,
                 background:
-                  "radial-gradient(circle at center, rgba(34,211,238,0.18) 0%, rgba(2,6,23,0.35) 45%, rgba(2,6,23,0.85) 100%)",
+                  "radial-gradient(circle at center, rgba(34,211,238,0.22) 0%, rgba(2,6,23,0.30) 46%, rgba(2,6,23,0.88) 100%)",
                 border: "1px solid #1e3a5f",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 padding: 24,
                 boxShadow:
-                  "inset 0 0 60px rgba(34,211,238,0.10), 0 0 30px rgba(34,211,238,0.08)"
+                  "inset 0 0 70px rgba(34,211,238,0.12), 0 0 40px rgba(34,211,238,0.10)"
               }}
             >
               <img
@@ -253,9 +303,9 @@ export default async function HomePage() {
                 alt="Cold Fusion Summer Hockey League logo"
                 style={{
                   maxWidth: "100%",
-                  maxHeight: 240,
+                  maxHeight: 245,
                   objectFit: "contain",
-                  filter: "drop-shadow(0 0 22px rgba(34,211,238,0.22))"
+                  filter: "drop-shadow(0 0 28px rgba(34,211,238,0.25))"
                 }}
               />
             </div>
@@ -272,7 +322,7 @@ export default async function HomePage() {
                   fontSize: 13,
                   fontWeight: 800,
                   marginBottom: 14,
-                  boxShadow: "0 0 12px rgba(34,211,238,0.08)"
+                  boxShadow: "0 0 16px rgba(34,211,238,0.10)"
                 }}
               >
                 Codey Arena • West Orange, NJ
@@ -284,7 +334,7 @@ export default async function HomePage() {
                   lineHeight: 1.02,
                   marginTop: 0,
                   marginBottom: 14,
-                  textShadow: "0 4px 20px rgba(2,6,23,0.35)"
+                  textShadow: "0 8px 25px rgba(0,0,0,0.35)"
                 }}
               >
                 Cold Fusion Summer Hockey League
@@ -293,7 +343,7 @@ export default async function HomePage() {
               <p
                 style={{
                   fontSize: 18,
-                  color: "#cbd5e1",
+                  color: "#dbe7f3",
                   maxWidth: 700,
                   lineHeight: 1.7,
                   marginBottom: 24
@@ -309,11 +359,11 @@ export default async function HomePage() {
                   style={{
                     textDecoration: "none",
                     color: "#082f49",
-                    background: "#22d3ee",
+                    background: "linear-gradient(180deg, #67e8f9 0%, #22d3ee 100%)",
                     padding: "14px 18px",
                     borderRadius: 14,
                     fontWeight: 800,
-                    boxShadow: "0 0 18px rgba(34,211,238,0.22)"
+                    boxShadow: "0 0 22px rgba(34,211,238,0.24)"
                   }}
                 >
                   View Schedule
@@ -327,7 +377,8 @@ export default async function HomePage() {
                     border: "1px solid #1e3a5f",
                     padding: "14px 18px",
                     borderRadius: 14,
-                    fontWeight: 700
+                    fontWeight: 700,
+                    boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04)"
                   }}
                 >
                   Recent News
@@ -358,7 +409,7 @@ export default async function HomePage() {
                     key={game.id}
                     style={{
                       ...subCard,
-                      boxShadow: "inset 0 1px 0 rgba(255,255,255,0.02)"
+                      transition: "transform 0.2s ease"
                     }}
                   >
                     <div style={{ color: "#67e8f9", fontSize: 13, fontWeight: 700 }}>
@@ -383,7 +434,15 @@ export default async function HomePage() {
             {standings.length === 0 ? (
               <p style={{ color: "#cbd5e1" }}>No standings yet.</p>
             ) : (
-              <div style={{ overflowX: "auto" }}>
+              <div
+                style={{
+                  overflowX: "auto",
+                  background: "rgba(2,6,23,0.35)",
+                  borderRadius: 16,
+                  padding: 12,
+                  border: "1px solid rgba(30,41,59,0.9)"
+                }}
+              >
                 <table style={{ width: "100%", borderCollapse: "collapse" }}>
                   <thead>
                     <tr style={{ color: "#94a3b8", textAlign: "left" }}>
@@ -396,10 +455,26 @@ export default async function HomePage() {
                   <tbody>
                     {standings.map((row) => (
                       <tr key={row.team}>
-                        <td style={{ padding: "10px 0", fontWeight: 700 }}>{row.team}</td>
-                        <td>{row.gp}</td>
-                        <td>{row.w}</td>
-                        <td style={{ color: "#67e8f9", fontWeight: 800 }}>{row.pts}</td>
+                        <td
+                          style={{
+                            padding: "10px 0",
+                            fontWeight: 700,
+                            borderTop: "1px solid rgba(51,65,85,0.45)"
+                          }}
+                        >
+                          {row.team}
+                        </td>
+                        <td style={{ borderTop: "1px solid rgba(51,65,85,0.45)" }}>{row.gp}</td>
+                        <td style={{ borderTop: "1px solid rgba(51,65,85,0.45)" }}>{row.w}</td>
+                        <td
+                          style={{
+                            color: "#67e8f9",
+                            fontWeight: 800,
+                            borderTop: "1px solid rgba(51,65,85,0.45)"
+                          }}
+                        >
+                          {row.pts}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -448,7 +523,7 @@ export default async function HomePage() {
                   width: 110,
                   height: 110,
                   borderRadius: 18,
-                  background: "#0b1220",
+                  background: "linear-gradient(180deg, #0b1220 0%, #09101d 100%)",
                   border: "1px solid #1e293b",
                   display: "flex",
                   alignItems: "center",
@@ -456,7 +531,8 @@ export default async function HomePage() {
                   color: "#67e8f9",
                   fontWeight: 800,
                   textAlign: "center",
-                  fontSize: 14
+                  fontSize: 14,
+                  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.03)"
                 }}
               >
                 PLAYER
@@ -487,14 +563,15 @@ export default async function HomePage() {
                   width: "100%",
                   minHeight: 130,
                   borderRadius: 16,
-                  background: "#0b1220",
+                  background: "linear-gradient(180deg, #0b1220 0%, #09101d 100%)",
                   border: "1px solid #1e293b",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   color: "#67e8f9",
                   fontWeight: 800,
-                  marginBottom: 16
+                  marginBottom: 16,
+                  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.03)"
                 }}
               >
                 HOCKEY TRUCK IMAGE / LOGO
@@ -524,13 +601,7 @@ export default async function HomePage() {
               }}
             >
               {recentNews.map((post) => (
-                <div
-                  key={post.id}
-                  style={{
-                    ...subCard,
-                    boxShadow: "inset 0 1px 0 rgba(255,255,255,0.02)"
-                  }}
-                >
+                <div key={post.id} style={subCard}>
                   <div style={{ fontSize: 24, fontWeight: 800, lineHeight: 1.2 }}>
                     {post.title}
                   </div>
