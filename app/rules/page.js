@@ -40,6 +40,7 @@ export default function RulesPage() {
       items: [
         "Roster limit: 25 players per team",
         "Roster changes allowed until July 1st",
+        "*Changes to roster due to IR are an exception*",
         "Players must check in and present ID",
         "Players must sign a waiver before their first game",
         "Players must wear a jersey number matching the submitted roster",
