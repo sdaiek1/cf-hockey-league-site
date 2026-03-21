@@ -9,8 +9,7 @@ export default async function HomePage() {
 
   let upcomingGames = [];
   let standings = [];
-  let featuredNews = null;
-  let latestResults = [];
+  let recentNews = [];
 
   if (supabaseUrl && supabaseKey) {
     const supabase = createClient(supabaseUrl, supabaseKey);
@@ -53,9 +52,8 @@ export default async function HomePage() {
       .eq("is_published", true)
       .order("created_at", { ascending: false });
 
-    featuredNews = newsPosts[0] || null;
+    recentNews = newsPosts.slice(0, 3);
     upcomingGames = games.filter((game) => game.status !== "Final").slice(0, 3);
-    latestResults = games.filter((game) => game.status === "Final").reverse().slice(0, 3);
 
     const standingsMap = {};
     for (const team of teams) {
@@ -135,14 +133,6 @@ export default async function HomePage() {
       .slice(0, 4);
   }
 
-  function formatResultType(resultType) {
-    if (!resultType) return "";
-    if (resultType === "overtime") return "OT";
-    if (resultType === "shootout") return "SO";
-    if (resultType === "tie") return "Tie";
-    return "Regulation";
-  }
-
   const shell = {
     maxWidth: 1220,
     margin: "0 auto",
@@ -181,7 +171,7 @@ export default async function HomePage() {
       <section
         style={{
           ...card,
-          background: "linear-gradient(135deg, #0c4a6e 0%, #082f49 40%, #020617 100%)",
+          background: "linear-gradient(135deg, #0c4a6e 0%, #082f49 42%, #020617 100%)",
           border: "1px solid #164e63",
           padding: 30,
           marginBottom: 24
@@ -190,11 +180,51 @@ export default async function HomePage() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "1.2fr 0.8fr",
-            gap: 22,
-            alignItems: "stretch"
+            gridTemplateColumns: "0.8fr 1.2fr",
+            gap: 24,
+            alignItems: "center"
           }}
         >
+          <div
+            style={{
+              minHeight: 260,
+              borderRadius: 24,
+              background: "rgba(2,6,23,0.45)",
+              border: "1px solid #1e3a5f",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: 20,
+              textAlign: "center"
+            }}
+          >
+            <div>
+              <div
+                style={{
+                  width: 150,
+                  height: 150,
+                  borderRadius: 999,
+                  margin: "0 auto 16px auto",
+                  border: "2px solid #164e63",
+                  background: "rgba(15,23,42,0.72)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 18,
+                  fontWeight: 800,
+                  color: "#7dd3fc"
+                }}
+              >
+                LEAGUE
+                <br />
+                LOGO
+              </div>
+              <div style={{ color: "#94a3b8", fontSize: 14 }}>
+                Replace this with your actual logo next
+              </div>
+            </div>
+          </div>
+
           <div>
             <div
               style={{
@@ -209,7 +239,7 @@ export default async function HomePage() {
                 marginBottom: 14
               }}
             >
-              Adult Summer Hockey • West Orange, NJ
+              Codey Arena • West Orange, NJ
             </div>
 
             <h1
@@ -227,13 +257,13 @@ export default async function HomePage() {
               style={{
                 fontSize: 18,
                 color: "#cbd5e1",
-                maxWidth: 720,
+                maxWidth: 700,
                 lineHeight: 1.7,
                 marginBottom: 24
               }}
             >
-              Follow the season with live schedules, recent results, standings,
-              team rosters, player stats, and AI-generated game recap stories.
+              Competitive adult summer hockey with league news, upcoming games,
+              standings, stats, team rosters, and featured stories all in one place.
             </p>
 
             <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
@@ -251,20 +281,6 @@ export default async function HomePage() {
                 View Schedule
               </a>
               <a
-                href="/standings"
-                style={{
-                  textDecoration: "none",
-                  color: "white",
-                  background: "rgba(15,23,42,0.72)",
-                  border: "1px solid #1e3a5f",
-                  padding: "14px 18px",
-                  borderRadius: 14,
-                  fontWeight: 700
-                }}
-              >
-                See Standings
-              </a>
-              <a
                 href="/news"
                 style={{
                   textDecoration: "none",
@@ -276,92 +292,11 @@ export default async function HomePage() {
                   fontWeight: 700
                 }}
               >
-                Read News
+                Recent News
               </a>
             </div>
           </div>
-
-          <div
-            style={{
-              background: "rgba(2,6,23,0.55)",
-              border: "1px solid #1e3a5f",
-              borderRadius: 20,
-              padding: 20,
-              display: "grid",
-              gap: 12
-            }}
-          >
-            {[
-              ["Teams", "6"],
-              ["Regular Season Games", "14"],
-              ["Playoff Teams", "4"],
-              ["Team Entry", "$6,000"]
-            ].map(([label, value]) => (
-              <div
-                key={label}
-                style={{
-                  padding: 14,
-                  borderRadius: 14,
-                  background: "rgba(15,23,42,0.78)",
-                  border: "1px solid #1e293b"
-                }}
-              >
-                <div
-                  style={{
-                    color: "#94a3b8",
-                    fontSize: 12,
-                    textTransform: "uppercase",
-                    letterSpacing: 0.5
-                  }}
-                >
-                  {label}
-                </div>
-                <div style={{ color: "#67e8f9", fontSize: 30, fontWeight: 800 }}>
-                  {value}
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
-      </section>
-
-      <section
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr 1fr",
-          gap: 18,
-          marginBottom: 24
-        }}
-      >
-        <a href="/schedule" style={{ ...card, textDecoration: "none", color: "white" }}>
-          <div style={{ color: "#67e8f9", fontSize: 13, fontWeight: 800, marginBottom: 10 }}>
-            QUICK LINK
-          </div>
-          <div style={{ fontSize: 24, fontWeight: 800 }}>Schedule</div>
-          <p style={{ color: "#94a3b8", lineHeight: 1.6 }}>
-            See upcoming games, dates, times, and rink information.
-          </p>
-        </a>
-
-        <a href="/results" style={{ ...card, textDecoration: "none", color: "white" }}>
-          <div style={{ color: "#67e8f9", fontSize: 13, fontWeight: 800, marginBottom: 10 }}>
-            QUICK LINK
-          </div>
-          <div style={{ fontSize: 24, fontWeight: 800 }}>Results</div>
-          <p style={{ color: "#94a3b8", lineHeight: 1.6 }}>
-            Review final scores and completed game outcomes.
-          </p>
-        </a>
-
-        <a href="/stats" style={{ ...card, textDecoration: "none", color: "white" }}>
-          <div style={{ color: "#67e8f9", fontSize: 13, fontWeight: 800, marginBottom: 10 }}>
-            QUICK LINK
-          </div>
-          <div style={{ fontSize: 24, fontWeight: 800 }}>Player Stats</div>
-          <p style={{ color: "#94a3b8", lineHeight: 1.6 }}>
-            Follow goals, assists, points, and penalty minutes.
-          </p>
-        </a>
       </section>
 
       <section
@@ -373,43 +308,26 @@ export default async function HomePage() {
         }}
       >
         <div style={card}>
-          <h2 style={sectionTitle}>Featured News</h2>
-          <p style={sectionText}>
-            Game stories, league announcements, and recap coverage.
-          </p>
+          <h2 style={sectionTitle}>Upcoming Games</h2>
+          <p style={sectionText}>The next games on the league calendar.</p>
 
-          {!featuredNews ? (
-            <p style={{ color: "#cbd5e1" }}>No news posted yet.</p>
+          {upcomingGames.length === 0 ? (
+            <p style={{ color: "#cbd5e1" }}>No upcoming games posted yet.</p>
           ) : (
-            <div style={subCard}>
-              <div style={{ fontSize: 30, fontWeight: 800, lineHeight: 1.15 }}>
-                {featuredNews.title}
-              </div>
-              <div style={{ color: "#67e8f9", marginTop: 8 }}>
-                {new Date(featuredNews.created_at).toLocaleDateString()}
-              </div>
-              <div
-                style={{
-                  color: "#e2e8f0",
-                  marginTop: 14,
-                  lineHeight: 1.7,
-                  whiteSpace: "pre-wrap"
-                }}
-              >
-                {featuredNews.summary}
-              </div>
-              <a
-                href="/news"
-                style={{
-                  display: "inline-block",
-                  marginTop: 16,
-                  color: "#67e8f9",
-                  textDecoration: "none",
-                  fontWeight: 800
-                }}
-              >
-                View all news →
-              </a>
+            <div style={{ display: "grid", gap: 12 }}>
+              {upcomingGames.map((game) => (
+                <div key={game.id} style={subCard}>
+                  <div style={{ color: "#67e8f9", fontSize: 13, fontWeight: 700 }}>
+                    {game.game_date}
+                  </div>
+                  <div style={{ fontSize: 24, fontWeight: 800, marginTop: 6 }}>
+                    {game.home_team?.name} vs {game.away_team?.name}
+                  </div>
+                  <div style={{ color: "#cbd5e1", marginTop: 8 }}>
+                    {game.game_time || "TBD"} • {game.rink || "Codey Arena"} • {game.status}
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </div>
@@ -469,80 +387,136 @@ export default async function HomePage() {
         }}
       >
         <div style={card}>
-          <h2 style={sectionTitle}>Next Games</h2>
-          <p style={sectionText}>What’s coming up on the schedule.</p>
+          <h2 style={sectionTitle}>Player of the Week</h2>
+          <p style={sectionText}>Featured league spotlight.</p>
 
-          {upcomingGames.length === 0 ? (
-            <p style={{ color: "#cbd5e1" }}>No upcoming games posted yet.</p>
-          ) : (
-            <div style={{ display: "grid", gap: 12 }}>
-              {upcomingGames.map((game) => (
-                <div key={game.id} style={subCard}>
-                  <div style={{ color: "#67e8f9", fontSize: 13, fontWeight: 700 }}>
-                    {game.game_date}
-                  </div>
-                  <div style={{ fontSize: 24, fontWeight: 800, marginTop: 6 }}>
-                    {game.home_team?.name} vs {game.away_team?.name}
-                  </div>
-                  <div style={{ color: "#cbd5e1", marginTop: 8 }}>
-                    {game.game_time || "TBD"} • {game.rink || "Codey Arena"} • {game.status}
-                  </div>
-                </div>
-              ))}
+          <div
+            style={{
+              ...subCard,
+              display: "grid",
+              gridTemplateColumns: "110px 1fr",
+              gap: 16,
+              alignItems: "center"
+            }}
+          >
+            <div
+              style={{
+                width: 110,
+                height: 110,
+                borderRadius: 18,
+                background: "#0b1220",
+                border: "1px solid #1e293b",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#67e8f9",
+                fontWeight: 800,
+                textAlign: "center",
+                fontSize: 14
+              }}
+            >
+              PLAYER
+              <br />
+              PHOTO
             </div>
-          )}
+
+            <div>
+              <div style={{ fontSize: 28, fontWeight: 800 }}>Player Name Here</div>
+              <div style={{ color: "#67e8f9", marginTop: 6, fontWeight: 700 }}>
+                Team Name • Position
+              </div>
+              <p style={{ color: "#e2e8f0", lineHeight: 1.7, marginBottom: 0 }}>
+                Add a weekly featured player here with a short writeup about a big
+                performance, great sportsmanship, or standout week.
+              </p>
+            </div>
+          </div>
         </div>
 
         <div style={card}>
-          <h2 style={sectionTitle}>Latest Results</h2>
-          <p style={sectionText}>Most recent final scores.</p>
+          <h2 style={sectionTitle}>The Hockey Truck</h2>
+          <p style={sectionText}>League partner / featured spotlight block.</p>
 
-          {latestResults.length === 0 ? (
-            <p style={{ color: "#cbd5e1" }}>No final results yet.</p>
-          ) : (
-            <div style={{ display: "grid", gap: 12 }}>
-              {latestResults.map((game) => (
-                <div key={game.id} style={subCard}>
-                  <div style={{ color: "#67e8f9", fontSize: 13, fontWeight: 700 }}>
-                    {game.game_date}
-                  </div>
-                  <div style={{ fontSize: 24, fontWeight: 800, marginTop: 6 }}>
-                    {game.home_team?.name} {game.home_score} - {game.away_score} {game.away_team?.name}
-                  </div>
-                  <div style={{ color: "#cbd5e1", marginTop: 8 }}>
-                    {formatResultType(game.result_type)}
-                  </div>
-                </div>
-              ))}
+          <div style={subCard}>
+            <div
+              style={{
+                width: "100%",
+                minHeight: 130,
+                borderRadius: 16,
+                background: "#0b1220",
+                border: "1px solid #1e293b",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#67e8f9",
+                fontWeight: 800,
+                marginBottom: 16
+              }}
+            >
+              HOCKEY TRUCK IMAGE / LOGO
             </div>
-          )}
+
+            <div style={{ fontSize: 26, fontWeight: 800 }}>The Hockey Truck</div>
+            <p style={{ color: "#e2e8f0", lineHeight: 1.7, marginBottom: 0 }}>
+              Use this space for your featured sponsor, partner, or league promotion.
+              You can swap this text out later for real info, a logo, and a link.
+            </p>
+          </div>
         </div>
       </section>
 
       <section style={{ ...card, marginBottom: 24 }}>
-        <h2 style={sectionTitle}>League Information</h2>
-        <p style={sectionText}>
-          Quick season details and league structure.
-        </p>
+        <h2 style={sectionTitle}>Recent News</h2>
+        <p style={sectionText}>Latest game summaries and league stories.</p>
 
-        <div
+        {recentNews.length === 0 ? (
+          <p style={{ color: "#cbd5e1" }}>No news posted yet.</p>
+        ) : (
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+              gap: 16
+            }}
+          >
+            {recentNews.map((post) => (
+              <div key={post.id} style={subCard}>
+                <div style={{ fontSize: 24, fontWeight: 800, lineHeight: 1.2 }}>
+                  {post.title}
+                </div>
+                <div style={{ color: "#67e8f9", marginTop: 8 }}>
+                  {new Date(post.created_at).toLocaleDateString()}
+                </div>
+                <div
+                  style={{
+                    color: "#e2e8f0",
+                    marginTop: 12,
+                    lineHeight: 1.7,
+                    display: "-webkit-box",
+                    WebkitLineClamp: 5,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden"
+                  }}
+                >
+                  {post.summary}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <a
+          href="/news"
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-            gap: 14
+            display: "inline-block",
+            marginTop: 18,
+            color: "#67e8f9",
+            textDecoration: "none",
+            fontWeight: 800
           }}
         >
-          {[
-            "Season runs from the first week of June through the end of August.",
-            "6 teams • 14-game regular season • Top 4 qualify for playoffs.",
-            "Warm-up and game pucks are provided by the league.",
-            "Championship team wins a $400 Verona Inn gift card and trophy."
-          ].map((item) => (
-            <div key={item} style={subCard}>
-              {item}
-            </div>
-          ))}
-        </div>
+          View all news →
+        </a>
       </section>
 
       <footer
