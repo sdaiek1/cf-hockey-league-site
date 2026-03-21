@@ -48,20 +48,38 @@ export default function RootLayout({ children }) {
               flexWrap: "wrap"
             }}
           >
-            <div>
-              <a
-                href="/"
-                style={{
-                  color: "white",
-                  textDecoration: "none",
-                  fontSize: 24,
-                  fontWeight: 800
-                }}
-              >
-                Cold Fusion Summer Hockey League
+            <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+              <a href="/" style={{ display: "inline-flex", alignItems: "center" }}>
+                <img
+                  src="/logo.png"
+                  alt="Cold Fusion Summer Hockey League logo"
+                  style={{
+                    width: 64,
+                    height: 64,
+                    objectFit: "contain",
+                    borderRadius: 12,
+                    background: "#0b1220",
+                    border: "1px solid #1e293b",
+                    padding: 6
+                  }}
+                />
               </a>
-              <div style={{ color: "#94a3b8", fontSize: 14, marginTop: 4 }}>
-                Codey Arena • West Orange, NJ
+
+              <div>
+                <a
+                  href="/"
+                  style={{
+                    color: "white",
+                    textDecoration: "none",
+                    fontSize: 24,
+                    fontWeight: 800
+                  }}
+                >
+                  Cold Fusion Summer Hockey League
+                </a>
+                <div style={{ color: "#94a3b8", fontSize: 14, marginTop: 4 }}>
+                  Codey Arena • West Orange, NJ
+                </div>
               </div>
             </div>
 
