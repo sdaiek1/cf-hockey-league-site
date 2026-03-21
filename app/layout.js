@@ -26,10 +26,10 @@ export default function RootLayout({ children }) {
           minHeight: "100vh",
           backgroundColor: "#020617",
           backgroundImage: `
-            radial-gradient(circle at top left, rgba(34,211,238,0.14) 0%, rgba(2,6,23,0) 28%),
-            radial-gradient(circle at top right, rgba(59,130,246,0.10) 0%, rgba(2,6,23,0) 30%),
-            radial-gradient(circle at center, rgba(14,116,144,0.08) 0%, rgba(2,6,23,0) 45%),
-            linear-gradient(180deg, #031525 0%, #020617 55%, #01040d 100%)
+            radial-gradient(circle at 15% 10%, rgba(34,211,238,0.35) 0%, rgba(34,211,238,0.10) 18%, rgba(2,6,23,0) 38%),
+            radial-gradient(circle at 85% 12%, rgba(59,130,246,0.28) 0%, rgba(59,130,246,0.08) 20%, rgba(2,6,23,0) 40%),
+            radial-gradient(circle at 50% 35%, rgba(6,182,212,0.12) 0%, rgba(2,6,23,0) 42%),
+            linear-gradient(180deg, #0a2a43 0%, #041423 38%, #020617 100%)
           `,
           backgroundAttachment: "fixed"
         }}
@@ -41,12 +41,23 @@ export default function RootLayout({ children }) {
             pointerEvents: "none",
             opacity: 0.22,
             backgroundImage: `
-              linear-gradient(rgba(125,211,252,0.06) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(125,211,252,0.06) 1px, transparent 1px)
+              linear-gradient(rgba(125,211,252,0.08) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(125,211,252,0.08) 1px, transparent 1px)
             `,
-            backgroundSize: "48px 48px",
-            maskImage: "linear-gradient(to bottom, rgba(0,0,0,0.5), transparent 85%)",
-            WebkitMaskImage: "linear-gradient(to bottom, rgba(0,0,0,0.5), transparent 85%)"
+            backgroundSize: "44px 44px",
+            zIndex: 0
+          }}
+        />
+
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 4,
+            background: "linear-gradient(90deg, #22d3ee, #60a5fa, #22d3ee)",
+            zIndex: 60
           }}
         />
 
@@ -55,8 +66,8 @@ export default function RootLayout({ children }) {
             position: "sticky",
             top: 0,
             zIndex: 50,
-            background: "rgba(15, 23, 42, 0.84)",
-            borderBottom: "1px solid rgba(30, 41, 59, 0.9)",
+            background: "rgba(15, 23, 42, 0.88)",
+            borderBottom: "1px solid #1e293b",
             backdropFilter: "blur(14px)"
           }}
         >
@@ -122,13 +133,12 @@ export default function RootLayout({ children }) {
                   style={{
                     textDecoration: "none",
                     color: "#e2e8f0",
-                    background: "rgba(17, 24, 39, 0.75)",
+                    background: "rgba(17, 24, 39, 0.82)",
                     border: "1px solid #1f2937",
                     padding: "10px 14px",
                     borderRadius: 999,
                     fontSize: 14,
-                    fontWeight: 700,
-                    boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.02)"
+                    fontWeight: 700
                   }}
                 >
                   {link.label}
@@ -144,7 +154,7 @@ export default function RootLayout({ children }) {
                   borderRadius: 999,
                   fontSize: 14,
                   fontWeight: 800,
-                  boxShadow: "0 0 16px rgba(34,211,238,0.24)"
+                  boxShadow: "0 0 16px rgba(34,211,238,0.28)"
                 }}
               >
                 Admin
