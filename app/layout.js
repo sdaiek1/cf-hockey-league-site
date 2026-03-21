@@ -1,172 +1,136 @@
-export const metadata = {
-  title: "Cold Fusion Summer Hockey League",
-  description: "Adult ice hockey league website"
-};
+<section
+  style={{
+    ...card,
+    position: "relative",
+    overflow: "hidden",
+    background: "linear-gradient(135deg, #0b3a5a 0%, #07233a 38%, #020617 100%)",
+    border: "1px solid #164e63",
+    padding: 30,
+    marginBottom: 24,
+    boxShadow: "0 0 40px rgba(34,211,238,0.08)"
+  }}
+>
+  <div
+    style={{
+      position: "absolute",
+      inset: 0,
+      background: `
+        radial-gradient(circle at 18% 45%, rgba(34,211,238,0.28) 0%, rgba(34,211,238,0.10) 18%, rgba(2,6,23,0) 38%),
+        radial-gradient(circle at 78% 18%, rgba(59,130,246,0.18) 0%, rgba(2,6,23,0) 30%),
+        linear-gradient(120deg, rgba(125,211,252,0.08) 0%, rgba(125,211,252,0) 35%)
+      `,
+      pointerEvents: "none"
+    }}
+  />
 
-const navLinks = [
-  { href: "/", label: "Home" },
-  { href: "/schedule", label: "Schedule" },
-  { href: "/news", label: "News" },
-  { href: "/results", label: "Results" },
-  { href: "/standings", label: "Standings" },
-  { href: "/rosters", label: "Rosters" },
-  { href: "/stats", label: "Stats" },
-  { href: "/rules", label: "Rules" },
-  { href: "/contact", label: "Contact" }
-];
-
-export default function RootLayout({ children }) {
-  return (
-    <html lang="en">
-      <body
+  <div
+    style={{
+      position: "relative",
+      zIndex: 1,
+      display: "grid",
+      gridTemplateColumns: "0.8fr 1.2fr",
+      gap: 24,
+      alignItems: "center"
+    }}
+  >
+    <div
+      style={{
+        minHeight: 260,
+        borderRadius: 24,
+        background:
+          "radial-gradient(circle at center, rgba(34,211,238,0.18) 0%, rgba(2,6,23,0.35) 45%, rgba(2,6,23,0.85) 100%)",
+        border: "1px solid #1e3a5f",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 24,
+        boxShadow:
+          "inset 0 0 60px rgba(34,211,238,0.10), 0 0 30px rgba(34,211,238,0.08)"
+      }}
+    >
+      <img
+        src="/logo.png"
+        alt="Cold Fusion Summer Hockey League logo"
         style={{
-          margin: 0,
-          fontFamily: "Arial, sans-serif",
-          color: "white",
-          minHeight: "100vh",
-          backgroundColor: "#020617",
-          backgroundImage: `
-            radial-gradient(circle at 15% 10%, rgba(34,211,238,0.35) 0%, rgba(34,211,238,0.10) 18%, rgba(2,6,23,0) 38%),
-            radial-gradient(circle at 85% 12%, rgba(59,130,246,0.28) 0%, rgba(59,130,246,0.08) 20%, rgba(2,6,23,0) 40%),
-            radial-gradient(circle at 50% 35%, rgba(6,182,212,0.12) 0%, rgba(2,6,23,0) 42%),
-            linear-gradient(180deg, #0a2a43 0%, #041423 38%, #020617 100%)
-          `,
-          backgroundAttachment: "fixed"
+          maxWidth: "100%",
+          maxHeight: 240,
+          objectFit: "contain",
+          filter: "drop-shadow(0 0 22px rgba(34,211,238,0.22))"
+        }}
+      />
+    </div>
+
+    <div>
+      <div
+        style={{
+          display: "inline-block",
+          padding: "7px 12px",
+          borderRadius: 999,
+          background: "rgba(15,23,42,0.72)",
+          color: "#7dd3fc",
+          border: "1px solid #164e63",
+          fontSize: 13,
+          fontWeight: 800,
+          marginBottom: 14
         }}
       >
-        <div
-          style={{
-            position: "fixed",
-            inset: 0,
-            pointerEvents: "none",
-            opacity: 0.22,
-            backgroundImage: `
-              linear-gradient(rgba(125,211,252,0.08) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(125,211,252,0.08) 1px, transparent 1px)
-            `,
-            backgroundSize: "44px 44px",
-            zIndex: 0
-          }}
-        />
+        Codey Arena • West Orange, NJ
+      </div>
 
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            height: 4,
-            background: "linear-gradient(90deg, #22d3ee, #60a5fa, #22d3ee)",
-            zIndex: 60
-          }}
-        />
+      <h1
+        style={{
+          fontSize: 56,
+          lineHeight: 1.02,
+          marginTop: 0,
+          marginBottom: 14
+        }}
+      >
+        Cold Fusion Summer Hockey League
+      </h1>
 
-        <header
+      <p
+        style={{
+          fontSize: 18,
+          color: "#cbd5e1",
+          maxWidth: 700,
+          lineHeight: 1.7,
+          marginBottom: 24
+        }}
+      >
+        Competitive adult summer hockey with league news, upcoming games,
+        standings, stats, team rosters, and featured stories all in one place.
+      </p>
+
+      <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+        <a
+          href="/schedule"
           style={{
-            position: "sticky",
-            top: 0,
-            zIndex: 50,
-            background: "rgba(15, 23, 42, 0.88)",
-            borderBottom: "1px solid #1e293b",
-            backdropFilter: "blur(14px)"
+            textDecoration: "none",
+            color: "#082f49",
+            background: "#22d3ee",
+            padding: "14px 18px",
+            borderRadius: 14,
+            fontWeight: 800,
+            boxShadow: "0 0 18px rgba(34,211,238,0.22)"
           }}
         >
-          <div
-            style={{
-              maxWidth: 1220,
-              margin: "0 auto",
-              padding: "16px 20px",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              gap: 16,
-              flexWrap: "wrap"
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-              <a href="/" style={{ display: "inline-flex", alignItems: "center" }}>
-                <img
-                  src="/logo1.png"
-                  alt="Cold Fusion Summer Hockey League logo"
-                  style={{
-                    width: 64,
-                    height: 64,
-                    objectFit: "contain",
-                    borderRadius: 12,
-                    background: "#0b1220",
-                    border: "1px solid #1e293b",
-                    padding: 6,
-                    boxShadow: "0 0 18px rgba(34,211,238,0.16)"
-                  }}
-                />
-              </a>
-
-              <div>
-                <a
-                  href="/"
-                  style={{
-                    color: "white",
-                    textDecoration: "none",
-                    fontSize: 24,
-                    fontWeight: 800
-                  }}
-                >
-                  Cold Fusion Summer Hockey League
-                </a>
-                <div style={{ color: "#94a3b8", fontSize: 14, marginTop: 4 }}>
-                  Codey Arena • West Orange, NJ
-                </div>
-              </div>
-            </div>
-
-            <nav
-              style={{
-                display: "flex",
-                gap: 10,
-                flexWrap: "wrap"
-              }}
-            >
-              {navLinks.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  style={{
-                    textDecoration: "none",
-                    color: "#e2e8f0",
-                    background: "rgba(17, 24, 39, 0.82)",
-                    border: "1px solid #1f2937",
-                    padding: "10px 14px",
-                    borderRadius: 999,
-                    fontSize: 14,
-                    fontWeight: 700
-                  }}
-                >
-                  {link.label}
-                </a>
-              ))}
-              <a
-                href="/admin"
-                style={{
-                  textDecoration: "none",
-                  color: "#082f49",
-                  background: "#22d3ee",
-                  padding: "10px 14px",
-                  borderRadius: 999,
-                  fontSize: 14,
-                  fontWeight: 800,
-                  boxShadow: "0 0 16px rgba(34,211,238,0.28)"
-                }}
-              >
-                Admin
-              </a>
-            </nav>
-          </div>
-        </header>
-
-        <div style={{ position: "relative", zIndex: 1 }}>
-          {children}
-        </div>
-      </body>
-    </html>
-  );
-}
+          View Schedule
+        </a>
+        <a
+          href="/news"
+          style={{
+            textDecoration: "none",
+            color: "white",
+            background: "rgba(15,23,42,0.72)",
+            border: "1px solid #1e3a5f",
+            padding: "14px 18px",
+            borderRadius: 14,
+            fontWeight: 700
+          }}
+        >
+          Recent News
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
