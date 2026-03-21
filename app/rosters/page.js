@@ -19,6 +19,7 @@ export default async function RostersPage() {
         id,
         player_name,
         jersey_number,
+        position,
         team:team_id(name)
       `)
       .order("team_id", { ascending: true })
@@ -61,7 +62,7 @@ export default async function RostersPage() {
       <section style={card}>
         <h1 style={{ fontSize: 40, marginTop: 0, marginBottom: 10 }}>Rosters</h1>
         <p style={{ color: "#94a3b8", marginTop: 0, marginBottom: 24 }}>
-          Team rosters and jersey numbers.
+          Team rosters with jersey numbers and positions.
         </p>
 
         {playersError ? (
@@ -72,27 +73,37 @@ export default async function RostersPage() {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+              gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
               gap: 16
             }}
           >
             {teamNames.map((teamName) => (
               <div key={teamName} style={subCard}>
                 <h2 style={{ marginTop: 0, fontSize: 24 }}>{teamName}</h2>
-                <div style={{ display: "grid", gap: 8, marginTop: 14 }}>
-                  {rostersByTeam[teamName].map((player) => (
-                    <div
-                      key={player.id}
-                      style={{
-                        padding: 10,
-                        borderRadius: 12,
-                        background: "#0b1220",
-                        color: "#e2e8f0"
-                      }}
-                    >
-                      {player.player_name} #{player.jersey_number}
-                    </div>
-                  ))}
+
+                <div style={{ overflowX: "auto", marginTop: 14 }}>
+                  <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                    <thead>
+                      <tr style={{ color: "#94a3b8", textAlign: "left" }}>
+                        <th style={{ paddingBottom: 10 }}>#</th>
+                        <th style={{ paddingBottom: 10 }}>Name</th>
+                        <th style={{ paddingBottom: 10 }}>Position</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {rostersByTeam[teamName].map((player) => (
+                        <tr key={player.id}>
+                          <td style={{ padding: "10px 0", fontWeight: 700, color: "#67e8f9" }}>
+                            {player.jersey_number}
+                          </td>
+                          <td style={{ padding: "10px 0" }}>{player.player_name}</td>
+                          <td style={{ padding: "10px 0", color: "#cbd5e1" }}>
+                            {player.position || "-"}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
             ))}
