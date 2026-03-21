@@ -165,14 +165,32 @@ export default async function HomePage() {
       <section
         style={{
           ...card,
-          background: "linear-gradient(135deg, #0c4a6e 0%, #082f49 42%, #020617 100%)",
+          position: "relative",
+          overflow: "hidden",
+          background: "linear-gradient(135deg, #0b3a5a 0%, #07233a 38%, #020617 100%)",
           border: "1px solid #164e63",
           padding: 30,
-          marginBottom: 24
+          marginBottom: 24,
+          boxShadow: "0 0 40px rgba(34,211,238,0.08)"
         }}
       >
         <div
           style={{
+            position: "absolute",
+            inset: 0,
+            background: `
+              radial-gradient(circle at 18% 45%, rgba(34,211,238,0.28) 0%, rgba(34,211,238,0.10) 18%, rgba(2,6,23,0) 38%),
+              radial-gradient(circle at 78% 18%, rgba(59,130,246,0.18) 0%, rgba(2,6,23,0) 30%),
+              linear-gradient(120deg, rgba(125,211,252,0.08) 0%, rgba(125,211,252,0) 35%)
+            `,
+            pointerEvents: "none"
+          }}
+        />
+
+        <div
+          style={{
+            position: "relative",
+            zIndex: 1,
             display: "grid",
             gridTemplateColumns: "0.8fr 1.2fr",
             gap: 24,
@@ -184,23 +202,24 @@ export default async function HomePage() {
               minHeight: 260,
               borderRadius: 24,
               background:
-                "radial-gradient(circle at center, rgba(34,211,238,0.14) 0%, rgba(2,6,23,0.35) 45%, rgba(2,6,23,0.75) 100%)",
+                "radial-gradient(circle at center, rgba(34,211,238,0.18) 0%, rgba(2,6,23,0.35) 45%, rgba(2,6,23,0.85) 100%)",
               border: "1px solid #1e3a5f",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               padding: 24,
-              boxShadow: "inset 0 0 40px rgba(34,211,238,0.08)"
+              boxShadow:
+                "inset 0 0 60px rgba(34,211,238,0.10), 0 0 30px rgba(34,211,238,0.08)"
             }}
           >
             <img
-              src="/logo.png"
+              src="/logo1.png"
               alt="Cold Fusion Summer Hockey League logo"
               style={{
                 maxWidth: "100%",
                 maxHeight: 240,
                 objectFit: "contain",
-                filter: "drop-shadow(0 0 18px rgba(34,211,238,0.18))"
+                filter: "drop-shadow(0 0 22px rgba(34,211,238,0.22))"
               }}
             />
           </div>
@@ -255,7 +274,8 @@ export default async function HomePage() {
                   background: "#22d3ee",
                   padding: "14px 18px",
                   borderRadius: 14,
-                  fontWeight: 800
+                  fontWeight: 800,
+                  boxShadow: "0 0 18px rgba(34,211,238,0.22)"
                 }}
               >
                 View Schedule
