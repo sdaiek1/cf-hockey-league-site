@@ -300,7 +300,7 @@ export default async function HomePage() {
             >
               <img
                 src="/logo.png"
-                alt="Cold Fusion Summer Hockey League logo"
+                alt="This Should Change"
                 style={{
                   maxWidth: "100%",
                   maxHeight: 245,
