@@ -7,9 +7,10 @@ export default async function HomePage() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  let upcomingGames = [];
-  let standings = [];
-  let recentNews = [];
+let upcomingGames = [];
+let standings = [];
+let recentNews = [];
+let playerOfWeek = null;
 
   if (supabaseUrl && supabaseKey) {
     const supabase = createClient(supabaseUrl, supabaseKey);
