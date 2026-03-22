@@ -369,7 +369,7 @@ export default async function HomePage() {
                     boxShadow: "0 0 16px rgba(34,211,238,0.18)",
                   }}
                 >
-                  Electronic Waiver
+                  *Electronic Waiver*
                 </a>
 
                 <a
