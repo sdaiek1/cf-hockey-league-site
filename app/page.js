@@ -154,16 +154,16 @@ export default async function HomePage() {
   };
 
   const card = {
-    background: "linear-gradient(180deg, rgba(7,16,34,0.78) 0%, rgba(4,10,24,0.86) 100%)",
+    background: "linear-gradient(180deg, rgba(7,16,34,0.62) 0%, rgba(4,10,24,0.74) 100%)",
     border: "1px solid rgba(34, 211, 238, 0.14)",
     borderRadius: 24,
     padding: 22,
-    boxShadow: "0 18px 45px rgba(0, 0, 0, 0.30)",
-    backdropFilter: "blur(10px)",
+    boxShadow: "0 18px 45px rgba(0, 0, 0, 0.28)",
+    backdropFilter: "blur(8px)",
   };
 
   const subCard = {
-    background: "linear-gradient(180deg, rgba(6,14,30,0.90) 0%, rgba(3,8,20,0.96) 100%)",
+    background: "linear-gradient(180deg, rgba(6,14,30,0.82) 0%, rgba(3,8,20,0.90) 100%)",
     border: "1px solid rgba(34, 211, 238, 0.10)",
     borderRadius: 18,
     padding: 16,
@@ -191,7 +191,7 @@ export default async function HomePage() {
         position: "relative",
         overflow: "hidden",
         backgroundImage: `
-          linear-gradient(rgba(2,6,23,0.74), rgba(2,6,23,0.86)),
+          linear-gradient(rgba(2,6,23,0.48), rgba(2,6,23,0.64)),
           url("/cold-fusion-rink-bg.png")
         `,
         backgroundSize: "cover",
@@ -206,9 +206,9 @@ export default async function HomePage() {
           inset: 0,
           pointerEvents: "none",
           background: `
-            radial-gradient(circle at top left, rgba(56,189,248,0.14) 0%, rgba(56,189,248,0) 24%),
-            radial-gradient(circle at top right, rgba(37,99,235,0.14) 0%, rgba(37,99,235,0) 22%),
-            radial-gradient(circle at 50% 0%, rgba(14,165,233,0.08) 0%, rgba(14,165,233,0) 28%)
+            radial-gradient(circle at top left, rgba(56,189,248,0.10) 0%, rgba(56,189,248,0) 24%),
+            radial-gradient(circle at top right, rgba(37,99,235,0.10) 0%, rgba(37,99,235,0) 22%),
+            radial-gradient(circle at 50% 0%, rgba(14,165,233,0.05) 0%, rgba(14,165,233,0) 28%)
           `,
         }}
       />
@@ -218,7 +218,7 @@ export default async function HomePage() {
           position: "absolute",
           inset: 0,
           pointerEvents: "none",
-          opacity: 0.04,
+          opacity: 0.025,
           backgroundImage: `
             linear-gradient(115deg, rgba(255,255,255,0.08) 0%, transparent 22%, transparent 75%, rgba(255,255,255,0.04) 100%),
             repeating-linear-gradient(
@@ -239,12 +239,12 @@ export default async function HomePage() {
             position: "relative",
             overflow: "hidden",
             background:
-              "linear-gradient(135deg, rgba(8,37,70,0.74) 0%, rgba(5,23,48,0.80) 42%, rgba(2,10,28,0.88) 100%)",
+              "linear-gradient(135deg, rgba(8,37,70,0.60) 0%, rgba(5,23,48,0.68) 42%, rgba(2,10,28,0.78) 100%)",
             border: "1px solid rgba(34,211,238,0.20)",
-            padding: 24,
+            padding: 20,
             marginBottom: 26,
             boxShadow:
-              "0 0 70px rgba(34,211,238,0.06), 0 24px 60px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.03)",
+              "0 0 60px rgba(34,211,238,0.05), 0 22px 50px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.03)",
           }}
         >
           <div
@@ -252,9 +252,9 @@ export default async function HomePage() {
               position: "absolute",
               inset: 0,
               background: `
-                radial-gradient(circle at 16% 50%, rgba(34,211,238,0.22) 0%, rgba(34,211,238,0.08) 18%, rgba(2,6,23,0) 38%),
-                radial-gradient(circle at 84% 14%, rgba(59,130,246,0.14) 0%, rgba(2,6,23,0) 28%),
-                linear-gradient(120deg, rgba(125,211,252,0.06) 0%, rgba(125,211,252,0) 35%)
+                radial-gradient(circle at 16% 50%, rgba(34,211,238,0.18) 0%, rgba(34,211,238,0.06) 18%, rgba(2,6,23,0) 38%),
+                radial-gradient(circle at 84% 14%, rgba(59,130,246,0.10) 0%, rgba(2,6,23,0) 28%),
+                linear-gradient(120deg, rgba(125,211,252,0.04) 0%, rgba(125,211,252,0) 35%)
               `,
               pointerEvents: "none",
             }}
@@ -265,24 +265,24 @@ export default async function HomePage() {
               position: "relative",
               zIndex: 1,
               display: "grid",
-              gridTemplateColumns: "0.85fr 1.15fr",
-              gap: 28,
+              gridTemplateColumns: "0.82fr 1.18fr",
+              gap: 24,
               alignItems: "center",
             }}
           >
             <div
               style={{
-                minHeight: 240,
-                borderRadius: 26,
+                minHeight: 215,
+                borderRadius: 24,
                 background:
-                  "radial-gradient(circle at center, rgba(34,211,238,0.18) 0%, rgba(3,15,33,0.35) 42%, rgba(2,6,23,0.94) 100%)",
-                border: "1px solid rgba(34,211,238,0.16)",
+                  "radial-gradient(circle at center, rgba(34,211,238,0.16) 0%, rgba(3,15,33,0.30) 42%, rgba(2,6,23,0.90) 100%)",
+                border: "1px solid rgba(34,211,238,0.14)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                padding: 22,
+                padding: 18,
                 boxShadow:
-                  "inset 0 0 80px rgba(34,211,238,0.10), 0 0 34px rgba(34,211,238,0.08)",
+                  "inset 0 0 70px rgba(34,211,238,0.08), 0 0 28px rgba(34,211,238,0.06)",
               }}
             >
               <img
@@ -290,9 +290,9 @@ export default async function HomePage() {
                 alt="Cold Fusion Summer Hockey League logo"
                 style={{
                   maxWidth: "100%",
-                  maxHeight: 210,
+                  maxHeight: 185,
                   objectFit: "contain",
-                  filter: "drop-shadow(0 0 28px rgba(34,211,238,0.22))",
+                  filter: "drop-shadow(0 0 24px rgba(34,211,238,0.20))",
                 }}
               />
             </div>
@@ -301,14 +301,14 @@ export default async function HomePage() {
               <div
                 style={{
                   display: "inline-block",
-                  padding: "8px 14px",
+                  padding: "7px 13px",
                   borderRadius: 999,
-                  background: "rgba(8,20,42,0.78)",
+                  background: "rgba(8,20,42,0.68)",
                   color: "#7dd3fc",
-                  border: "1px solid rgba(34,211,238,0.18)",
-                  fontSize: 14,
+                  border: "1px solid rgba(34,211,238,0.16)",
+                  fontSize: 13,
                   fontWeight: 800,
-                  marginBottom: 14,
+                  marginBottom: 12,
                 }}
               >
                 Codey Arena • West Orange, NJ
@@ -316,13 +316,13 @@ export default async function HomePage() {
 
               <h1
                 style={{
-                  fontSize: 58,
+                  fontSize: 54,
                   lineHeight: 1.0,
                   marginTop: 0,
-                  marginBottom: 16,
+                  marginBottom: 14,
                   color: "#f8fafc",
                   letterSpacing: "-0.04em",
-                  textShadow: "0 8px 28px rgba(0,0,0,0.34)",
+                  textShadow: "0 8px 28px rgba(0,0,0,0.30)",
                 }}
               >
                 Cold Fusion Summer Hockey League
@@ -330,11 +330,11 @@ export default async function HomePage() {
 
               <p
                 style={{
-                  fontSize: 18,
+                  fontSize: 17,
                   color: "#dbe7f3",
-                  maxWidth: 720,
-                  lineHeight: 1.7,
-                  marginBottom: 24,
+                  maxWidth: 700,
+                  lineHeight: 1.65,
+                  marginBottom: 22,
                 }}
               >
                 Competitive adult summer hockey with league news, upcoming games,
@@ -348,10 +348,10 @@ export default async function HomePage() {
                     textDecoration: "none",
                     color: "#082f49",
                     background: "linear-gradient(180deg, #67e8f9 0%, #22d3ee 100%)",
-                    padding: "15px 20px",
+                    padding: "14px 18px",
                     borderRadius: 14,
                     fontWeight: 800,
-                    boxShadow: "0 0 22px rgba(34,211,238,0.24)",
+                    boxShadow: "0 0 18px rgba(34,211,238,0.20)",
                   }}
                 >
                   View Schedule
@@ -361,9 +361,9 @@ export default async function HomePage() {
                   style={{
                     textDecoration: "none",
                     color: "#ffffff",
-                    background: "rgba(8,20,42,0.72)",
-                    border: "1px solid rgba(34,211,238,0.16)",
-                    padding: "15px 20px",
+                    background: "rgba(8,20,42,0.64)",
+                    border: "1px solid rgba(34,211,238,0.14)",
+                    padding: "14px 18px",
                     borderRadius: 14,
                     fontWeight: 700,
                   }}
@@ -418,10 +418,10 @@ export default async function HomePage() {
               <div
                 style={{
                   overflowX: "auto",
-                  background: "rgba(2,6,23,0.28)",
+                  background: "rgba(2,6,23,0.22)",
                   borderRadius: 16,
                   padding: 12,
-                  border: "1px solid rgba(34,211,238,0.12)",
+                  border: "1px solid rgba(34,211,238,0.10)",
                 }}
               >
                 <table style={{ width: "100%", borderCollapse: "collapse" }}>
@@ -440,18 +440,18 @@ export default async function HomePage() {
                           style={{
                             padding: "10px 0",
                             fontWeight: 700,
-                            borderTop: "1px solid rgba(51,65,85,0.35)",
+                            borderTop: "1px solid rgba(51,65,85,0.30)",
                           }}
                         >
                           {row.team}
                         </td>
-                        <td style={{ borderTop: "1px solid rgba(51,65,85,0.35)" }}>{row.gp}</td>
-                        <td style={{ borderTop: "1px solid rgba(51,65,85,0.35)" }}>{row.w}</td>
+                        <td style={{ borderTop: "1px solid rgba(51,65,85,0.30)" }}>{row.gp}</td>
+                        <td style={{ borderTop: "1px solid rgba(51,65,85,0.30)" }}>{row.w}</td>
                         <td
                           style={{
                             color: "#67e8f9",
                             fontWeight: 800,
-                            borderTop: "1px solid rgba(51,65,85,0.35)",
+                            borderTop: "1px solid rgba(51,65,85,0.30)",
                           }}
                         >
                           {row.pts}
