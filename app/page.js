@@ -185,19 +185,13 @@ export default async function HomePage() {
   };
 
   return (
-    <main
-      style={{
-        minHeight: "100vh",
-        position: "relative",
-        overflow: "hidden",
-        background: `
-          radial-gradient(circle at top left, rgba(34,211,238,0.14) 0%, rgba(34,211,238,0.00) 26%),
-          radial-gradient(circle at top right, rgba(59,130,246,0.14) 0%, rgba(59,130,246,0.00) 22%),
-          radial-gradient(circle at 50% 0%, rgba(125,211,252,0.08) 0%, rgba(125,211,252,0) 30%),
-          linear-gradient(180deg, #020617 0%, #07111f 38%, #020617 100%)
-        `,
-        paddingBottom: 28
-      }}
+<main
+  style={{
+    minHeight: "100vh",
+    background: "linear-gradient(180deg, #ff0000 0%, #000000 100%)",
+    paddingBottom: 28
+  }}
+>
     >
       <div
         style={{
