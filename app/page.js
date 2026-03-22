@@ -7,10 +7,10 @@ export default async function HomePage() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-let upcomingGames = [];
-let standings = [];
-let recentNews = [];
-let playerOfWeek = null;
+  let upcomingGames = [];
+  let standings = [];
+  let recentNews = [];
+  let playerOfWeek = null;
 
   if (supabaseUrl && supabaseKey) {
     const supabase = createClient(supabaseUrl, supabaseKey);
@@ -47,8 +47,24 @@ let playerOfWeek = null;
       .eq("is_published", true)
       .order("created_at", { ascending: false });
 
+    const { data: playerOfWeekRow = null } = await supabase
+      .from("player_of_week")
+      .select(`
+        id,
+        player_name,
+        team_name,
+        position,
+        blurb,
+        image_url
+      `)
+      .eq("is_active", true)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
     recentNews = newsPosts.slice(0, 3);
     upcomingGames = games.filter((game) => game.status !== "Final").slice(0, 3);
+    playerOfWeek = playerOfWeekRow;
 
     const standingsMap = {};
     for (const team of teams) {
@@ -322,8 +338,7 @@ let playerOfWeek = null;
                   border: "1px solid #164e63",
                   fontSize: 13,
                   fontWeight: 800,
-                  marginBottom: 14,
-                  boxShadow: "0 0 16px rgba(34,211,238,0.10)"
+                  marginBottom: 14
                 }}
               >
                 Codey Arena • West Orange, NJ
@@ -334,8 +349,7 @@ let playerOfWeek = null;
                   fontSize: 56,
                   lineHeight: 1.02,
                   marginTop: 0,
-                  marginBottom: 14,
-                  textShadow: "0 8px 25px rgba(0,0,0,0.35)"
+                  marginBottom: 14
                 }}
               >
                 Cold Fusion Summer Hockey League
@@ -344,7 +358,7 @@ let playerOfWeek = null;
               <p
                 style={{
                   fontSize: 18,
-                  color: "#dbe7f3",
+                  color: "#cbd5e1",
                   maxWidth: 700,
                   lineHeight: 1.7,
                   marginBottom: 24
@@ -360,11 +374,11 @@ let playerOfWeek = null;
                   style={{
                     textDecoration: "none",
                     color: "#082f49",
-                    background: "linear-gradient(180deg, #67e8f9 0%, #22d3ee 100%)",
+                    background: "#22d3ee",
                     padding: "14px 18px",
                     borderRadius: 14,
                     fontWeight: 800,
-                    boxShadow: "0 0 22px rgba(34,211,238,0.24)"
+                    boxShadow: "0 0 18px rgba(34,211,238,0.22)"
                   }}
                 >
                   View Schedule
@@ -378,8 +392,7 @@ let playerOfWeek = null;
                     border: "1px solid #1e3a5f",
                     padding: "14px 18px",
                     borderRadius: 14,
-                    fontWeight: 700,
-                    boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04)"
+                    fontWeight: 700
                   }}
                 >
                   Recent News
@@ -406,13 +419,7 @@ let playerOfWeek = null;
             ) : (
               <div style={{ display: "grid", gap: 12 }}>
                 {upcomingGames.map((game) => (
-                  <div
-                    key={game.id}
-                    style={{
-                      ...subCard,
-                      transition: "transform 0.2s ease"
-                    }}
-                  >
+                  <div key={game.id} style={subCard}>
                     <div style={{ color: "#67e8f9", fontSize: 13, fontWeight: 700 }}>
                       {game.game_date}
                     </div>
@@ -435,15 +442,7 @@ let playerOfWeek = null;
             {standings.length === 0 ? (
               <p style={{ color: "#cbd5e1" }}>No standings yet.</p>
             ) : (
-              <div
-                style={{
-                  overflowX: "auto",
-                  background: "rgba(2,6,23,0.35)",
-                  borderRadius: 16,
-                  padding: 12,
-                  border: "1px solid rgba(30,41,59,0.9)"
-                }}
-              >
+              <div style={{ overflowX: "auto" }}>
                 <table style={{ width: "100%", borderCollapse: "collapse" }}>
                   <thead>
                     <tr style={{ color: "#94a3b8", textAlign: "left" }}>
@@ -456,26 +455,10 @@ let playerOfWeek = null;
                   <tbody>
                     {standings.map((row) => (
                       <tr key={row.team}>
-                        <td
-                          style={{
-                            padding: "10px 0",
-                            fontWeight: 700,
-                            borderTop: "1px solid rgba(51,65,85,0.45)"
-                          }}
-                        >
-                          {row.team}
-                        </td>
-                        <td style={{ borderTop: "1px solid rgba(51,65,85,0.45)" }}>{row.gp}</td>
-                        <td style={{ borderTop: "1px solid rgba(51,65,85,0.45)" }}>{row.w}</td>
-                        <td
-                          style={{
-                            color: "#67e8f9",
-                            fontWeight: 800,
-                            borderTop: "1px solid rgba(51,65,85,0.45)"
-                          }}
-                        >
-                          {row.pts}
-                        </td>
+                        <td style={{ padding: "10px 0", fontWeight: 700 }}>{row.team}</td>
+                        <td>{row.gp}</td>
+                        <td>{row.w}</td>
+                        <td style={{ color: "#67e8f9", fontWeight: 800 }}>{row.pts}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -524,31 +507,34 @@ let playerOfWeek = null;
                   width: 110,
                   height: 110,
                   borderRadius: 18,
-                  background: "linear-gradient(180deg, #0b1220 0%, #09101d 100%)",
-                  border: "1px solid #1e293b",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: "#67e8f9",
-                  fontWeight: 800,
-                  textAlign: "center",
-                  fontSize: 14,
-                  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.03)"
+                  overflow: "hidden",
+                  background: "#0b1220",
+                  border: "1px solid #1e293b"
                 }}
               >
-                PLAYER
-                <br />
-                PHOTO
+                <img
+                  src={playerOfWeek?.image_url || "/player-placeholder.png"}
+                  alt={playerOfWeek?.player_name || "Player of the Week"}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover"
+                  }}
+                />
               </div>
 
               <div>
-                <div style={{ fontSize: 28, fontWeight: 800 }}>Player Name Here</div>
+                <div style={{ fontSize: 28, fontWeight: 800 }}>
+                  {playerOfWeek?.player_name || "Player Name Here"}
+                </div>
                 <div style={{ color: "#67e8f9", marginTop: 6, fontWeight: 700 }}>
-                  Team Name • Position
+                  {playerOfWeek
+                    ? `${playerOfWeek.team_name || "Team Name"} • ${playerOfWeek.position || "Position"}`
+                    : "Team Name • Position"}
                 </div>
                 <p style={{ color: "#e2e8f0", lineHeight: 1.7, marginBottom: 0 }}>
-                  Add a weekly featured player here with a short writeup about a big
-                  performance, great sportsmanship, or standout week.
+                  {playerOfWeek?.blurb ||
+                    "Add a weekly featured player here with a short writeup about a big performance, great sportsmanship, or standout week."}
                 </p>
               </div>
             </div>
@@ -564,15 +550,14 @@ let playerOfWeek = null;
                   width: "100%",
                   minHeight: 130,
                   borderRadius: 16,
-                  background: "linear-gradient(180deg, #0b1220 0%, #09101d 100%)",
+                  background: "#0b1220",
                   border: "1px solid #1e293b",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   color: "#67e8f9",
                   fontWeight: 800,
-                  marginBottom: 16,
-                  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.03)"
+                  marginBottom: 16
                 }}
               >
                 HOCKEY TRUCK IMAGE / LOGO
