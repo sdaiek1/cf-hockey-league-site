@@ -631,7 +631,7 @@ export default async function HomePage() {
         >
           <div>
             <div style={{ fontSize: 22, fontWeight: 800 }}>
-              Cold Fusion Summer Hockey League
+              THIS IS THE NEW HOMEPAGE
             </div>
             <div style={{ color: "#94a3b8", marginTop: 8 }}>
               Codey Arena • West Orange, NJ
