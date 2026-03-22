@@ -154,16 +154,16 @@ export default async function HomePage() {
   };
 
   const card = {
-    background: "linear-gradient(180deg, rgba(7,16,34,0.62) 0%, rgba(4,10,24,0.74) 100%)",
+    background: "linear-gradient(180deg, rgba(7,16,34,0.56) 0%, rgba(4,10,24,0.68) 100%)",
     border: "1px solid rgba(34, 211, 238, 0.14)",
     borderRadius: 24,
     padding: 22,
-    boxShadow: "0 18px 45px rgba(0, 0, 0, 0.28)",
-    backdropFilter: "blur(8px)",
+    boxShadow: "0 18px 45px rgba(0, 0, 0, 0.26)",
+    backdropFilter: "blur(7px)",
   };
 
   const subCard = {
-    background: "linear-gradient(180deg, rgba(6,14,30,0.82) 0%, rgba(3,8,20,0.90) 100%)",
+    background: "linear-gradient(180deg, rgba(6,14,30,0.78) 0%, rgba(3,8,20,0.88) 100%)",
     border: "1px solid rgba(34, 211, 238, 0.10)",
     borderRadius: 18,
     padding: 16,
@@ -191,7 +191,7 @@ export default async function HomePage() {
         position: "relative",
         overflow: "hidden",
         backgroundImage: `
-          linear-gradient(rgba(2,6,23,0.48), rgba(2,6,23,0.64)),
+          linear-gradient(rgba(2,6,23,0.38), rgba(2,6,23,0.54)),
           url("/cold-fusion-rink-bg.png")
         `,
         backgroundSize: "cover",
@@ -206,9 +206,9 @@ export default async function HomePage() {
           inset: 0,
           pointerEvents: "none",
           background: `
-            radial-gradient(circle at top left, rgba(56,189,248,0.10) 0%, rgba(56,189,248,0) 24%),
-            radial-gradient(circle at top right, rgba(37,99,235,0.10) 0%, rgba(37,99,235,0) 22%),
-            radial-gradient(circle at 50% 0%, rgba(14,165,233,0.05) 0%, rgba(14,165,233,0) 28%)
+            radial-gradient(circle at top left, rgba(56,189,248,0.08) 0%, rgba(56,189,248,0) 24%),
+            radial-gradient(circle at top right, rgba(37,99,235,0.08) 0%, rgba(37,99,235,0) 22%),
+            radial-gradient(circle at 50% 0%, rgba(14,165,233,0.04) 0%, rgba(14,165,233,0) 28%)
           `,
         }}
       />
@@ -218,7 +218,7 @@ export default async function HomePage() {
           position: "absolute",
           inset: 0,
           pointerEvents: "none",
-          opacity: 0.025,
+          opacity: 0.018,
           backgroundImage: `
             linear-gradient(115deg, rgba(255,255,255,0.08) 0%, transparent 22%, transparent 75%, rgba(255,255,255,0.04) 100%),
             repeating-linear-gradient(
@@ -239,12 +239,12 @@ export default async function HomePage() {
             position: "relative",
             overflow: "hidden",
             background:
-              "linear-gradient(135deg, rgba(8,37,70,0.60) 0%, rgba(5,23,48,0.68) 42%, rgba(2,10,28,0.78) 100%)",
-            border: "1px solid rgba(34,211,238,0.20)",
-            padding: 20,
+              "linear-gradient(135deg, rgba(8,37,70,0.52) 0%, rgba(5,23,48,0.60) 42%, rgba(2,10,28,0.72) 100%)",
+            border: "1px solid rgba(34,211,238,0.18)",
+            padding: 18,
             marginBottom: 26,
             boxShadow:
-              "0 0 60px rgba(34,211,238,0.05), 0 22px 50px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.03)",
+              "0 0 50px rgba(34,211,238,0.04), 0 20px 44px rgba(0,0,0,0.24), inset 0 1px 0 rgba(255,255,255,0.03)",
           }}
         >
           <div
@@ -252,9 +252,9 @@ export default async function HomePage() {
               position: "absolute",
               inset: 0,
               background: `
-                radial-gradient(circle at 16% 50%, rgba(34,211,238,0.18) 0%, rgba(34,211,238,0.06) 18%, rgba(2,6,23,0) 38%),
-                radial-gradient(circle at 84% 14%, rgba(59,130,246,0.10) 0%, rgba(2,6,23,0) 28%),
-                linear-gradient(120deg, rgba(125,211,252,0.04) 0%, rgba(125,211,252,0) 35%)
+                radial-gradient(circle at 16% 50%, rgba(34,211,238,0.16) 0%, rgba(34,211,238,0.05) 18%, rgba(2,6,23,0) 38%),
+                radial-gradient(circle at 84% 14%, rgba(59,130,246,0.08) 0%, rgba(2,6,23,0) 28%),
+                linear-gradient(120deg, rgba(125,211,252,0.03) 0%, rgba(125,211,252,0) 35%)
               `,
               pointerEvents: "none",
             }}
@@ -265,24 +265,24 @@ export default async function HomePage() {
               position: "relative",
               zIndex: 1,
               display: "grid",
-              gridTemplateColumns: "0.82fr 1.18fr",
-              gap: 24,
+              gridTemplateColumns: "0.8fr 1.2fr",
+              gap: 22,
               alignItems: "center",
             }}
           >
             <div
               style={{
-                minHeight: 215,
-                borderRadius: 24,
+                minHeight: 205,
+                borderRadius: 22,
                 background:
-                  "radial-gradient(circle at center, rgba(34,211,238,0.16) 0%, rgba(3,15,33,0.30) 42%, rgba(2,6,23,0.90) 100%)",
-                border: "1px solid rgba(34,211,238,0.14)",
+                  "radial-gradient(circle at center, rgba(34,211,238,0.14) 0%, rgba(3,15,33,0.28) 42%, rgba(2,6,23,0.88) 100%)",
+                border: "1px solid rgba(34,211,238,0.12)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                padding: 18,
+                padding: 16,
                 boxShadow:
-                  "inset 0 0 70px rgba(34,211,238,0.08), 0 0 28px rgba(34,211,238,0.06)",
+                  "inset 0 0 60px rgba(34,211,238,0.07), 0 0 24px rgba(34,211,238,0.05)",
               }}
             >
               <img
@@ -290,9 +290,9 @@ export default async function HomePage() {
                 alt="Cold Fusion Summer Hockey League logo"
                 style={{
                   maxWidth: "100%",
-                  maxHeight: 185,
+                  maxHeight: 176,
                   objectFit: "contain",
-                  filter: "drop-shadow(0 0 24px rgba(34,211,238,0.20))",
+                  filter: "drop-shadow(0 0 20px rgba(34,211,238,0.18))",
                 }}
               />
             </div>
@@ -301,14 +301,14 @@ export default async function HomePage() {
               <div
                 style={{
                   display: "inline-block",
-                  padding: "7px 13px",
+                  padding: "7px 12px",
                   borderRadius: 999,
-                  background: "rgba(8,20,42,0.68)",
+                  background: "rgba(8,20,42,0.62)",
                   color: "#7dd3fc",
-                  border: "1px solid rgba(34,211,238,0.16)",
+                  border: "1px solid rgba(34,211,238,0.14)",
                   fontSize: 13,
                   fontWeight: 800,
-                  marginBottom: 12,
+                  marginBottom: 10,
                 }}
               >
                 Codey Arena • West Orange, NJ
@@ -316,13 +316,13 @@ export default async function HomePage() {
 
               <h1
                 style={{
-                  fontSize: 54,
+                  fontSize: 48,
                   lineHeight: 1.0,
                   marginTop: 0,
-                  marginBottom: 14,
+                  marginBottom: 12,
                   color: "#f8fafc",
                   letterSpacing: "-0.04em",
-                  textShadow: "0 8px 28px rgba(0,0,0,0.30)",
+                  textShadow: "0 8px 24px rgba(0,0,0,0.26)",
                 }}
               >
                 Cold Fusion Summer Hockey League
@@ -332,9 +332,9 @@ export default async function HomePage() {
                 style={{
                   fontSize: 17,
                   color: "#dbe7f3",
-                  maxWidth: 700,
-                  lineHeight: 1.65,
-                  marginBottom: 22,
+                  maxWidth: 680,
+                  lineHeight: 1.6,
+                  marginBottom: 20,
                 }}
               >
                 Competitive adult summer hockey with league news, upcoming games,
@@ -348,10 +348,10 @@ export default async function HomePage() {
                     textDecoration: "none",
                     color: "#082f49",
                     background: "linear-gradient(180deg, #67e8f9 0%, #22d3ee 100%)",
-                    padding: "14px 18px",
+                    padding: "13px 18px",
                     borderRadius: 14,
                     fontWeight: 800,
-                    boxShadow: "0 0 18px rgba(34,211,238,0.20)",
+                    boxShadow: "0 0 16px rgba(34,211,238,0.18)",
                   }}
                 >
                   View Schedule
@@ -361,9 +361,9 @@ export default async function HomePage() {
                   style={{
                     textDecoration: "none",
                     color: "#ffffff",
-                    background: "rgba(8,20,42,0.64)",
-                    border: "1px solid rgba(34,211,238,0.14)",
-                    padding: "14px 18px",
+                    background: "rgba(8,20,42,0.58)",
+                    border: "1px solid rgba(34,211,238,0.12)",
+                    padding: "13px 18px",
                     borderRadius: 14,
                     fontWeight: 700,
                   }}
@@ -418,7 +418,7 @@ export default async function HomePage() {
               <div
                 style={{
                   overflowX: "auto",
-                  background: "rgba(2,6,23,0.22)",
+                  background: "rgba(2,6,23,0.20)",
                   borderRadius: 16,
                   padding: 12,
                   border: "1px solid rgba(34,211,238,0.10)",
