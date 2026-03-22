@@ -341,39 +341,52 @@ export default async function HomePage() {
                 standings, stats, team rosters, and featured stories all in one place.
               </p>
 
-              <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
-                <a
-                  href="/schedule"
-                  style={{
-                    textDecoration: "none",
-                    color: "#082f49",
-                    background: "linear-gradient(180deg, #67e8f9 0%, #22d3ee 100%)",
-                    padding: "13px 18px",
-                    borderRadius: 14,
-                    fontWeight: 800,
-                    boxShadow: "0 0 16px rgba(34,211,238,0.18)",
-                  }}
-                >
-                  View Schedule
-                </a>
-                <a
-                  href="/news"
-                  style={{
-                    textDecoration: "none",
-                    color: "#ffffff",
-                    background: "rgba(8,20,42,0.58)",
-                    border: "1px solid rgba(34,211,238,0.12)",
-                    padding: "13px 18px",
-                    borderRadius: 14,
-                    fontWeight: 700,
-                  }}
-                >
-                  Recent News
-                </a>
-              </div>
-            </div>
-          </div>
-        </section>
+<div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
+  <a
+    href="/schedule"
+    style={{
+      textDecoration: "none",
+      color: "#082f49",
+      background: "linear-gradient(180deg, #67e8f9 0%, #22d3ee 100%)",
+      padding: "13px 18px",
+      borderRadius: 14,
+      fontWeight: 800,
+      boxShadow: "0 0 16px rgba(34,211,238,0.18)",
+    }}
+  >
+    View Schedule
+  </a>
+
+  <a
+    href="/waiver"
+    style={{
+      textDecoration: "none",
+      color: "#082f49",
+      background: "linear-gradient(180deg, #a5f3fc 0%, #67e8f9 100%)",
+      padding: "13px 18px",
+      borderRadius: 14,
+      fontWeight: 800,
+      boxShadow: "0 0 16px rgba(34,211,238,0.18)",
+    }}
+  >
+    Electronic Waiver
+  </a>
+
+  <a
+    href="/news"
+    style={{
+      textDecoration: "none",
+      color: "#ffffff",
+      background: "rgba(8,20,42,0.58)",
+      border: "1px solid rgba(34,211,238,0.12)",
+      padding: "13px 18px",
+      borderRadius: 14,
+      fontWeight: 700,
+    }}
+  >
+    Recent News
+  </a>
+</div>
 
         <section
           style={{
