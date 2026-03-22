@@ -316,7 +316,7 @@ export default async function HomePage() {
 
               <h1
                 style={{
-                  fontSize: 30,
+                  fontSize: 48,
                   lineHeight: 1.0,
                   marginTop: 0,
                   marginBottom: 12,
@@ -325,7 +325,7 @@ export default async function HomePage() {
                   textShadow: "0 8px 24px rgba(0,0,0,0.26)",
                 }}
               >
-                Welcome to 2026 Cold Fusion Ice Hockey League
+                Cold Fusion Summer Hockey League
               </h1>
 
               <p
@@ -358,7 +358,9 @@ export default async function HomePage() {
                 </a>
 
                 <a
-                  href="/waiver"
+                  href="/cf-waiver-2026.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   style={{
                     textDecoration: "none",
                     color: "#082f49",
@@ -369,7 +371,7 @@ export default async function HomePage() {
                     boxShadow: "0 0 16px rgba(34,211,238,0.18)",
                   }}
                 >
-                  *Electronic Waiver*
+                  Printable Waiver
                 </a>
 
                 <a
