@@ -316,7 +316,7 @@ export default async function HomePage() {
 
               <h1
                 style={{
-                  fontSize: 48,
+                  fontSize: 30,
                   lineHeight: 1.0,
                   marginTop: 0,
                   marginBottom: 12,
@@ -325,7 +325,7 @@ export default async function HomePage() {
                   textShadow: "0 8px 24px rgba(0,0,0,0.26)",
                 }}
               >
-                Cold Fusion Summer Hockey League
+                Welcome to 2026 Cold Fusion Ice Hockey League
               </h1>
 
               <p
