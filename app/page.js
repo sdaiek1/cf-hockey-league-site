@@ -192,7 +192,9 @@ export default async function HomePage() {
     paddingBottom: 28
   }}
 >
-    >
+  <div
+    style={{
+      position: "absolute",
       <div
         style={{
           position: "absolute",
