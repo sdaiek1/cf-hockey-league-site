@@ -297,72 +297,35 @@ export default function WaiverPage() {
             <div style={{ ...grid2, marginBottom: 16 }}>
               <div>
                 <label style={labelStyle}>Full Legal Name</label>
-                <input
-                  name="fullName"
-                  value={form.fullName}
-                  onChange={handleChange}
-                  required
-                  style={inputStyle}
-                />
+                <input name="fullName" value={form.fullName} onChange={handleChange} required style={inputStyle} />
               </div>
 
               <div>
                 <label style={labelStyle}>Date of Birth</label>
-                <input
-                  type="date"
-                  name="dob"
-                  value={form.dob}
-                  onChange={handleChange}
-                  required
-                  style={inputStyle}
-                />
+                <input type="date" name="dob" value={form.dob} onChange={handleChange} required style={inputStyle} />
               </div>
             </div>
 
             <div style={{ marginBottom: 16 }}>
               <label style={labelStyle}>Street Address</label>
-              <input
-                name="streetAddress"
-                value={form.streetAddress}
-                onChange={handleChange}
-                required
-                style={inputStyle}
-              />
+              <input name="streetAddress" value={form.streetAddress} onChange={handleChange} required style={inputStyle} />
             </div>
 
             <div style={{ ...grid2, marginBottom: 16 }}>
               <div>
                 <label style={labelStyle}>City</label>
-                <input
-                  name="city"
-                  value={form.city}
-                  onChange={handleChange}
-                  required
-                  style={inputStyle}
-                />
+                <input name="city" value={form.city} onChange={handleChange} required style={inputStyle} />
               </div>
 
               <div style={{ display: "grid", gridTemplateColumns: "140px 1fr", gap: 16 }}>
                 <div>
                   <label style={labelStyle}>State</label>
-                  <input
-                    name="state"
-                    value={form.state}
-                    onChange={handleChange}
-                    required
-                    style={inputStyle}
-                  />
+                  <input name="state" value={form.state} onChange={handleChange} required style={inputStyle} />
                 </div>
 
                 <div>
                   <label style={labelStyle}>ZIP Code</label>
-                  <input
-                    name="zip"
-                    value={form.zip}
-                    onChange={handleChange}
-                    required
-                    style={inputStyle}
-                  />
+                  <input name="zip" value={form.zip} onChange={handleChange} required style={inputStyle} />
                 </div>
               </div>
             </div>
@@ -370,25 +333,12 @@ export default function WaiverPage() {
             <div style={grid2}>
               <div>
                 <label style={labelStyle}>Phone Number</label>
-                <input
-                  name="phone"
-                  value={form.phone}
-                  onChange={handleChange}
-                  required
-                  style={inputStyle}
-                />
+                <input name="phone" value={form.phone} onChange={handleChange} required style={inputStyle} />
               </div>
 
               <div>
                 <label style={labelStyle}>Email Address</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={form.email}
-                  onChange={handleChange}
-                  required
-                  style={inputStyle}
-                />
+                <input type="email" name="email" value={form.email} onChange={handleChange} required style={inputStyle} />
               </div>
             </div>
           </section>
@@ -399,46 +349,24 @@ export default function WaiverPage() {
             <div style={{ ...grid2, marginBottom: 16 }}>
               <div>
                 <label style={labelStyle}>Team Name</label>
-                <input
-                  name="teamName"
-                  value={form.teamName}
-                  onChange={handleChange}
-                  style={inputStyle}
-                />
+                <input name="teamName" value={form.teamName} onChange={handleChange} style={inputStyle} />
               </div>
 
               <div>
                 <label style={labelStyle}>Jersey Number</label>
-                <input
-                  name="jerseyNumber"
-                  value={form.jerseyNumber}
-                  onChange={handleChange}
-                  style={inputStyle}
-                />
+                <input name="jerseyNumber" value={form.jerseyNumber} onChange={handleChange} style={inputStyle} />
               </div>
             </div>
 
             <div style={{ ...grid2, marginBottom: 16 }}>
               <div>
                 <label style={labelStyle}>Emergency Contact Name</label>
-                <input
-                  name="emergencyName"
-                  value={form.emergencyName}
-                  onChange={handleChange}
-                  required
-                  style={inputStyle}
-                />
+                <input name="emergencyName" value={form.emergencyName} onChange={handleChange} required style={inputStyle} />
               </div>
 
               <div>
                 <label style={labelStyle}>Emergency Contact Phone</label>
-                <input
-                  name="emergencyPhone"
-                  value={form.emergencyPhone}
-                  onChange={handleChange}
-                  required
-                  style={inputStyle}
-                />
+                <input name="emergencyPhone" value={form.emergencyPhone} onChange={handleChange} required style={inputStyle} />
               </div>
             </div>
 
@@ -479,24 +407,12 @@ export default function WaiverPage() {
 
             <div style={{ display: "grid", gap: 14 }}>
               <label style={checkboxRow}>
-                <input
-                  type="checkbox"
-                  name="agreeAdult"
-                  checked={form.agreeAdult}
-                  onChange={handleChange}
-                  required
-                />
+                <input type="checkbox" name="agreeAdult" checked={form.agreeAdult} onChange={handleChange} required />
                 <span>I certify that I am 18 years of age or older.</span>
               </label>
 
               <label style={checkboxRow}>
-                <input
-                  type="checkbox"
-                  name="agreeRisk"
-                  checked={form.agreeRisk}
-                  onChange={handleChange}
-                  required
-                />
+                <input type="checkbox" name="agreeRisk" checked={form.agreeRisk} onChange={handleChange} required />
                 <span>
                   I understand that ice hockey is a dangerous contact sport and
                   that I may be injured by pucks, sticks, skates, boards, glass,
@@ -505,13 +421,7 @@ export default function WaiverPage() {
               </label>
 
               <label style={checkboxRow}>
-                <input
-                  type="checkbox"
-                  name="agreeRelease"
-                  checked={form.agreeRelease}
-                  onChange={handleChange}
-                  required
-                />
+                <input type="checkbox" name="agreeRelease" checked={form.agreeRelease} onChange={handleChange} required />
                 <span>
                   I voluntarily assume these risks and agree to the release of
                   liability and covenant not to sue to the fullest extent
@@ -520,13 +430,7 @@ export default function WaiverPage() {
               </label>
 
               <label style={checkboxRow}>
-                <input
-                  type="checkbox"
-                  name="agreeMedical"
-                  checked={form.agreeMedical}
-                  onChange={handleChange}
-                  required
-                />
+                <input type="checkbox" name="agreeMedical" checked={form.agreeMedical} onChange={handleChange} required />
                 <span>
                   I authorize emergency medical treatment if needed and
                   understand that I am responsible for my own medical costs.
