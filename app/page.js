@@ -154,17 +154,17 @@ export default async function HomePage() {
   };
 
   const card = {
-    background: "linear-gradient(180deg, rgba(9,18,38,0.88) 0%, rgba(6,12,28,0.94) 100%)",
-    border: "1px solid rgba(37, 99, 235, 0.18)",
+    background: "linear-gradient(180deg, rgba(7,16,34,0.78) 0%, rgba(4,10,24,0.86) 100%)",
+    border: "1px solid rgba(34, 211, 238, 0.14)",
     borderRadius: 24,
     padding: 22,
-    boxShadow: "0 18px 45px rgba(0, 0, 0, 0.28)",
+    boxShadow: "0 18px 45px rgba(0, 0, 0, 0.30)",
     backdropFilter: "blur(10px)",
   };
 
   const subCard = {
-    background: "linear-gradient(180deg, rgba(7,16,34,0.96) 0%, rgba(4,10,24,0.99) 100%)",
-    border: "1px solid rgba(30, 64, 175, 0.18)",
+    background: "linear-gradient(180deg, rgba(6,14,30,0.90) 0%, rgba(3,8,20,0.96) 100%)",
+    border: "1px solid rgba(34, 211, 238, 0.10)",
     borderRadius: 18,
     padding: 16,
     boxShadow: "inset 0 1px 0 rgba(255,255,255,0.03)",
@@ -190,12 +190,13 @@ export default async function HomePage() {
         minHeight: "100vh",
         position: "relative",
         overflow: "hidden",
-        background: `
-          radial-gradient(circle at top left, rgba(56,189,248,0.16) 0%, rgba(56,189,248,0.00) 22%),
-          radial-gradient(circle at top right, rgba(37,99,235,0.18) 0%, rgba(37,99,235,0.00) 22%),
-          radial-gradient(circle at 50% 0%, rgba(14,165,233,0.10) 0%, rgba(14,165,233,0.00) 28%),
-          linear-gradient(180deg, #04111f 0%, #071a32 38%, #020617 100%)
+        backgroundImage: `
+          linear-gradient(rgba(2,6,23,0.74), rgba(2,6,23,0.86)),
+          url("/cold-fusion-rink-bg.png")
         `,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundAttachment: "fixed",
         paddingBottom: 32,
       }}
     >
@@ -204,7 +205,20 @@ export default async function HomePage() {
           position: "absolute",
           inset: 0,
           pointerEvents: "none",
-          opacity: 0.06,
+          background: `
+            radial-gradient(circle at top left, rgba(56,189,248,0.14) 0%, rgba(56,189,248,0) 24%),
+            radial-gradient(circle at top right, rgba(37,99,235,0.14) 0%, rgba(37,99,235,0) 22%),
+            radial-gradient(circle at 50% 0%, rgba(14,165,233,0.08) 0%, rgba(14,165,233,0) 28%)
+          `,
+        }}
+      />
+
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          pointerEvents: "none",
+          opacity: 0.04,
           backgroundImage: `
             linear-gradient(115deg, rgba(255,255,255,0.08) 0%, transparent 22%, transparent 75%, rgba(255,255,255,0.04) 100%),
             repeating-linear-gradient(
@@ -225,12 +239,12 @@ export default async function HomePage() {
             position: "relative",
             overflow: "hidden",
             background:
-              "linear-gradient(135deg, rgba(8,37,70,0.96) 0%, rgba(5,23,48,0.98) 42%, rgba(2,10,28,1) 100%)",
-            border: "1px solid rgba(34,211,238,0.22)",
-            padding: 32,
+              "linear-gradient(135deg, rgba(8,37,70,0.74) 0%, rgba(5,23,48,0.80) 42%, rgba(2,10,28,0.88) 100%)",
+            border: "1px solid rgba(34,211,238,0.20)",
+            padding: 24,
             marginBottom: 26,
             boxShadow:
-              "0 0 70px rgba(34,211,238,0.08), 0 24px 60px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.03)",
+              "0 0 70px rgba(34,211,238,0.06), 0 24px 60px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.03)",
           }}
         >
           <div
@@ -238,9 +252,9 @@ export default async function HomePage() {
               position: "absolute",
               inset: 0,
               background: `
-                radial-gradient(circle at 16% 50%, rgba(34,211,238,0.26) 0%, rgba(34,211,238,0.10) 18%, rgba(2,6,23,0) 38%),
-                radial-gradient(circle at 84% 14%, rgba(59,130,246,0.18) 0%, rgba(2,6,23,0) 28%),
-                linear-gradient(120deg, rgba(125,211,252,0.08) 0%, rgba(125,211,252,0) 35%)
+                radial-gradient(circle at 16% 50%, rgba(34,211,238,0.22) 0%, rgba(34,211,238,0.08) 18%, rgba(2,6,23,0) 38%),
+                radial-gradient(circle at 84% 14%, rgba(59,130,246,0.14) 0%, rgba(2,6,23,0) 28%),
+                linear-gradient(120deg, rgba(125,211,252,0.06) 0%, rgba(125,211,252,0) 35%)
               `,
               pointerEvents: "none",
             }}
@@ -251,22 +265,22 @@ export default async function HomePage() {
               position: "relative",
               zIndex: 1,
               display: "grid",
-              gridTemplateColumns: "0.95fr 1.05fr",
-              gap: 34,
+              gridTemplateColumns: "0.85fr 1.15fr",
+              gap: 28,
               alignItems: "center",
             }}
           >
             <div
               style={{
-                minHeight: 300,
-                borderRadius: 30,
+                minHeight: 240,
+                borderRadius: 26,
                 background:
                   "radial-gradient(circle at center, rgba(34,211,238,0.18) 0%, rgba(3,15,33,0.35) 42%, rgba(2,6,23,0.94) 100%)",
                 border: "1px solid rgba(34,211,238,0.16)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                padding: 28,
+                padding: 22,
                 boxShadow:
                   "inset 0 0 80px rgba(34,211,238,0.10), 0 0 34px rgba(34,211,238,0.08)",
               }}
@@ -276,7 +290,7 @@ export default async function HomePage() {
                 alt="Cold Fusion Summer Hockey League logo"
                 style={{
                   maxWidth: "100%",
-                  maxHeight: 260,
+                  maxHeight: 210,
                   objectFit: "contain",
                   filter: "drop-shadow(0 0 28px rgba(34,211,238,0.22))",
                 }}
@@ -292,9 +306,9 @@ export default async function HomePage() {
                   background: "rgba(8,20,42,0.78)",
                   color: "#7dd3fc",
                   border: "1px solid rgba(34,211,238,0.18)",
-                  fontSize: 15,
+                  fontSize: 14,
                   fontWeight: 800,
-                  marginBottom: 16,
+                  marginBottom: 14,
                 }}
               >
                 Codey Arena • West Orange, NJ
@@ -302,10 +316,10 @@ export default async function HomePage() {
 
               <h1
                 style={{
-                  fontSize: 72,
-                  lineHeight: 0.98,
+                  fontSize: 58,
+                  lineHeight: 1.0,
                   marginTop: 0,
-                  marginBottom: 18,
+                  marginBottom: 16,
                   color: "#f8fafc",
                   letterSpacing: "-0.04em",
                   textShadow: "0 8px 28px rgba(0,0,0,0.34)",
@@ -316,11 +330,11 @@ export default async function HomePage() {
 
               <p
                 style={{
-                  fontSize: 20,
+                  fontSize: 18,
                   color: "#dbe7f3",
-                  maxWidth: 760,
+                  maxWidth: 720,
                   lineHeight: 1.7,
-                  marginBottom: 28,
+                  marginBottom: 24,
                 }}
               >
                 Competitive adult summer hockey with league news, upcoming games,
