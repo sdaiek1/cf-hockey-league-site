@@ -15,6 +15,7 @@ export default function AdminPage() {
   const [teams, setTeams] = useState([]);
   const [players, setPlayers] = useState([]);
   const [newsPosts, setNewsPosts] = useState([]);
+  const [playerOfWeekEntries, setPlayerOfWeekEntries] = useState([]);
 
   const [gameForm, setGameForm] = useState({
     game_date: "",
@@ -50,6 +51,15 @@ export default function AdminPage() {
     is_published: true
   });
 
+  const [playerOfWeekForm, setPlayerOfWeekForm] = useState({
+    player_name: "",
+    team_name: "",
+    position: "",
+    blurb: "",
+    image_url: "/player-placeholder.png",
+    is_active: true
+  });
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       setSession(data.session ?? null);
@@ -74,7 +84,13 @@ export default function AdminPage() {
 
   async function loadEverything() {
     setLoading(true);
-    await Promise.all([loadTeams(), loadGames(), loadPlayers(), loadNewsPosts()]);
+    await Promise.all([
+      loadTeams(),
+      loadGames(),
+      loadPlayers(),
+      loadNewsPosts(),
+      loadPlayerOfWeekEntries()
+    ]);
     setLoading(false);
   }
 
@@ -101,6 +117,7 @@ export default function AdminPage() {
     setTeams([]);
     setPlayers([]);
     setNewsPosts([]);
+    setPlayerOfWeekEntries([]);
     setMessage("Signed out.");
   }
 
@@ -192,6 +209,29 @@ export default function AdminPage() {
     }
 
     setNewsPosts(data || []);
+  }
+
+  async function loadPlayerOfWeekEntries() {
+    const { data, error } = await supabase
+      .from("player_of_week")
+      .select(`
+        id,
+        player_name,
+        team_name,
+        position,
+        blurb,
+        image_url,
+        is_active,
+        created_at
+      `)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      setMessage(error.message);
+      return;
+    }
+
+    setPlayerOfWeekEntries(data || []);
   }
 
   async function addGame(e) {
@@ -410,6 +450,94 @@ export default function AdminPage() {
     loadNewsPosts();
   }
 
+  async function addPlayerOfWeek(e) {
+    e.preventDefault();
+    setMessage("Saving Player of the Week...");
+
+    if (!playerOfWeekForm.player_name || !playerOfWeekForm.blurb) {
+      setMessage("Please fill in player name and blurb.");
+      return;
+    }
+
+    if (playerOfWeekForm.is_active) {
+      const { error: deactivateError } = await supabase
+        .from("player_of_week")
+        .update({ is_active: false })
+        .eq("is_active", true);
+
+      if (deactivateError) {
+        setMessage(deactivateError.message);
+        return;
+      }
+    }
+
+    const { error } = await supabase.from("player_of_week").insert({
+      player_name: playerOfWeekForm.player_name,
+      team_name: playerOfWeekForm.team_name || null,
+      position: playerOfWeekForm.position || null,
+      blurb: playerOfWeekForm.blurb,
+      image_url: playerOfWeekForm.image_url || "/player-placeholder.png",
+      is_active: playerOfWeekForm.is_active
+    });
+
+    if (error) {
+      setMessage(error.message);
+      return;
+    }
+
+    setPlayerOfWeekForm({
+      player_name: "",
+      team_name: "",
+      position: "",
+      blurb: "",
+      image_url: "/player-placeholder.png",
+      is_active: true
+    });
+
+    setMessage("Player of the Week saved.");
+    loadPlayerOfWeekEntries();
+  }
+
+  async function setActivePlayerOfWeek(id) {
+    const { error: deactivateError } = await supabase
+      .from("player_of_week")
+      .update({ is_active: false })
+      .eq("is_active", true);
+
+    if (deactivateError) {
+      setMessage(deactivateError.message);
+      return;
+    }
+
+    const { error } = await supabase
+      .from("player_of_week")
+      .update({ is_active: true })
+      .eq("id", id);
+
+    if (error) {
+      setMessage(error.message);
+      return;
+    }
+
+    setMessage("Active Player of the Week updated.");
+    loadPlayerOfWeekEntries();
+  }
+
+  async function deletePlayerOfWeek(id) {
+    const confirmed = window.confirm("Delete this Player of the Week entry?");
+    if (!confirmed) return;
+
+    const { error } = await supabase.from("player_of_week").delete().eq("id", id);
+
+    if (error) {
+      setMessage(error.message);
+      return;
+    }
+
+    setMessage("Player of the Week entry deleted.");
+    loadPlayerOfWeekEntries();
+  }
+
   function handleGameChange(e) {
     setGameForm((prev) => ({
       ...prev,
@@ -436,6 +564,16 @@ export default function AdminPage() {
       e.target.name === "is_published" ? e.target.checked : e.target.value;
 
     setNewsForm((prev) => ({
+      ...prev,
+      [e.target.name]: value
+    }));
+  }
+
+  function handlePlayerOfWeekChange(e) {
+    const value =
+      e.target.name === "is_active" ? e.target.checked : e.target.value;
+
+    setPlayerOfWeekForm((prev) => ({
       ...prev,
       [e.target.name]: value
     }));
@@ -488,7 +626,7 @@ export default function AdminPage() {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20, gap: 12 }}>
         <div>
           <h1 style={{ marginBottom: 4 }}>League Admin</h1>
-          <p style={{ color: "#cbd5e1", margin: 0 }}>Manage schedule, rosters, stats, and news.</p>
+          <p style={{ color: "#cbd5e1", margin: 0 }}>Manage schedule, rosters, stats, news, and Player of the Week.</p>
         </div>
         <button
           onClick={signOut}
@@ -499,7 +637,7 @@ export default function AdminPage() {
       </div>
 
       <div style={{ display: "flex", gap: 12, marginBottom: 20, flexWrap: "wrap" }}>
-        {["schedule", "rosters", "stats", "news"].map((name) => (
+        {["schedule", "rosters", "stats", "news", "playeroftheweek"].map((name) => (
           <button
             key={name}
             onClick={() => setTab(name)}
@@ -513,7 +651,11 @@ export default function AdminPage() {
               textTransform: "capitalize"
             }}
           >
-            {name === "news" ? "News Editor" : `${name.charAt(0).toUpperCase() + name.slice(1)} Editor`}
+            {name === "news"
+              ? "News Editor"
+              : name === "playeroftheweek"
+                ? "Player of the Week"
+                : `${name.charAt(0).toUpperCase() + name.slice(1)} Editor`}
           </button>
         ))}
       </div>
@@ -802,6 +944,162 @@ export default function AdminPage() {
                       >
                         Delete
                       </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {tab === "playeroftheweek" && (
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1.2fr", gap: 20 }}>
+          <div style={{ padding: 20, borderRadius: 20, background: "#0f172a", border: "1px solid #1e293b" }}>
+            <h2>Set Player of the Week</h2>
+
+            <form onSubmit={addPlayerOfWeek} style={{ display: "grid", gap: 12, marginTop: 16 }}>
+              <input
+                name="player_name"
+                type="text"
+                value={playerOfWeekForm.player_name}
+                onChange={handlePlayerOfWeekChange}
+                placeholder="Player name"
+                style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }}
+              />
+
+              <input
+                name="team_name"
+                type="text"
+                value={playerOfWeekForm.team_name}
+                onChange={handlePlayerOfWeekChange}
+                placeholder="Team name"
+                style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }}
+              />
+
+              <input
+                name="position"
+                type="text"
+                value={playerOfWeekForm.position}
+                onChange={handlePlayerOfWeekChange}
+                placeholder="Position"
+                style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }}
+              />
+
+              <input
+                name="image_url"
+                type="text"
+                value={playerOfWeekForm.image_url}
+                onChange={handlePlayerOfWeekChange}
+                placeholder="/player-placeholder.png"
+                style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }}
+              />
+
+              <textarea
+                name="blurb"
+                value={playerOfWeekForm.blurb}
+                onChange={handlePlayerOfWeekChange}
+                placeholder="Why this player was selected"
+                rows={7}
+                style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white", resize: "vertical" }}
+              />
+
+              <label style={{ color: "#cbd5e1", display: "flex", gap: 10, alignItems: "center" }}>
+                <input
+                  type="checkbox"
+                  name="is_active"
+                  checked={playerOfWeekForm.is_active}
+                  onChange={handlePlayerOfWeekChange}
+                />
+                Make this the active Player of the Week
+              </label>
+
+              <button
+                type="submit"
+                style={{ padding: 12, borderRadius: 12, border: 0, background: "#22d3ee", color: "#082f49", fontWeight: 700 }}
+              >
+                Save Player of the Week
+              </button>
+            </form>
+          </div>
+
+          <div style={{ padding: 20, borderRadius: 20, background: "#0f172a", border: "1px solid #1e293b" }}>
+            <h2>Current Player of the Week Entries</h2>
+
+            {playerOfWeekEntries.length === 0 ? (
+              <p style={{ color: "#cbd5e1" }}>No Player of the Week entries yet.</p>
+            ) : (
+              <div style={{ display: "grid", gap: 12, marginTop: 16 }}>
+                {playerOfWeekEntries.map((entry) => (
+                  <div
+                    key={entry.id}
+                    style={{
+                      padding: 16,
+                      borderRadius: 16,
+                      background: "#111827",
+                      border: entry.is_active ? "1px solid #22d3ee" : "1px solid #1f2937"
+                    }}
+                  >
+                    <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
+                      <div style={{ display: "flex", gap: 14 }}>
+                        <img
+                          src={entry.image_url || "/player-placeholder.png"}
+                          alt={entry.player_name}
+                          style={{
+                            width: 72,
+                            height: 72,
+                            objectFit: "cover",
+                            borderRadius: 12,
+                            border: "1px solid #334155",
+                            background: "#020617"
+                          }}
+                        />
+
+                        <div>
+                          <div style={{ fontSize: 20, fontWeight: 700 }}>
+                            {entry.player_name}
+                            {entry.is_active ? " • ACTIVE" : ""}
+                          </div>
+                          <div style={{ color: "#67e8f9", fontSize: 14, marginTop: 4 }}>
+                            {new Date(entry.created_at).toLocaleDateString()}
+                            {entry.team_name ? ` • ${entry.team_name}` : ""}
+                            {entry.position ? ` • ${entry.position}` : ""}
+                          </div>
+                          <div style={{ color: "#e2e8f0", marginTop: 10, whiteSpace: "pre-wrap" }}>
+                            {entry.blurb}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                        {!entry.is_active && (
+                          <button
+                            onClick={() => setActivePlayerOfWeek(entry.id)}
+                            style={{
+                              padding: "8px 12px",
+                              borderRadius: 10,
+                              border: "1px solid #164e63",
+                              background: "#083344",
+                              color: "#a5f3fc"
+                            }}
+                          >
+                            Make Active
+                          </button>
+                        )}
+
+                        <button
+                          onClick={() => deletePlayerOfWeek(entry.id)}
+                          style={{
+                            padding: "8px 12px",
+                            borderRadius: 10,
+                            border: "1px solid #7f1d1d",
+                            background: "#450a0a",
+                            color: "#fecaca"
+                          }}
+                        >
+                          Delete
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))}
