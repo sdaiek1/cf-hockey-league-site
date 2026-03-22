@@ -75,7 +75,7 @@ export default async function HomePage() {
         l: 0,
         otl: 0,
         t: 0,
-        pts: 0
+        pts: 0,
       };
     }
 
@@ -150,7 +150,7 @@ export default async function HomePage() {
     padding: 20,
     color: "#ffffff",
     position: "relative",
-    zIndex: 1
+    zIndex: 1,
   };
 
   const card = {
@@ -159,42 +159,42 @@ export default async function HomePage() {
     borderRadius: 22,
     padding: 22,
     boxShadow: "0 18px 45px rgba(0, 0, 0, 0.28)",
-    backdropFilter: "blur(10px)"
+    backdropFilter: "blur(10px)",
   };
 
   const subCard = {
-    background: "linear-gradient(180deg, rgba(17,24,39,0.95) 0%, rgba(10,15,28,0.98) 100%)",
+    background:
+      "linear-gradient(180deg, rgba(17,24,39,0.95) 0%, rgba(10,15,28,0.98) 100%)",
     border: "1px solid rgba(31, 41, 55, 1)",
     borderRadius: 18,
     padding: 16,
-    boxShadow: "inset 0 1px 0 rgba(255,255,255,0.03)"
+    boxShadow: "inset 0 1px 0 rgba(255,255,255,0.03)",
   };
 
   const sectionTitle = {
     fontSize: 28,
     marginTop: 0,
     marginBottom: 8,
-    letterSpacing: "-0.02em"
+    letterSpacing: "-0.02em",
   };
 
   const sectionText = {
     color: "#94a3b8",
     marginTop: 0,
     marginBottom: 18,
-    lineHeight: 1.6
+    lineHeight: 1.6,
   };
 
   return (
-<main
-  style={{
-    minHeight: "100vh",
-    background: "linear-gradient(180deg, #ff0000 0%, #000000 100%)",
-    paddingBottom: 28
-  }}
->
-  <div
-    style={{
-      position: "absolute",
+    <main
+      style={{
+        minHeight: "100vh",
+        background: "linear-gradient(180deg, #ff0000 0%, #000000 100%)",
+        paddingBottom: 28,
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
       <div
         style={{
           position: "absolute",
@@ -210,7 +210,7 @@ export default async function HomePage() {
               transparent 1px,
               transparent 38px
             )
-          `
+          `,
         }}
       />
 
@@ -222,7 +222,7 @@ export default async function HomePage() {
           background: `
             radial-gradient(circle at 15% 20%, rgba(34,211,238,0.10) 0%, rgba(34,211,238,0) 24%),
             radial-gradient(circle at 85% 18%, rgba(59,130,246,0.08) 0%, rgba(59,130,246,0) 20%)
-          `
+          `,
         }}
       />
 
@@ -232,12 +232,13 @@ export default async function HomePage() {
             ...card,
             position: "relative",
             overflow: "hidden",
-            background: "linear-gradient(135deg, #0b3a5a 0%, #07233a 35%, #031220 70%, #020617 100%)",
+            background:
+              "linear-gradient(135deg, #0b3a5a 0%, #07233a 35%, #031220 70%, #020617 100%)",
             border: "1px solid #164e63",
             padding: 34,
             marginBottom: 24,
             boxShadow:
-              "0 0 60px rgba(34,211,238,0.10), 0 24px 60px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.03)"
+              "0 0 60px rgba(34,211,238,0.10), 0 24px 60px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.03)",
           }}
         >
           <div
@@ -249,7 +250,7 @@ export default async function HomePage() {
                 radial-gradient(circle at 78% 18%, rgba(59,130,246,0.22) 0%, rgba(2,6,23,0) 30%),
                 linear-gradient(120deg, rgba(125,211,252,0.10) 0%, rgba(125,211,252,0) 35%)
               `,
-              pointerEvents: "none"
+              pointerEvents: "none",
             }}
           />
 
@@ -268,7 +269,7 @@ export default async function HomePage() {
                   transparent 34px
                 )
               `,
-              pointerEvents: "none"
+              pointerEvents: "none",
             }}
           />
 
@@ -282,7 +283,7 @@ export default async function HomePage() {
               borderRadius: "50%",
               background: "rgba(34,211,238,0.08)",
               filter: "blur(40px)",
-              pointerEvents: "none"
+              pointerEvents: "none",
             }}
           />
 
@@ -293,7 +294,7 @@ export default async function HomePage() {
               display: "grid",
               gridTemplateColumns: "0.8fr 1.2fr",
               gap: 24,
-              alignItems: "center"
+              alignItems: "center",
             }}
           >
             <div
@@ -308,7 +309,7 @@ export default async function HomePage() {
                 justifyContent: "center",
                 padding: 24,
                 boxShadow:
-                  "inset 0 0 70px rgba(34,211,238,0.12), 0 0 40px rgba(34,211,238,0.10)"
+                  "inset 0 0 70px rgba(34,211,238,0.12), 0 0 40px rgba(34,211,238,0.10)",
               }}
             >
               <img
@@ -318,7 +319,7 @@ export default async function HomePage() {
                   maxWidth: "100%",
                   maxHeight: 245,
                   objectFit: "contain",
-                  filter: "drop-shadow(0 0 28px rgba(34,211,238,0.25))"
+                  filter: "drop-shadow(0 0 28px rgba(34,211,238,0.25))",
                 }}
               />
             </div>
@@ -334,7 +335,7 @@ export default async function HomePage() {
                   border: "1px solid #164e63",
                   fontSize: 13,
                   fontWeight: 800,
-                  marginBottom: 14
+                  marginBottom: 14,
                 }}
               >
                 Codey Arena • West Orange, NJ
@@ -345,10 +346,11 @@ export default async function HomePage() {
                   fontSize: 56,
                   lineHeight: 1.02,
                   marginTop: 0,
-                  marginBottom: 14
+                  marginBottom: 14,
+                  color: "yellow",
                 }}
               >
-                Cold Fusion Summer Hockey League
+                THIS IS THE NEW HOMEPAGE
               </h1>
 
               <p
@@ -357,11 +359,12 @@ export default async function HomePage() {
                   color: "#cbd5e1",
                   maxWidth: 700,
                   lineHeight: 1.7,
-                  marginBottom: 24
+                  marginBottom: 24,
                 }}
               >
                 Competitive adult summer hockey with league news, upcoming games,
-                standings, stats, team rosters, and featured stories all in one place.
+                standings, stats, team rosters, and featured stories all in one
+                place.
               </p>
 
               <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
@@ -374,7 +377,7 @@ export default async function HomePage() {
                     padding: "14px 18px",
                     borderRadius: 14,
                     fontWeight: 800,
-                    boxShadow: "0 0 18px rgba(34,211,238,0.22)"
+                    boxShadow: "0 0 18px rgba(34,211,238,0.22)",
                   }}
                 >
                   View Schedule
@@ -388,7 +391,7 @@ export default async function HomePage() {
                     border: "1px solid #1e3a5f",
                     padding: "14px 18px",
                     borderRadius: 14,
-                    fontWeight: 700
+                    fontWeight: 700,
                   }}
                 >
                   Recent News
@@ -403,7 +406,7 @@ export default async function HomePage() {
             display: "grid",
             gridTemplateColumns: "1.05fr 0.95fr",
             gap: 20,
-            marginBottom: 24
+            marginBottom: 24,
           }}
         >
           <div style={card}>
@@ -416,14 +419,17 @@ export default async function HomePage() {
               <div style={{ display: "grid", gap: 12 }}>
                 {upcomingGames.map((game) => (
                   <div key={game.id} style={subCard}>
-                    <div style={{ color: "#67e8f9", fontSize: 13, fontWeight: 700 }}>
+                    <div
+                      style={{ color: "#67e8f9", fontSize: 13, fontWeight: 700 }}
+                    >
                       {game.game_date}
                     </div>
                     <div style={{ fontSize: 24, fontWeight: 800, marginTop: 6 }}>
                       {game.home_team?.name} vs {game.away_team?.name}
                     </div>
                     <div style={{ color: "#cbd5e1", marginTop: 8 }}>
-                      {game.game_time || "TBD"} • {game.rink || "Codey Arena"} • {game.status}
+                      {game.game_time || "TBD"} • {game.rink || "Codey Arena"} •{" "}
+                      {game.status}
                     </div>
                   </div>
                 ))}
@@ -451,10 +457,14 @@ export default async function HomePage() {
                   <tbody>
                     {standings.map((row) => (
                       <tr key={row.team}>
-                        <td style={{ padding: "10px 0", fontWeight: 700 }}>{row.team}</td>
+                        <td style={{ padding: "10px 0", fontWeight: 700 }}>
+                          {row.team}
+                        </td>
                         <td>{row.gp}</td>
                         <td>{row.w}</td>
-                        <td style={{ color: "#67e8f9", fontWeight: 800 }}>{row.pts}</td>
+                        <td style={{ color: "#67e8f9", fontWeight: 800 }}>
+                          {row.pts}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -469,7 +479,7 @@ export default async function HomePage() {
                 marginTop: 16,
                 color: "#67e8f9",
                 textDecoration: "none",
-                fontWeight: 800
+                fontWeight: 800,
               }}
             >
               Full standings →
@@ -482,7 +492,7 @@ export default async function HomePage() {
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
             gap: 20,
-            marginBottom: 24
+            marginBottom: 24,
           }}
         >
           <div style={card}>
@@ -495,7 +505,7 @@ export default async function HomePage() {
                 display: "grid",
                 gridTemplateColumns: "110px 1fr",
                 gap: 16,
-                alignItems: "center"
+                alignItems: "center",
               }}
             >
               <div
@@ -505,7 +515,7 @@ export default async function HomePage() {
                   borderRadius: 18,
                   overflow: "hidden",
                   background: "#0b1220",
-                  border: "1px solid #1e293b"
+                  border: "1px solid #1e293b",
                 }}
               >
                 <img
@@ -514,7 +524,7 @@ export default async function HomePage() {
                   style={{
                     width: "100%",
                     height: "100%",
-                    objectFit: "cover"
+                    objectFit: "cover",
                   }}
                 />
               </div>
@@ -525,7 +535,9 @@ export default async function HomePage() {
                 </div>
                 <div style={{ color: "#67e8f9", marginTop: 6, fontWeight: 700 }}>
                   {playerOfWeek
-                    ? `${playerOfWeek.team_name || "Team Name"} • ${playerOfWeek.position || "Position"}`
+                    ? `${playerOfWeek.team_name || "Team Name"} • ${
+                        playerOfWeek.position || "Position"
+                      }`
                     : "Team Name • Position"}
                 </div>
                 <p style={{ color: "#e2e8f0", lineHeight: 1.7, marginBottom: 0 }}>
@@ -553,16 +565,19 @@ export default async function HomePage() {
                   justifyContent: "center",
                   color: "#67e8f9",
                   fontWeight: 800,
-                  marginBottom: 16
+                  marginBottom: 16,
                 }}
               >
                 HOCKEY TRUCK IMAGE / LOGO
               </div>
 
-              <div style={{ fontSize: 26, fontWeight: 800 }}>The Hockey Truck</div>
+              <div style={{ fontSize: 26, fontWeight: 800 }}>
+                The Hockey Truck
+              </div>
               <p style={{ color: "#e2e8f0", lineHeight: 1.7, marginBottom: 0 }}>
-                Use this space for your featured sponsor, partner, or league promotion.
-                You can swap this text out later for real info, a logo, and a link.
+                Use this space for your featured sponsor, partner, or league
+                promotion. You can swap this text out later for real info, a logo,
+                and a link.
               </p>
             </div>
           </div>
@@ -579,7 +594,7 @@ export default async function HomePage() {
               style={{
                 display: "grid",
                 gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-                gap: 16
+                gap: 16,
               }}
             >
               {recentNews.map((post) => (
@@ -598,7 +613,7 @@ export default async function HomePage() {
                       display: "-webkit-box",
                       WebkitLineClamp: 5,
                       WebkitBoxOrient: "vertical",
-                      overflow: "hidden"
+                      overflow: "hidden",
                     }}
                   >
                     {post.summary}
@@ -615,7 +630,7 @@ export default async function HomePage() {
               marginTop: 18,
               color: "#67e8f9",
               textDecoration: "none",
-              fontWeight: 800
+              fontWeight: 800,
             }}
           >
             View all news →
@@ -628,7 +643,7 @@ export default async function HomePage() {
             display: "flex",
             justifyContent: "space-between",
             gap: 20,
-            flexWrap: "wrap"
+            flexWrap: "wrap",
           }}
         >
           <div>
