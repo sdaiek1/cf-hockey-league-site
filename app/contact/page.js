@@ -38,7 +38,7 @@ export default function ContactPage() {
           <div style={subCard}>
             <div style={{ color: "#94a3b8", fontSize: 13 }}>Email</div>
             <div style={{ fontSize: 20, fontWeight: 700, marginTop: 8 }}>
-              shane.daiek@gmail.com
+              cfhockeyleague@gmail.com
             </div>
           </div>
 
