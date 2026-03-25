@@ -553,15 +553,16 @@ export default async function HomePage() {
                 </p>
                 <p
                   style={{
-                    marginTop: 12,
+                    marginTop: 10,
                     marginBottom: 0,
-                    color: "#f8fafc",
-                    fontSize: 14,
-                    fontWeight: 700,
+                    color: "rgba(248, 250, 252, 0.82)",
+                    fontSize: 13,
+                    fontStyle: "italic",
+                    fontWeight: 600,
                     lineHeight: 1.5,
                   }}
                 >
-                  Spouse doesn't believe you? Show them this! Look at those stats!
+                  Spouse doesn&apos;t believe you? Show them this. Look at those stats!
                 </p>
               </div>
             </div>
