@@ -589,60 +589,73 @@ export default async function HomePage() {
               </div>
             </div>
           </div>
-
           <div style={card}>
             <h2 style={sectionTitle}>The Hockey Truck</h2>
             <p style={sectionText}>
               Providing ice hockey pro-shop services like skate sharpening, and the sale
               of accessories on the go!
             </p>
-
+          
             <div
               style={{
                 ...subCard,
                 display: "flex",
-                gap: 18,
+                gap: 22,
                 alignItems: "center",
                 minHeight: 172,
               }}
             >
-              <img
-                src="/hockeytruck.png"
-                alt="The Hockey Truck"
-                style={{
-                  width: 140,
-                  height: 140,
-                  objectFit: "cover",
-                  borderRadius: 18,
-                  flexShrink: 0,
-                  border: "1px solid rgba(34,211,238,0.12)",
-                }}
-              />
-
               <div
                 style={{
+                  width: 250,
+                  height: 120,
+                  flexShrink: 0,
+                  borderRadius: 18,
+                  overflow: "hidden",
+                  background: "#000",
+                  border: "1px solid rgba(34,211,238,0.12)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: 10,
+                }}
+              >
+                <img
+                  src="/hockeytruck.png"
+                  alt="The Hockey Truck"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "contain",
+                  }}
+                />
+              </div>
+          
+              <div
+                style={{
+                  flex: 1,
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "center",
-                  minHeight: 140,
                 }}
               >
                 <div
                   style={{
                     fontSize: 26,
                     fontWeight: 800,
-                    marginBottom: 12,
+                    marginBottom: 14,
+                    lineHeight: 1.15,
                   }}
                 >
                   The Hockey Truck LLC.
                 </div>
-
+          
                 <p
                   style={{
                     color: "#e2e8f0",
-                    lineHeight: 1.7,
-                    marginTop: 0,
-                    marginBottom: 14,
+                    lineHeight: 1.8,
+                    margin: 0,
+                    fontSize: 16,
                   }}
                 >
                   <strong>Phone:</strong>{" "}
@@ -680,20 +693,6 @@ export default async function HomePage() {
                   >
                     www.thehockeytruck.com
                   </a>
-                </p>
-
-                <p
-                  style={{
-                    color: "#e2e8f0",
-                    lineHeight: 1.7,
-                    marginTop: 0,
-                    marginBottom: 0,
-                  }}
-                >
-                  <strong>Description:</strong>
-                  <br />
-                  Providing ice hockey pro-shop services like skate sharpening, and the
-                  sale of accessories on the go!
                 </p>
               </div>
             </div>
