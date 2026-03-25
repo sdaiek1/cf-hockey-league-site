@@ -408,6 +408,10 @@ export default async function HomePage() {
                     padding: "13px 18px",
                     borderRadius: 14,
                     fontWeight: 700,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    textAlign: "center",
                   }}
                 >
                   Recent News
