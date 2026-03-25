@@ -504,65 +504,85 @@ export default async function HomePage() {
             marginBottom: 24,
           }}
         >
-          <div style={card}>
-            <h2 style={sectionTitle}>Player of the Week</h2>
-            <p style={sectionText}>Featured league spotlight.</p>
-
+      <h2 style={sectionTitle}>Player of the Week</h2>
+            <p
+              style={{
+                color: "rgba(248, 250, 252, 0.82)",
+                marginTop: 0,
+                marginBottom: 18,
+                lineHeight: 1.6,
+                fontSize: 13,
+                fontStyle: "italic",
+                fontWeight: 600,
+              }}
+            >
+              Spouse doesn&apos;t believe you? Show them this. Look at those stats!
+            </p>
+            
             <div
               style={{
                 ...subCard,
-                display: "grid",
-                gridTemplateColumns: "110px 1fr",
-                gap: 16,
+                display: "flex",
+                gap: 18,
                 alignItems: "center",
               }}
             >
+              <img
+                src={playerOfWeek?.image_url || "/player-of-week-placeholder.png"}
+                alt={playerOfWeek?.player_name || "Player of the Week"}
+                style={{
+                  width: 140,
+                  height: 140,
+                  objectFit: "cover",
+                  borderRadius: 18,
+                  flexShrink: 0,
+                }}
+              />
+            
               <div
                 style={{
-                  width: 110,
-                  height: 110,
-                  borderRadius: 18,
-                  overflow: "hidden",
-                  background: "#0b1220",
-                  border: "1px solid rgba(34,211,238,0.12)",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  minHeight: 140,
                 }}
               >
-                <img
-                  src={playerOfWeek?.image_url || "/player-placeholder.png"}
-                  alt={playerOfWeek?.player_name || "Player of the Week"}
+                <p
                   style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
+                    margin: 0,
+                    fontSize: 34,
+                    fontWeight: 800,
+                    lineHeight: 1.05,
                   }}
-                />
-              </div>
-
-              <div>
-                <div style={{ fontSize: 28, fontWeight: 800 }}>
+                >
                   {playerOfWeek?.player_name || "Player Name Here"}
-                </div>
-                <div style={{ color: "#67e8f9", marginTop: 6, fontWeight: 700 }}>
-                  {playerOfWeek
-                    ? `${playerOfWeek.team_name || "Team Name"} • ${playerOfWeek.position || "Position"}`
-                    : "Team Name • Position"}
-                </div>
-                <p style={{ color: "#e2e8f0", lineHeight: 1.7, marginBottom: 0 }}>
-                  {playerOfWeek?.blurb ||
-                    "Add a weekly featured player here with a short writeup about a big performance, great sportsmanship, or standout week."}
                 </p>
+            
                 <p
                   style={{
                     marginTop: 10,
                     marginBottom: 0,
-                    color: "rgba(248, 250, 252, 0.82)",
-                    fontSize: 13,
-                    fontStyle: "italic",
-                    fontWeight: 600,
-                    lineHeight: 1.5,
+                    color: "#67e8f9",
+                    fontSize: 16,
+                    fontWeight: 700,
                   }}
                 >
-                  Spouse doesn&apos;t believe you? Show them this. Look at those stats!
+                  {playerOfWeek
+                    ? `${playerOfWeek.team_name || "Team Name"} • ${playerOfWeek.position || "Position"}`
+                    : "Team Name • Position"}
+                </p>
+            
+                <p
+                  style={{
+                    marginTop: 18,
+                    marginBottom: 0,
+                    fontSize: 16,
+                    lineHeight: 1.5,
+                    color: "#e5e7eb",
+                  }}
+                >
+                  {playerOfWeek?.blurb ||
+                    "Add a weekly featured player here with a short writeup about a big performance, great sportsmanship, or standout week."}
                 </p>
               </div>
             </div>
