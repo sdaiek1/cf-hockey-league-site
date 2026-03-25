@@ -504,7 +504,8 @@ export default async function HomePage() {
             marginBottom: 24,
           }}
         >
-      <h2 style={sectionTitle}>Player of the Week</h2>
+          <div style={card}>
+            <h2 style={sectionTitle}>Player of the Week</h2>
             <p
               style={{
                 color: "rgba(248, 250, 252, 0.82)",
@@ -518,13 +519,14 @@ export default async function HomePage() {
             >
               Spouse doesn&apos;t believe you? Show them this. Look at those stats!
             </p>
-            
+
             <div
               style={{
                 ...subCard,
                 display: "flex",
                 gap: 18,
                 alignItems: "center",
+                minHeight: 172,
               }}
             >
               <img
@@ -538,7 +540,7 @@ export default async function HomePage() {
                   flexShrink: 0,
                 }}
               />
-            
+
               <div
                 style={{
                   display: "flex",
@@ -557,7 +559,7 @@ export default async function HomePage() {
                 >
                   {playerOfWeek?.player_name || "Player Name Here"}
                 </p>
-            
+
                 <p
                   style={{
                     marginTop: 10,
@@ -571,7 +573,7 @@ export default async function HomePage() {
                     ? `${playerOfWeek.team_name || "Team Name"} • ${playerOfWeek.position || "Position"}`
                     : "Team Name • Position"}
                 </p>
-            
+
                 <p
                   style={{
                     marginTop: 18,
@@ -590,32 +592,110 @@ export default async function HomePage() {
 
           <div style={card}>
             <h2 style={sectionTitle}>The Hockey Truck</h2>
-            <p style={sectionText}>League partner / featured spotlight block.</p>
+            <p style={sectionText}>
+              Providing ice hockey pro-shop services like skate sharpening, and the sale
+              of accessories on the go!
+            </p>
 
-            <div style={subCard}>
+            <div
+              style={{
+                ...subCard,
+                display: "flex",
+                gap: 18,
+                alignItems: "center",
+                minHeight: 172,
+              }}
+            >
+              <img
+                src="/hockeytruck.png"
+                alt="The Hockey Truck"
+                style={{
+                  width: 140,
+                  height: 140,
+                  objectFit: "cover",
+                  borderRadius: 18,
+                  flexShrink: 0,
+                  border: "1px solid rgba(34,211,238,0.12)",
+                }}
+              />
+
               <div
                 style={{
-                  width: "100%",
-                  minHeight: 130,
-                  borderRadius: 16,
-                  background: "linear-gradient(180deg, #091120 0%, #060d1b 100%)",
-                  border: "1px solid rgba(34,211,238,0.10)",
                   display: "flex",
-                  alignItems: "center",
+                  flexDirection: "column",
                   justifyContent: "center",
-                  color: "#67e8f9",
-                  fontWeight: 800,
-                  marginBottom: 16,
+                  minHeight: 140,
                 }}
               >
-                HOCKEY TRUCK IMAGE / LOGO
-              </div>
+                <div
+                  style={{
+                    fontSize: 26,
+                    fontWeight: 800,
+                    marginBottom: 12,
+                  }}
+                >
+                  The Hockey Truck LLC.
+                </div>
 
-              <div style={{ fontSize: 26, fontWeight: 800 }}>The Hockey Truck</div>
-              <p style={{ color: "#e2e8f0", lineHeight: 1.7, marginBottom: 0 }}>
-                Use this space for your featured sponsor, partner, or league promotion.
-                You can swap this text out later for real info, a logo, and a link.
-              </p>
+                <p
+                  style={{
+                    color: "#e2e8f0",
+                    lineHeight: 1.7,
+                    marginTop: 0,
+                    marginBottom: 14,
+                  }}
+                >
+                  <strong>Phone:</strong>{" "}
+                  <a
+                    href="tel:9736464273"
+                    style={{ color: "#67e8f9", textDecoration: "none" }}
+                  >
+                    973-646-4273
+                  </a>
+                  <br />
+                  <strong>Email:</strong>{" "}
+                  <a
+                    href="mailto:thehockeytruck@gmail.com"
+                    style={{ color: "#67e8f9", textDecoration: "none" }}
+                  >
+                    thehockeytruck@gmail.com
+                  </a>
+                  <br />
+                  <strong>Instagram:</strong>{" "}
+                  <a
+                    href="https://www.instagram.com/thehockeytruck"
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ color: "#67e8f9", textDecoration: "none" }}
+                  >
+                    thehockeytruck
+                  </a>
+                  <br />
+                  <strong>Website:</strong>{" "}
+                  <a
+                    href="https://www.thehockeytruck.com"
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ color: "#67e8f9", textDecoration: "none" }}
+                  >
+                    www.thehockeytruck.com
+                  </a>
+                </p>
+
+                <p
+                  style={{
+                    color: "#e2e8f0",
+                    lineHeight: 1.7,
+                    marginTop: 0,
+                    marginBottom: 0,
+                  }}
+                >
+                  <strong>Description:</strong>
+                  <br />
+                  Providing ice hockey pro-shop services like skate sharpening, and the
+                  sale of accessories on the go!
+                </p>
+              </div>
             </div>
           </div>
         </section>
