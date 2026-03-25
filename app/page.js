@@ -386,7 +386,7 @@ export default async function HomePage() {
                     background: "linear-gradient(180deg, #a5f3fc 0%, #67e8f9 100%)",
                     padding: "13px 18px",
                     borderRadius: 14,
-                    fontWeight: 800,
+                    fontWeight: 600,
                     boxShadow: "0 0 16px rgba(34,211,238,0.18)",
                   }}
                 >
