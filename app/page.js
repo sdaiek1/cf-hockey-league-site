@@ -365,14 +365,14 @@ export default async function HomePage() {
                   <span style={{ fontSize: 15, fontWeight: 800 }}>View Schedule</span>
                   <span
                     style={{
-                      fontSize: 10,
+                      fontSize: 11,
                       fontWeight: 700,
                       marginTop: 4,
                       opacity: 0.8,
                       letterSpacing: "0.01em",
                     }}
                   >
-                    (Link to Google Calendar)
+                    (Link it to your Google Calendar)
                   </span>
                 </a>
 
