@@ -551,6 +551,18 @@ export default async function HomePage() {
                   {playerOfWeek?.blurb ||
                     "Add a weekly featured player here with a short writeup about a big performance, great sportsmanship, or standout week."}
                 </p>
+                <p
+                  style={{
+                    marginTop: 12,
+                    marginBottom: 0,
+                    color: "#f8fafc",
+                    fontSize: 14,
+                    fontWeight: 700,
+                    lineHeight: 1.5,
+                  }}
+                >
+                  Spouse doesn't believe you. Show them this! Look at those stats!
+                </p>
               </div>
             </div>
           </div>
