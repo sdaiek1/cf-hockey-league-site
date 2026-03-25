@@ -348,13 +348,32 @@ export default async function HomePage() {
                     textDecoration: "none",
                     color: "#082f49",
                     background: "linear-gradient(180deg, #67e8f9 0%, #22d3ee 100%)",
-                    padding: "13px 18px",
+                    padding: "10px 18px",
                     borderRadius: 14,
                     fontWeight: 800,
                     boxShadow: "0 0 16px rgba(34,211,238,0.18)",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    minWidth: 190,
+                    minHeight: 58,
+                    lineHeight: 1.1,
+                    textAlign: "center",
                   }}
                 >
-                  View Schedule
+                  <span style={{ fontSize: 15, fontWeight: 800 }}>View Schedule</span>
+                  <span
+                    style={{
+                      fontSize: 10,
+                      fontWeight: 700,
+                      marginTop: 4,
+                      opacity: 0.8,
+                      letterSpacing: "0.01em",
+                    }}
+                  >
+                    (Link to Google Calendar)
+                  </span>
                 </a>
 
                 <a
