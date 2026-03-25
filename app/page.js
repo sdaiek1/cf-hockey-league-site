@@ -387,6 +387,7 @@ export default async function HomePage() {
                     padding: "16px 18px",
                     borderRadius: 14,
                     fontWeight: 800,
+                    marginTop: 4,
                     boxShadow: "0 0 16px rgba(34,211,238,0.18)",
                   }}
                 >
