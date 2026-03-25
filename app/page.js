@@ -389,6 +389,10 @@ export default async function HomePage() {
                     fontWeight: 800,
                     marginTop: 8,
                     boxShadow: "0 0 16px rgba(34,211,238,0.18)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    textAlign: "center",
                   }}
                 >
                   Printable Waiver
