@@ -362,7 +362,7 @@ export default async function HomePage() {
                     textAlign: "center",
                   }}
                 >
-                  <span style={{ fontSize: 15, fontWeight: 800 }}>View Schedule</span>
+                  <span style={{ fontSize: 20, fontWeight: 800 }}>View Schedule</span>
                   <span
                     style={{
                       fontSize: 11,
