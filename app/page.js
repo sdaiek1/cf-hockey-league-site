@@ -561,7 +561,7 @@ export default async function HomePage() {
                     lineHeight: 1.5,
                   }}
                 >
-                  Spouse doesn't believe you. Show them this! Look at those stats!
+                  Spouse doesn't believe you? Show them this! Look at those stats!
                 </p>
               </div>
             </div>
