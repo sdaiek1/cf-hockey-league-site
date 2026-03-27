@@ -99,6 +99,7 @@ function formatDisplayDate(gameDate) {
 
 export default async function SchedulePage({ searchParams }) {
   const resolvedSearchParams = await searchParams;
+
   const selectedTeam =
     typeof resolvedSearchParams?.team === "string"
       ? resolvedSearchParams.team
@@ -114,26 +115,28 @@ export default async function SchedulePage({ searchParams }) {
   if (supabaseUrl && supabaseKey) {
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    const [{ data: gamesData, error: gamesFetchError }, { data: teamsData, error: teamsFetchError }] =
-      await Promise.all([
-        supabase
-          .from("games")
-          .select(`
-            id,
-            game_date,
-            game_time,
-            rink,
-            status,
-            home_team:home_team_id(name),
-            away_team:away_team_id(name)
-          `)
-          .neq("status", "Final")
-          .order("game_date", { ascending: true }),
-        supabase
-          .from("teams")
-          .select("name")
-          .order("name", { ascending: true }),
-      ]);
+    const [
+      { data: gamesData, error: gamesFetchError },
+      { data: teamsData, error: teamsFetchError },
+    ] = await Promise.all([
+      supabase
+        .from("games")
+        .select(`
+          id,
+          game_date,
+          game_time,
+          rink,
+          status,
+          home_team:home_team_id(name),
+          away_team:away_team_id(name)
+        `)
+        .neq("status", "Final")
+        .order("game_date", { ascending: true }),
+      supabase
+        .from("teams")
+        .select("name")
+        .order("name", { ascending: true }),
+    ]);
 
     if (gamesFetchError) {
       gamesError = gamesFetchError.message;
@@ -155,11 +158,14 @@ export default async function SchedulePage({ searchParams }) {
       ? games
       : games.filter(
           (game) =>
-            game.home_team?.name === selectedTeam || game.away_team?.name === selectedTeam
+            game.home_team?.name === selectedTeam ||
+            game.away_team?.name === selectedTeam
         );
 
   const filterLabel =
-    selectedTeam === "all" ? "View schedule for:" : `Viewing: ${selectedTeam} Schedule`;
+    selectedTeam === "all"
+      ? "View schedule for:"
+      : `Viewing: ${selectedTeam} Schedule`;
 
   const pageWrap = {
     minHeight: "100vh",
@@ -221,6 +227,17 @@ export default async function SchedulePage({ searchParams }) {
     minWidth: 220,
   };
 
+  const submitButton = {
+    padding: "12px 16px",
+    borderRadius: 12,
+    border: "1px solid rgba(34,211,238,0.18)",
+    background: "linear-gradient(180deg, #67e8f9 0%, #22d3ee 100%)",
+    color: "#082f49",
+    fontSize: 14,
+    fontWeight: 800,
+    cursor: "pointer",
+  };
+
   return (
     <main style={pageWrap}>
       <div style={shell}>
@@ -266,7 +283,6 @@ export default async function SchedulePage({ searchParams }) {
                 name="team"
                 defaultValue={selectedTeam}
                 style={selectStyle}
-                onChange={(e) => e.currentTarget.form.submit()}
               >
                 <option value="all">All Teams</option>
                 {teams.map((teamName) => (
@@ -275,6 +291,10 @@ export default async function SchedulePage({ searchParams }) {
                   </option>
                 ))}
               </select>
+
+              <button type="submit" style={submitButton}>
+                Update
+              </button>
             </form>
           )}
 
