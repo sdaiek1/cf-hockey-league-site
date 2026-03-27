@@ -97,38 +97,63 @@ function formatDisplayDate(gameDate) {
   });
 }
 
-export default async function SchedulePage() {
+export default async function SchedulePage({ searchParams }) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   let games = [];
+  let teams = [];
   let gamesError = null;
+
+  const selectedTeam =
+    typeof searchParams?.team === "string" ? searchParams.team : "all";
 
   if (supabaseUrl && supabaseKey) {
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    const { data, error } = await supabase
-      .from("games")
-      .select(`
-        id,
-        game_date,
-        game_time,
-        rink,
-        status,
-        home_team:home_team_id(name),
-        away_team:away_team_id(name)
-      `)
-      .neq("status", "Final")
-      .order("game_date", { ascending: true });
+    const [{ data: gamesData, error: gamesFetchError }, { data: teamsData, error: teamsFetchError }] =
+      await Promise.all([
+        supabase
+          .from("games")
+          .select(`
+            id,
+            game_date,
+            game_time,
+            rink,
+            status,
+            home_team:home_team_id(name),
+            away_team:away_team_id(name)
+          `)
+          .neq("status", "Final")
+          .order("game_date", { ascending: true }),
+        supabase
+          .from("teams")
+          .select("name")
+          .order("name", { ascending: true }),
+      ]);
 
-    if (error) {
-      gamesError = error.message;
+    if (gamesFetchError) {
+      gamesError = gamesFetchError.message;
     } else {
-      games = data || [];
+      games = gamesData || [];
+    }
+
+    if (!gamesError && teamsFetchError) {
+      gamesError = teamsFetchError.message;
+    } else {
+      teams = (teamsData || []).map((team) => team.name).filter(Boolean);
     }
   } else {
     gamesError = "Missing Supabase environment variables.";
   }
+
+  const filteredGames =
+    selectedTeam === "all"
+      ? games
+      : games.filter(
+          (game) =>
+            game.home_team?.name === selectedTeam || game.away_team?.name === selectedTeam
+        );
 
   const pageWrap = {
     minHeight: "100vh",
@@ -171,6 +196,25 @@ export default async function SchedulePage() {
     boxShadow: "0 8px 20px rgba(34,211,238,0.18)",
   };
 
+  const filterWrap = {
+    display: "flex",
+    gap: 12,
+    alignItems: "center",
+    flexWrap: "wrap",
+    marginBottom: 24,
+  };
+
+  const selectStyle = {
+    padding: "12px 14px",
+    borderRadius: 12,
+    border: "1px solid rgba(34,211,238,0.12)",
+    background: "#0b1220",
+    color: "#ffffff",
+    fontSize: 15,
+    fontWeight: 700,
+    minWidth: 220,
+  };
+
   return (
     <main style={pageWrap}>
       <div style={shell}>
@@ -198,13 +242,47 @@ export default async function SchedulePage() {
             Upcoming games and league schedule at Codey Arena.
           </p>
 
+          {!gamesError && (
+            <form method="GET" style={filterWrap}>
+              <label
+                htmlFor="team"
+                style={{
+                  color: "#cbd5e1",
+                  fontWeight: 700,
+                  fontSize: 15,
+                }}
+              >
+                View schedule for:
+              </label>
+
+              <select
+                id="team"
+                name="team"
+                defaultValue={selectedTeam}
+                style={selectStyle}
+                onChange={(e) => e.currentTarget.form.submit()}
+              >
+                <option value="all">All Teams</option>
+                {teams.map((teamName) => (
+                  <option key={teamName} value={teamName}>
+                    {teamName}
+                  </option>
+                ))}
+              </select>
+            </form>
+          )}
+
           {gamesError ? (
             <p style={{ color: "#fca5a5" }}>Could not load schedule: {gamesError}</p>
-          ) : games.length === 0 ? (
-            <p style={{ color: "#cbd5e1" }}>No upcoming games posted yet.</p>
+          ) : filteredGames.length === 0 ? (
+            <p style={{ color: "#cbd5e1" }}>
+              {selectedTeam === "all"
+                ? "No upcoming games posted yet."
+                : `No upcoming games posted yet for ${selectedTeam}.`}
+            </p>
           ) : (
             <div style={{ display: "grid", gap: 14 }}>
-              {games.map((game) => {
+              {filteredGames.map((game) => {
                 const googleCalendarUrl = buildGoogleCalendarUrl(game);
 
                 return (
