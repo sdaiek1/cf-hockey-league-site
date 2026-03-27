@@ -1,7 +1,17 @@
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
+import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
+
+function slugifyTeamName(name = "") {
+  return String(name)
+    .toLowerCase()
+    .trim()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
 
 export default async function StandingsPage() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -58,7 +68,7 @@ export default async function StandingsPage() {
       l: 0,
       otl: 0,
       t: 0,
-      pts: 0
+      pts: 0,
     };
   }
 
@@ -123,56 +133,98 @@ export default async function StandingsPage() {
     return a.team.localeCompare(b.team);
   });
 
+  const pageWrap = {
+    minHeight: "100vh",
+    background:
+      "linear-gradient(180deg, rgba(2,6,23,0.96) 0%, rgba(3,7,18,0.98) 100%)",
+    padding: 24,
+    color: "#ffffff",
+  };
+
+  const shell = {
+    maxWidth: 1220,
+    margin: "0 auto",
+  };
+
   const card = {
     background: "#0f172a",
     border: "1px solid #1e293b",
     borderRadius: 20,
-    padding: 20
+    padding: 20,
+    boxShadow: "0 18px 45px rgba(0,0,0,0.28)",
+  };
+
+  const thStyle = {
+    paddingBottom: 12,
+    color: "#94a3b8",
+    textAlign: "left",
+    fontSize: 14,
+    fontWeight: 700,
+  };
+
+  const tdStyle = {
+    padding: "12px 0",
+    borderTop: "1px solid rgba(148,163,184,0.12)",
   };
 
   return (
-    <main style={{ maxWidth: 1220, margin: "0 auto", padding: 20 }}>
-      <section style={card}>
-        <h1 style={{ fontSize: 40, marginTop: 0, marginBottom: 10 }}>Standings</h1>
-        <p style={{ color: "#94a3b8", marginTop: 0, marginBottom: 24 }}>
-          Win = 3 points, Tie = 2 points, OTL = 1 point, Loss = 0 points.
-        </p>
-
-        {teamsError || gamesError ? (
-          <p style={{ color: "#fca5a5" }}>
-            Could not load standings: {teamsError || gamesError}
+    <main style={pageWrap}>
+      <div style={shell}>
+        <section style={card}>
+          <h1 style={{ fontSize: 40, marginTop: 0, marginBottom: 10 }}>Standings</h1>
+          <p style={{ color: "#94a3b8", marginTop: 0, marginBottom: 24 }}>
+            Win = 3 points, Tie = 2 points, OTL = 1 point, Loss = 0 points.
           </p>
-        ) : (
-          <div style={{ overflowX: "auto" }}>
-            <table style={{ width: "100%", borderCollapse: "collapse" }}>
-              <thead>
-                <tr style={{ color: "#94a3b8", textAlign: "left" }}>
-                  <th style={{ paddingBottom: 12 }}>Team</th>
-                  <th>GP</th>
-                  <th>W</th>
-                  <th>L</th>
-                  <th>OTL</th>
-                  <th>T</th>
-                  <th>PTS</th>
-                </tr>
-              </thead>
-              <tbody>
-                {standings.map((row) => (
-                  <tr key={row.team}>
-                    <td style={{ padding: "12px 0", fontWeight: 700 }}>{row.team}</td>
-                    <td>{row.gp}</td>
-                    <td>{row.w}</td>
-                    <td>{row.l}</td>
-                    <td>{row.otl}</td>
-                    <td>{row.t}</td>
-                    <td style={{ color: "#67e8f9", fontWeight: 800 }}>{row.pts}</td>
+
+          {teamsError || gamesError ? (
+            <p style={{ color: "#fca5a5" }}>
+              Could not load standings: {teamsError || gamesError}
+            </p>
+          ) : (
+            <div style={{ overflowX: "auto" }}>
+              <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                <thead>
+                  <tr>
+                    <th style={thStyle}>Team</th>
+                    <th style={thStyle}>GP</th>
+                    <th style={thStyle}>W</th>
+                    <th style={thStyle}>L</th>
+                    <th style={thStyle}>OTL</th>
+                    <th style={thStyle}>T</th>
+                    <th style={thStyle}>PTS</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </section>
+                </thead>
+                <tbody>
+                  {standings.map((row) => (
+                    <tr key={row.team}>
+                      <td style={{ ...tdStyle, fontWeight: 700 }}>
+                        <Link
+                          href={`/standings/${slugifyTeamName(row.team)}`}
+                          style={{
+                            color: "#67e8f9",
+                            textDecoration: "none",
+                            fontWeight: 800,
+                          }}
+                        >
+                          {row.team}
+                        </Link>
+                      </td>
+                      <td style={tdStyle}>{row.gp}</td>
+                      <td style={tdStyle}>{row.w}</td>
+                      <td style={tdStyle}>{row.l}</td>
+                      <td style={tdStyle}>{row.otl}</td>
+                      <td style={tdStyle}>{row.t}</td>
+                      <td style={{ ...tdStyle, color: "#67e8f9", fontWeight: 800 }}>
+                        {row.pts}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
+      </div>
     </main>
   );
 }
