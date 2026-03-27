@@ -215,6 +215,9 @@ export default async function SchedulePage({ searchParams }) {
     minWidth: 220,
   };
 
+  const filterLabel =
+    selectedTeam === "all" ? "View schedule for:" : `Viewing: ${selectedTeam} Schedule`;
+
   return (
     <main style={pageWrap}>
       <div style={shell}>
@@ -252,7 +255,7 @@ export default async function SchedulePage({ searchParams }) {
                   fontSize: 15,
                 }}
               >
-                View schedule for:
+                {filterLabel}
               </label>
 
               <select
