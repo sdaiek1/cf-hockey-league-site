@@ -98,15 +98,18 @@ function formatDisplayDate(gameDate) {
 }
 
 export default async function SchedulePage({ searchParams }) {
+  const resolvedSearchParams = await searchParams;
+  const selectedTeam =
+    typeof resolvedSearchParams?.team === "string"
+      ? resolvedSearchParams.team
+      : "all";
+
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   let games = [];
   let teams = [];
   let gamesError = null;
-
-  const selectedTeam =
-    typeof searchParams?.team === "string" ? searchParams.team : "all";
 
   if (supabaseUrl && supabaseKey) {
     const supabase = createClient(supabaseUrl, supabaseKey);
@@ -154,6 +157,9 @@ export default async function SchedulePage({ searchParams }) {
           (game) =>
             game.home_team?.name === selectedTeam || game.away_team?.name === selectedTeam
         );
+
+  const filterLabel =
+    selectedTeam === "all" ? "View schedule for:" : `Viewing: ${selectedTeam} Schedule`;
 
   const pageWrap = {
     minHeight: "100vh",
@@ -214,9 +220,6 @@ export default async function SchedulePage({ searchParams }) {
     fontWeight: 700,
     minWidth: 220,
   };
-
-  const filterLabel =
-    selectedTeam === "all" ? "View schedule for:" : `Viewing: ${selectedTeam} Schedule`;
 
   return (
     <main style={pageWrap}>
