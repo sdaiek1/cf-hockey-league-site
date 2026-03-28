@@ -218,7 +218,7 @@ export default async function RosterPage({ searchParams }) {
               </select>
 
               <button type="submit" style={submitButton}>
-                Update
+                Go
               </button>
             </form>
           )}
