@@ -8,6 +8,11 @@ function toNumber(value) {
   return Number.isFinite(num) ? num : 0;
 }
 
+function isGoalie(player) {
+  const pos = String(player.position || "").trim().toLowerCase();
+  return pos === "g" || pos === "goalie" || pos === "goalkeeper";
+}
+
 function getLeaders(players, statKey, limit = 5) {
   return [...players]
     .sort((a, b) => {
@@ -78,11 +83,13 @@ export default async function StatsPage({ searchParams }) {
       ? players
       : players.filter((player) => player.team?.name === selectedTeam);
 
-  const hasWinsField = filteredPlayers.some(
+  const goaliePlayers = filteredPlayers.filter(isGoalie);
+
+  const hasWinsField = goaliePlayers.some(
     (player) => player.wins !== undefined && player.wins !== null
   );
 
-  const hasShutoutsField = filteredPlayers.some(
+  const hasShutoutsField = goaliePlayers.some(
     (player) => player.shutouts !== undefined && player.shutouts !== null
   );
 
@@ -110,13 +117,13 @@ export default async function StatsPage({ searchParams }) {
     {
       title: "Wins",
       key: "wins",
-      leaders: hasWinsField ? getLeaders(filteredPlayers, "wins") : [],
+      leaders: hasWinsField ? getLeaders(goaliePlayers, "wins") : [],
       missingField: !hasWinsField,
     },
     {
       title: "Shutouts",
       key: "shutouts",
-      leaders: hasShutoutsField ? getLeaders(filteredPlayers, "shutouts") : [],
+      leaders: hasShutoutsField ? getLeaders(goaliePlayers, "shutouts") : [],
       missingField: !hasShutoutsField,
     },
   ];
@@ -219,7 +226,7 @@ export default async function StatsPage({ searchParams }) {
               </select>
 
               <button type="submit" style={submitButton}>
-                Go
+                Update
               </button>
             </form>
           )}
