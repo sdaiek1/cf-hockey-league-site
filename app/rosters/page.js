@@ -1,113 +1,92 @@
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
+import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
 
-export default async function RosterPage({ searchParams }) {
-  const resolvedSearchParams = await searchParams;
+function slugifyTeamName(name = "") {
+  return String(name)
+    .toLowerCase()
+    .trim()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
 
-  const selectedTeam =
-    typeof resolvedSearchParams?.team === "string"
-      ? resolvedSearchParams.team
-      : "all";
+function normalizePosition(position = "") {
+  return String(position).trim().toLowerCase();
+}
 
+export default async function RosterPage() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   let players = [];
-  let teams = [];
   let playersError = null;
-  let teamsError = null;
 
   if (supabaseUrl && supabaseKey) {
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    const [
-      { data: playersData, error: playersFetchError },
-      { data: teamsData, error: teamsFetchError },
-    ] = await Promise.all([
-      supabase
-        .from("players")
-        .select(`
-          id,
-          player_name,
-          jersey_number,
-          position,
-          is_active,
-          team:team_id(name)
-        `)
-        .order("player_name", { ascending: true }),
-      supabase
-        .from("teams")
-        .select("name")
-        .order("name", { ascending: true }),
-    ]);
+    const { data, error } = await supabase
+      .from("players")
+      .select(`
+        id,
+        player_name,
+        jersey_number,
+        position,
+        team:team_id(id, name)
+      `)
+      .order("player_name", { ascending: true });
 
-    if (playersFetchError) {
-      playersError = playersFetchError.message;
+    if (error) {
+      playersError = error.message;
     } else {
-      players = playersData || [];
-    }
-
-    if (teamsFetchError) {
-      teamsError = teamsFetchError.message;
-    } else {
-      teams = (teamsData || []).map((team) => team.name).filter(Boolean);
+      players = data || [];
     }
   } else {
     playersError = "Missing Supabase environment variables.";
-    teamsError = "Missing Supabase environment variables.";
   }
 
-  const filteredPlayers =
-    selectedTeam === "all"
-      ? players
-      : players.filter((player) => player.team?.name === selectedTeam);
+  const validPlayers = players.filter((player) => player.team?.name);
 
-  const groupedPlayers =
-    selectedTeam === "all"
-      ? teams
-          .map((teamName) => ({
-            teamName,
-            players: filteredPlayers
-              .filter((player) => player.team?.name === teamName)
-              .sort((a, b) => {
-                const aNum =
-                  a.jersey_number === null || a.jersey_number === undefined
-                    ? 9999
-                    : Number(a.jersey_number);
-                const bNum =
-                  b.jersey_number === null || b.jersey_number === undefined
-                    ? 9999
-                    : Number(b.jersey_number);
+  const totalPlayers = validPlayers.length;
+  const totalGoalies = validPlayers.filter((player) => {
+    const pos = normalizePosition(player.position);
+    return pos === "g" || pos === "goalie" || pos === "goalkeeper";
+  }).length;
+  const totalSkaters = totalPlayers - totalGoalies;
 
-                if (aNum !== bNum) return aNum - bNum;
-                return String(a.player_name || "").localeCompare(
-                  String(b.player_name || "")
-                );
-              }),
-          }))
-          .filter((group) => group.players.length > 0)
-      : [
-          {
-            teamName: selectedTeam,
-            players: filteredPlayers.sort((a, b) => {
-              const aNum =
-                a.jersey_number === null || a.jersey_number === undefined
-                  ? 9999
-                  : Number(a.jersey_number);
-              const bNum =
-                b.jersey_number === null || b.jersey_number === undefined
-                  ? 9999
-                  : Number(b.jersey_number);
+  const teamMap = {};
 
-              if (aNum !== bNum) return aNum - bNum;
-              return String(a.player_name || "").localeCompare(
-                String(b.player_name || "")
-              );
-            }),
-          },
-        ];
+  for (const player of validPlayers) {
+    const teamId = player.team.id;
+    const teamName = player.team.name;
+
+    if (!teamMap[teamId]) {
+      teamMap[teamId] = {
+        id: teamId,
+        name: teamName,
+        players: [],
+        totalPlayers: 0,
+        goalies: 0,
+        skaters: 0,
+      };
+    }
+
+    teamMap[teamId].players.push(player);
+    teamMap[teamId].totalPlayers += 1;
+
+    const pos = normalizePosition(player.position);
+    if (pos === "g" || pos === "goalie" || pos === "goalkeeper") {
+      teamMap[teamId].goalies += 1;
+    } else {
+      teamMap[teamId].skaters += 1;
+    }
+  }
+
+  const teams = Object.values(teamMap).sort((a, b) =>
+    a.name.localeCompare(b.name)
+  );
 
   const pageWrap = {
     minHeight: "100vh",
@@ -130,55 +109,40 @@ export default async function RosterPage({ searchParams }) {
     boxShadow: "0 18px 45px rgba(0,0,0,0.28)",
   };
 
-  const subCard = {
+  const statCard = {
     background: "#111827",
     border: "1px solid rgba(148,163,184,0.12)",
     borderRadius: 18,
     padding: 18,
-    marginTop: 18,
   };
 
-  const filterWrap = {
-    display: "flex",
-    gap: 12,
-    alignItems: "center",
-    flexWrap: "wrap",
-    marginBottom: 24,
+  const teamCard = {
+    background: "#111827",
+    border: "1px solid rgba(148,163,184,0.12)",
+    borderRadius: 18,
+    padding: 20,
   };
 
-  const selectStyle = {
-    padding: "12px 14px",
-    borderRadius: 12,
-    border: "1px solid rgba(34,211,238,0.12)",
-    background: "#0b1220",
-    color: "#ffffff",
-    fontSize: 15,
-    fontWeight: 700,
-    minWidth: 220,
-  };
-
-  const submitButton = {
-    padding: "12px 16px",
-    borderRadius: 12,
-    border: "1px solid rgba(34,211,238,0.18)",
-    background: "linear-gradient(180deg, #67e8f9 0%, #22d3ee 100%)",
+  const buttonStyle = {
+    display: "inline-block",
+    marginTop: 16,
     color: "#082f49",
-    fontSize: 14,
+    background: "linear-gradient(180deg, #67e8f9 0%, #22d3ee 100%)",
+    padding: "10px 14px",
+    borderRadius: 12,
     fontWeight: 800,
-    cursor: "pointer",
-  };
-
-  const thStyle = {
-    paddingBottom: 12,
-    color: "#94a3b8",
-    textAlign: "left",
+    textDecoration: "none",
     fontSize: 14,
-    fontWeight: 700,
+    boxShadow: "0 8px 20px rgba(34,211,238,0.18)",
   };
 
-  const tdStyle = {
-    padding: "12px 0",
-    borderTop: "1px solid rgba(148,163,184,0.12)",
+  const quickLinkStyle = {
+    display: "inline-block",
+    color: "#67e8f9",
+    textDecoration: "none",
+    fontWeight: 700,
+    marginRight: 18,
+    marginBottom: 10,
   };
 
   return (
@@ -186,94 +150,127 @@ export default async function RosterPage({ searchParams }) {
       <div style={shell}>
         <section style={card}>
           <h1 style={{ fontSize: 40, marginTop: 0, marginBottom: 10 }}>Roster</h1>
-          <p style={{ color: "#94a3b8", marginTop: 0, marginBottom: 24 }}>
-            Team rosters for the current season.
+
+          <p
+            style={{
+              color: "#94a3b8",
+              marginTop: 0,
+              marginBottom: 24,
+              fontSize: 17,
+              lineHeight: 1.6,
+            }}
+          >
+            Browse team rosters for the current season.
           </p>
 
-          {!playersError && !teamsError && (
-            <form method="GET" style={filterWrap}>
-              <label
-                htmlFor="team"
+          {playersError ? (
+            <p style={{ color: "#fca5a5" }}>Could not load roster: {playersError}</p>
+          ) : (
+            <>
+              <div
                 style={{
-                  color: "#cbd5e1",
-                  fontWeight: 700,
-                  fontSize: 15,
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+                  gap: 12,
+                  marginBottom: 28,
                 }}
               >
-                View roster for:
-              </label>
+                <div style={statCard}>
+                  <div style={{ color: "#94a3b8", fontSize: 13, marginBottom: 6 }}>
+                    Total Teams
+                  </div>
+                  <div style={{ fontSize: 30, fontWeight: 800 }}>{teams.length}</div>
+                </div>
 
-              <select
-                id="team"
-                name="team"
-                defaultValue={selectedTeam}
-                style={selectStyle}
-              >
-                <option value="all">All Teams</option>
-                {teams.map((teamName) => (
-                  <option key={teamName} value={teamName}>
-                    {teamName}
-                  </option>
-                ))}
-              </select>
+                <div style={statCard}>
+                  <div style={{ color: "#94a3b8", fontSize: 13, marginBottom: 6 }}>
+                    Total Players
+                  </div>
+                  <div style={{ fontSize: 30, fontWeight: 800 }}>{totalPlayers}</div>
+                </div>
 
-              <button type="submit" style={submitButton}>
-                Go
-              </button>
-            </form>
-          )}
+                <div style={statCard}>
+                  <div style={{ color: "#94a3b8", fontSize: 13, marginBottom: 6 }}>
+                    Total Goalies
+                  </div>
+                  <div style={{ fontSize: 30, fontWeight: 800 }}>{totalGoalies}</div>
+                </div>
 
-          {playersError || teamsError ? (
-            <p style={{ color: "#fca5a5" }}>
-              Could not load roster: {playersError || teamsError}
-            </p>
-          ) : groupedPlayers.length === 0 ? (
-            <p style={{ color: "#cbd5e1" }}>
-              {selectedTeam === "all"
-                ? "No roster data has been added yet."
-                : `No roster data has been added yet for ${selectedTeam}.`}
-            </p>
-          ) : (
-            groupedPlayers.map((group) => (
-              <div key={group.teamName} style={subCard}>
-                <h2 style={{ fontSize: 28, marginTop: 0, marginBottom: 14 }}>
-                  {group.teamName}
-                </h2>
-
-                <div style={{ overflowX: "auto" }}>
-                  <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                    <thead>
-                      <tr>
-                        <th style={thStyle}>#</th>
-                        <th style={thStyle}>Player</th>
-                        <th style={thStyle}>Position</th>
-                        <th style={thStyle}>Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {group.players.map((player) => (
-                        <tr key={player.id}>
-                          <td style={tdStyle}>{player.jersey_number ?? "—"}</td>
-                          <td style={{ ...tdStyle, fontWeight: 700 }}>
-                            {player.player_name || "Player"}
-                          </td>
-                          <td style={tdStyle}>{player.position || "-"}</td>
-                          <td
-                            style={{
-                              ...tdStyle,
-                              color: player.is_active ? "#67e8f9" : "#94a3b8",
-                              fontWeight: 700,
-                            }}
-                          >
-                            {player.is_active ? "Active" : "Inactive"}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                <div style={statCard}>
+                  <div style={{ color: "#94a3b8", fontSize: 13, marginBottom: 6 }}>
+                    Total Skaters
+                  </div>
+                  <div style={{ fontSize: 30, fontWeight: 800 }}>{totalSkaters}</div>
                 </div>
               </div>
-            ))
+
+              <div style={{ marginBottom: 32 }}>
+                <h2 style={{ fontSize: 28, marginBottom: 14 }}>Team Directory</h2>
+
+                {teams.length === 0 ? (
+                  <p style={{ color: "#cbd5e1" }}>No roster data has been added yet.</p>
+                ) : (
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+                      gap: 16,
+                    }}
+                  >
+                    {teams.map((team) => (
+                      <div key={team.id} style={teamCard}>
+                        <div
+                          style={{
+                            fontSize: 24,
+                            fontWeight: 800,
+                            marginBottom: 14,
+                          }}
+                        >
+                          {team.name}
+                        </div>
+
+                        <div style={{ color: "#cbd5e1", lineHeight: 1.8, fontSize: 15 }}>
+                          <div>
+                            <strong>Players:</strong> {team.totalPlayers}
+                          </div>
+                          <div>
+                            <strong>Goalies:</strong> {team.goalies}
+                          </div>
+                          <div>
+                            <strong>Skaters:</strong> {team.skaters}
+                          </div>
+                        </div>
+
+                        <Link
+                          href={`/roster/${slugifyTeamName(team.name)}`}
+                          style={buttonStyle}
+                        >
+                          View Roster
+                        </Link>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div style={{ marginTop: 8 }}>
+                <h2 style={{ fontSize: 24, marginBottom: 12 }}>Quick Links</h2>
+                <div>
+                  <Link href="/standings" style={quickLinkStyle}>
+                    Standings
+                  </Link>
+                  <Link href="/stats" style={quickLinkStyle}>
+                    Player Stats
+                  </Link>
+                  <Link href="/schedule" style={quickLinkStyle}>
+                    Schedule
+                  </Link>
+                  <Link href="/waiver" style={quickLinkStyle}>
+                    Waiver
+                  </Link>
+                </div>
+              </div>
+            </>
           )}
         </section>
       </div>
