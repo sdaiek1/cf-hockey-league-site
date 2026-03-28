@@ -49,13 +49,6 @@ export default async function RosterPage() {
 
   const validPlayers = players.filter((player) => player.team?.name);
 
-  const totalPlayers = validPlayers.length;
-  const totalGoalies = validPlayers.filter((player) => {
-    const pos = normalizePosition(player.position);
-    return pos === "g" || pos === "goalie" || pos === "goalkeeper";
-  }).length;
-  const totalSkaters = totalPlayers - totalGoalies;
-
   const teamMap = {};
 
   for (const player of validPlayers) {
@@ -66,14 +59,12 @@ export default async function RosterPage() {
       teamMap[teamId] = {
         id: teamId,
         name: teamName,
-        players: [],
         totalPlayers: 0,
         goalies: 0,
         skaters: 0,
       };
     }
 
-    teamMap[teamId].players.push(player);
     teamMap[teamId].totalPlayers += 1;
 
     const pos = normalizePosition(player.position);
@@ -107,13 +98,6 @@ export default async function RosterPage() {
     borderRadius: 20,
     padding: 20,
     boxShadow: "0 18px 45px rgba(0,0,0,0.28)",
-  };
-
-  const statCard = {
-    background: "#111827",
-    border: "1px solid rgba(148,163,184,0.12)",
-    borderRadius: 18,
-    padding: 18,
   };
 
   const teamCard = {
@@ -155,7 +139,7 @@ export default async function RosterPage() {
             style={{
               color: "#94a3b8",
               marginTop: 0,
-              marginBottom: 24,
+              marginBottom: 28,
               fontSize: 17,
               lineHeight: 1.6,
             }}
@@ -167,43 +151,6 @@ export default async function RosterPage() {
             <p style={{ color: "#fca5a5" }}>Could not load roster: {playersError}</p>
           ) : (
             <>
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-                  gap: 12,
-                  marginBottom: 28,
-                }}
-              >
-                <div style={statCard}>
-                  <div style={{ color: "#94a3b8", fontSize: 13, marginBottom: 6 }}>
-                    Total Teams
-                  </div>
-                  <div style={{ fontSize: 30, fontWeight: 800 }}>{teams.length}</div>
-                </div>
-
-                <div style={statCard}>
-                  <div style={{ color: "#94a3b8", fontSize: 13, marginBottom: 6 }}>
-                    Total Players
-                  </div>
-                  <div style={{ fontSize: 30, fontWeight: 800 }}>{totalPlayers}</div>
-                </div>
-
-                <div style={statCard}>
-                  <div style={{ color: "#94a3b8", fontSize: 13, marginBottom: 6 }}>
-                    Total Goalies
-                  </div>
-                  <div style={{ fontSize: 30, fontWeight: 800 }}>{totalGoalies}</div>
-                </div>
-
-                <div style={statCard}>
-                  <div style={{ color: "#94a3b8", fontSize: 13, marginBottom: 6 }}>
-                    Total Skaters
-                  </div>
-                  <div style={{ fontSize: 30, fontWeight: 800 }}>{totalSkaters}</div>
-                </div>
-              </div>
-
               <div style={{ marginBottom: 32 }}>
                 <h2 style={{ fontSize: 28, marginBottom: 14 }}>Team Directory</h2>
 
