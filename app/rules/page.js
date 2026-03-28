@@ -17,11 +17,11 @@ export default function RulesPage() {
     {
       title: "League Overview",
       items: [
-        "Season Dates: First week of June 2026 to end of August 2026",
-        "Teams: 6 teams",
-        "Cost: $6,000 per team",
-        "Regular Season: 14 games",
-        "Top 4 teams qualify for playoffs",
+        "Season Dates: May 11th, 2026 to August 9th, 2026",
+        "Teams: 8 teams",
+        "Cost: $5,300 per team",
+        "Regular Season: 12 games",
+        "Top 6 teams qualify for playoffs",
         "Standings points: Win 3, Tie 2, OTL 1, Loss 0"
       ]
     },
@@ -44,7 +44,7 @@ export default function RulesPage() {
         "Players must check in and present ID",
         "Players must sign a waiver before their first game",
         "Players must wear a jersey number matching the submitted roster",
-        "Playoff eligibility requires at least 6 regular season games"
+        "Playoff eligibility requires at least 4 regular season games"
       ]
     },
     {
