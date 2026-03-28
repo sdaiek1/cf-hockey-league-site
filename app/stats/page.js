@@ -226,7 +226,7 @@ export default async function StatsPage({ searchParams }) {
               </select>
 
               <button type="submit" style={submitButton}>
-                Update
+                Go
               </button>
             </form>
           )}
