@@ -293,7 +293,7 @@ export default async function SchedulePage({ searchParams }) {
               </select>
 
               <button type="submit" style={submitButton}>
-                Update
+                Go
               </button>
             </form>
           )}
