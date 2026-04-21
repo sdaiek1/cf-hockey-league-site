@@ -23,6 +23,11 @@ function isGoalie(position = "") {
   return pos === "g" || pos === "goalie" || pos === "goalkeeper";
 }
 
+function toNumber(value) {
+  const num = Number(value);
+  return Number.isFinite(num) ? num : 0;
+}
+
 export default async function TeamRosterPage({ params }) {
   const { slug } = params;
 
@@ -42,10 +47,7 @@ export default async function TeamRosterPage({ params }) {
   const { data: players = [], error: playersError } = await supabase
     .from("players")
     .select(`
-      id,
-      player_name,
-      jersey_number,
-      position,
+      *,
       team:team_id(id, name)
     `)
     .order("player_name", { ascending: true });
@@ -53,7 +55,7 @@ export default async function TeamRosterPage({ params }) {
   if (playersError) {
     return (
       <main style={{ minHeight: "100vh", padding: 24, color: "#fff", background: "#020617" }}>
-        Could not load players: {playersError.message}
+        Could not load roster: {playersError.message}
       </main>
     );
   }
@@ -66,69 +68,42 @@ export default async function TeamRosterPage({ params }) {
     notFound();
   }
 
-  const team = teamPlayers[0].team;
-  const teamName = team.name;
-  const teamId = team.id;
+  const teamName = teamPlayers[0].team.name;
+  const teamId = teamPlayers[0].team.id;
 
-  const playerIds = teamPlayers.map((p) => p.id);
+  const { data: games = [], error: gamesError } = await supabase
+    .from("games")
+    .select("id, status, home_team_id, away_team_id");
 
-  const { data: statsRows = [], error: statsError } = await supabase
-    .from("player_stats")
-    .select(`
-      player_id,
-      gp,
-      goals,
-      assists,
-      points,
-      pim
-    `)
-    .in("player_id", playerIds);
-
-  if (statsError) {
+  if (gamesError) {
     return (
       <main style={{ minHeight: "100vh", padding: 24, color: "#fff", background: "#020617" }}>
-        Could not load stats: {statsError.message}
+        Could not load games: {gamesError.message}
       </main>
     );
   }
 
-  const { data: games = [] } = await supabase
-    .from("games")
-    .select("home_team_id, away_team_id, status")
-    .eq("status", "Final");
-
-  const gamesPlayed = games.filter(
-    (game) => game.home_team_id === teamId || game.away_team_id === teamId
+  const teamGamesPlayed = games.filter(
+    (game) =>
+      game.status === "Final" &&
+      (game.home_team_id === teamId || game.away_team_id === teamId)
   ).length;
-
-  const statsMap = Object.fromEntries(
-    statsRows.map((row) => [
-      row.player_id,
-      {
-        gp: Number(row.gp ?? 0),
-        goals: Number(row.goals ?? 0),
-        assists: Number(row.assists ?? 0),
-        points: Number(row.points ?? ((row.goals ?? 0) + (row.assists ?? 0))),
-        pim: Number(row.pim ?? 0),
-      },
-    ])
-  );
 
   const mergedPlayers = teamPlayers
     .map((player) => ({
       ...player,
-      stats: statsMap[player.id] || {
-        gp: 0,
-        goals: 0,
-        assists: 0,
-        points: 0,
-        pim: 0,
-      },
+      stat_gp: toNumber(player.games_played ?? player.gp ?? 0),
+      stat_goals: toNumber(player.goals),
+      stat_assists: toNumber(player.assists),
+      stat_points: toNumber(player.points ?? (toNumber(player.goals) + toNumber(player.assists))),
+      stat_pim: toNumber(player.penalty_minutes),
+      stat_wins: toNumber(player.wins),
+      stat_shutouts: toNumber(player.shutouts),
     }))
     .sort((a, b) => {
-      if (b.stats.points !== a.stats.points) return b.stats.points - a.stats.points;
-      if (b.stats.goals !== a.stats.goals) return b.stats.goals - a.stats.goals;
-      return a.player_name.localeCompare(b.player_name);
+      if (b.stat_points !== a.stat_points) return b.stat_points - a.stat_points;
+      if (b.stat_goals !== a.stat_goals) return b.stat_goals - a.stat_goals;
+      return String(a.player_name || "").localeCompare(String(b.player_name || ""));
     });
 
   const goalies = mergedPlayers.filter((p) => isGoalie(p.position));
@@ -177,7 +152,7 @@ export default async function TeamRosterPage({ params }) {
     whiteSpace: "nowrap",
   };
 
-  const renderPlayerTable = (rows, title) => (
+  const renderSkaterTable = (rows, title) => (
     <div style={{ marginTop: 26 }}>
       <h2 style={{ fontSize: 26, marginBottom: 12 }}>{title}</h2>
 
@@ -204,13 +179,50 @@ export default async function TeamRosterPage({ params }) {
                   <td style={tdStyle}>{player.jersey_number ?? "-"}</td>
                   <td style={{ ...tdStyle, fontWeight: 700 }}>{player.player_name}</td>
                   <td style={tdStyle}>{player.position || "-"}</td>
-                  <td style={tdStyle}>{player.stats.gp}</td>
-                  <td style={tdStyle}>{player.stats.goals}</td>
-                  <td style={tdStyle}>{player.stats.assists}</td>
+                  <td style={tdStyle}>{player.stat_gp}</td>
+                  <td style={tdStyle}>{player.stat_goals}</td>
+                  <td style={tdStyle}>{player.stat_assists}</td>
                   <td style={{ ...tdStyle, color: "#67e8f9", fontWeight: 800 }}>
-                    {player.stats.points}
+                    {player.stat_points}
                   </td>
-                  <td style={tdStyle}>{player.stats.pim}</td>
+                  <td style={tdStyle}>{player.stat_pim}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+
+  const renderGoalieTable = (rows, title) => (
+    <div style={{ marginTop: 26 }}>
+      <h2 style={{ fontSize: 26, marginBottom: 12 }}>{title}</h2>
+
+      {rows.length === 0 ? (
+        <p style={{ color: "#cbd5e1" }}>No goalies listed.</p>
+      ) : (
+        <div style={tableWrap}>
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead>
+              <tr>
+                <th style={thStyle}>#</th>
+                <th style={thStyle}>Player</th>
+                <th style={thStyle}>Pos</th>
+                <th style={thStyle}>GP</th>
+                <th style={thStyle}>W</th>
+                <th style={thStyle}>SO</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((player) => (
+                <tr key={player.id}>
+                  <td style={tdStyle}>{player.jersey_number ?? "-"}</td>
+                  <td style={{ ...tdStyle, fontWeight: 700 }}>{player.player_name}</td>
+                  <td style={tdStyle}>{player.position || "-"}</td>
+                  <td style={tdStyle}>{player.stat_gp}</td>
+                  <td style={tdStyle}>{player.stat_wins}</td>
+                  <td style={tdStyle}>{player.stat_shutouts}</td>
                 </tr>
               ))}
             </tbody>
@@ -249,13 +261,13 @@ export default async function TeamRosterPage({ params }) {
             }}
           >
             <div><strong>Players:</strong> {mergedPlayers.length}</div>
-            <div><strong>Games Played:</strong> {gamesPlayed}</div>
+            <div><strong>Team GP:</strong> {teamGamesPlayed}</div>
             <div><strong>Goalies:</strong> {goalies.length}</div>
             <div><strong>Skaters:</strong> {skaters.length}</div>
           </div>
 
-          {renderPlayerTable(goalies, "Goalies")}
-          {renderPlayerTable(skaters, "Skaters")}
+          {renderGoalieTable(goalies, "Goalies")}
+          {renderSkaterTable(skaters, "Skaters")}
         </section>
       </div>
     </main>
