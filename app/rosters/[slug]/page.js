@@ -3,6 +3,7 @@ export const revalidate = 0;
 
 import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
+import { notFound } from "next/navigation";
 
 function slugifyTeamName(name = "") {
   return String(name)
@@ -17,93 +18,121 @@ function normalizePosition(position = "") {
   return String(position).trim().toLowerCase();
 }
 
-export default async function RosterPage() {
+function isGoalie(position = "") {
+  const pos = normalizePosition(position);
+  return pos === "g" || pos === "goalie" || pos === "goalkeeper";
+}
+
+export default async function TeamRosterPage({ params }) {
+  const { slug } = params;
+
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  let players = [];
-  let games = [];
-  let playersError = null;
-
-  if (supabaseUrl && supabaseKey) {
-    const supabase = createClient(supabaseUrl, supabaseKey);
-
-    const { data: playerData, error: playerError } = await supabase
-      .from("players")
-      .select(`
-        id,
-        player_name,
-        jersey_number,
-        position,
-        team:team_id(id, name)
-      `)
-      .order("player_name", { ascending: true });
-
-    const { data: gameData, error: gameError } = await supabase
-      .from("games")
-      .select(`
-        id,
-        status,
-        home_team_id,
-        away_team_id
-      `);
-
-    if (playerError) {
-      playersError = playerError.message;
-    } else if (gameError) {
-      playersError = gameError.message;
-    } else {
-      players = playerData || [];
-      games = gameData || [];
-    }
-  } else {
-    playersError = "Missing Supabase environment variables.";
+  if (!supabaseUrl || !supabaseKey) {
+    return (
+      <main style={{ minHeight: "100vh", padding: 24, color: "#fff", background: "#020617" }}>
+        Missing Supabase environment variables.
+      </main>
+    );
   }
 
-  const validPlayers = players.filter((player) => player.team?.name);
+  const supabase = createClient(supabaseUrl, supabaseKey);
 
-  const teamMap = {};
+  const { data: players = [], error: playersError } = await supabase
+    .from("players")
+    .select(`
+      id,
+      player_name,
+      jersey_number,
+      position,
+      team:team_id(id, name)
+    `)
+    .order("player_name", { ascending: true });
 
-  for (const player of validPlayers) {
-    const teamId = player.team.id;
-    const teamName = player.team.name;
-
-    if (!teamMap[teamId]) {
-      teamMap[teamId] = {
-        id: teamId,
-        name: teamName,
-        totalPlayers: 0,
-        goalies: 0,
-        skaters: 0,
-        gamesPlayed: 0,
-      };
-    }
-
-    teamMap[teamId].totalPlayers += 1;
-
-    const pos = normalizePosition(player.position);
-    if (pos === "g" || pos === "goalie" || pos === "goalkeeper") {
-      teamMap[teamId].goalies += 1;
-    } else {
-      teamMap[teamId].skaters += 1;
-    }
+  if (playersError) {
+    return (
+      <main style={{ minHeight: "100vh", padding: 24, color: "#fff", background: "#020617" }}>
+        Could not load players: {playersError.message}
+      </main>
+    );
   }
 
-  for (const game of games) {
-    if (game.status !== "Final") continue;
-
-    if (teamMap[game.home_team_id]) {
-      teamMap[game.home_team_id].gamesPlayed += 1;
-    }
-
-    if (teamMap[game.away_team_id]) {
-      teamMap[game.away_team_id].gamesPlayed += 1;
-    }
-  }
-
-  const teams = Object.values(teamMap).sort((a, b) =>
-    a.name.localeCompare(b.name)
+  const teamPlayers = players.filter(
+    (player) => player.team?.name && slugifyTeamName(player.team.name) === slug
   );
+
+  if (teamPlayers.length === 0) {
+    notFound();
+  }
+
+  const team = teamPlayers[0].team;
+  const teamName = team.name;
+  const teamId = team.id;
+
+  const playerIds = teamPlayers.map((p) => p.id);
+
+  const { data: statsRows = [], error: statsError } = await supabase
+    .from("player_stats")
+    .select(`
+      player_id,
+      gp,
+      goals,
+      assists,
+      points,
+      pim
+    `)
+    .in("player_id", playerIds);
+
+  if (statsError) {
+    return (
+      <main style={{ minHeight: "100vh", padding: 24, color: "#fff", background: "#020617" }}>
+        Could not load stats: {statsError.message}
+      </main>
+    );
+  }
+
+  const { data: games = [] } = await supabase
+    .from("games")
+    .select("home_team_id, away_team_id, status")
+    .eq("status", "Final");
+
+  const gamesPlayed = games.filter(
+    (game) => game.home_team_id === teamId || game.away_team_id === teamId
+  ).length;
+
+  const statsMap = Object.fromEntries(
+    statsRows.map((row) => [
+      row.player_id,
+      {
+        gp: Number(row.gp ?? 0),
+        goals: Number(row.goals ?? 0),
+        assists: Number(row.assists ?? 0),
+        points: Number(row.points ?? ((row.goals ?? 0) + (row.assists ?? 0))),
+        pim: Number(row.pim ?? 0),
+      },
+    ])
+  );
+
+  const mergedPlayers = teamPlayers
+    .map((player) => ({
+      ...player,
+      stats: statsMap[player.id] || {
+        gp: 0,
+        goals: 0,
+        assists: 0,
+        points: 0,
+        pim: 0,
+      },
+    }))
+    .sort((a, b) => {
+      if (b.stats.points !== a.stats.points) return b.stats.points - a.stats.points;
+      if (b.stats.goals !== a.stats.goals) return b.stats.goals - a.stats.goals;
+      return a.player_name.localeCompare(b.player_name);
+    });
+
+  const goalies = mergedPlayers.filter((p) => isGoalie(p.position));
+  const skaters = mergedPlayers.filter((p) => !isGoalie(p.position));
 
   const pageWrap = {
     minHeight: "100vh",
@@ -114,7 +143,7 @@ export default async function RosterPage() {
   };
 
   const shell = {
-    maxWidth: 1220,
+    maxWidth: 1280,
     margin: "0 auto",
   };
 
@@ -126,120 +155,107 @@ export default async function RosterPage() {
     boxShadow: "0 18px 45px rgba(0,0,0,0.28)",
   };
 
-  const teamCard = {
-    background: "#111827",
+  const tableWrap = {
+    overflowX: "auto",
     border: "1px solid rgba(148,163,184,0.12)",
-    borderRadius: 18,
-    padding: 20,
+    borderRadius: 16,
+    background: "#111827",
   };
 
-  const buttonStyle = {
-    display: "inline-block",
-    marginTop: 16,
-    color: "#082f49",
-    background: "linear-gradient(180deg, #67e8f9 0%, #22d3ee 100%)",
-    padding: "10px 14px",
-    borderRadius: 12,
-    fontWeight: 800,
-    textDecoration: "none",
-    fontSize: 14,
-    boxShadow: "0 8px 20px rgba(34,211,238,0.18)",
+  const thStyle = {
+    padding: "14px 12px",
+    textAlign: "left",
+    fontSize: 13,
+    color: "#94a3b8",
+    borderBottom: "1px solid rgba(148,163,184,0.12)",
+    whiteSpace: "nowrap",
   };
 
-  const quickLinkStyle = {
-    display: "inline-block",
-    color: "#67e8f9",
-    textDecoration: "none",
-    fontWeight: 700,
-    marginRight: 18,
-    marginBottom: 10,
+  const tdStyle = {
+    padding: "14px 12px",
+    borderBottom: "1px solid rgba(148,163,184,0.08)",
+    whiteSpace: "nowrap",
   };
+
+  const renderPlayerTable = (rows, title) => (
+    <div style={{ marginTop: 26 }}>
+      <h2 style={{ fontSize: 26, marginBottom: 12 }}>{title}</h2>
+
+      {rows.length === 0 ? (
+        <p style={{ color: "#cbd5e1" }}>No players listed.</p>
+      ) : (
+        <div style={tableWrap}>
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead>
+              <tr>
+                <th style={thStyle}>#</th>
+                <th style={thStyle}>Player</th>
+                <th style={thStyle}>Pos</th>
+                <th style={thStyle}>GP</th>
+                <th style={thStyle}>G</th>
+                <th style={thStyle}>A</th>
+                <th style={thStyle}>PTS</th>
+                <th style={thStyle}>PIM</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((player) => (
+                <tr key={player.id}>
+                  <td style={tdStyle}>{player.jersey_number ?? "-"}</td>
+                  <td style={{ ...tdStyle, fontWeight: 700 }}>{player.player_name}</td>
+                  <td style={tdStyle}>{player.position || "-"}</td>
+                  <td style={tdStyle}>{player.stats.gp}</td>
+                  <td style={tdStyle}>{player.stats.goals}</td>
+                  <td style={tdStyle}>{player.stats.assists}</td>
+                  <td style={{ ...tdStyle, color: "#67e8f9", fontWeight: 800 }}>
+                    {player.stats.points}
+                  </td>
+                  <td style={tdStyle}>{player.stats.pim}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
 
   return (
     <main style={pageWrap}>
       <div style={shell}>
         <section style={card}>
-          <h1 style={{ fontSize: 40, marginTop: 0, marginBottom: 10 }}>Rosters</h1>
-
-          <p
+          <Link
+            href="/rosters"
             style={{
-              color: "#94a3b8",
-              marginTop: 0,
-              marginBottom: 28,
-              fontSize: 17,
-              lineHeight: 1.6,
+              display: "inline-block",
+              marginBottom: 18,
+              color: "#67e8f9",
+              textDecoration: "none",
+              fontWeight: 700,
             }}
           >
-            Browse team rosters for the current season.
-          </p>
+            ← Back to Rosters
+          </Link>
 
-          {playersError ? (
-            <p style={{ color: "#fca5a5" }}>Could not load roster: {playersError}</p>
-          ) : (
-            <>
-              <div style={{ marginBottom: 32 }}>
-                <h2 style={{ fontSize: 28, marginBottom: 14 }}>Team Directory</h2>
+          <h1 style={{ fontSize: 40, marginTop: 0, marginBottom: 10 }}>{teamName}</h1>
 
-                {teams.length === 0 ? (
-                  <p style={{ color: "#cbd5e1" }}>No roster data has been added yet.</p>
-                ) : (
-                  <div
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-                      gap: 16,
-                    }}
-                  >
-                    {teams.map((team) => (
-                      <div key={team.id} style={teamCard}>
-                        <div
-                          style={{
-                            fontSize: 24,
-                            fontWeight: 800,
-                            marginBottom: 14,
-                          }}
-                        >
-                          {team.name}
-                        </div>
+          <div
+            style={{
+              display: "flex",
+              gap: 18,
+              flexWrap: "wrap",
+              marginBottom: 20,
+              color: "#cbd5e1",
+            }}
+          >
+            <div><strong>Players:</strong> {mergedPlayers.length}</div>
+            <div><strong>Games Played:</strong> {gamesPlayed}</div>
+            <div><strong>Goalies:</strong> {goalies.length}</div>
+            <div><strong>Skaters:</strong> {skaters.length}</div>
+          </div>
 
-                        <div style={{ color: "#cbd5e1", lineHeight: 1.8, fontSize: 15 }}>
-                          <div><strong>Players:</strong> {team.totalPlayers}</div>
-                          <div><strong>Games Played:</strong> {team.gamesPlayed}</div>
-                          <div><strong>Goalies:</strong> {team.goalies}</div>
-                          <div><strong>Skaters:</strong> {team.skaters}</div>
-                        </div>
-
-                        <Link
-                          href={`/rosters/${slugifyTeamName(team.name)}`}
-                          style={buttonStyle}
-                        >
-                          View Full Roster
-                        </Link>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              <div style={{ marginTop: 8 }}>
-                <h2 style={{ fontSize: 24, marginBottom: 12 }}>Quick Links</h2>
-                <div>
-                  <Link href="/standings" style={quickLinkStyle}>
-                    Standings
-                  </Link>
-                  <Link href="/stats" style={quickLinkStyle}>
-                    Player Stats
-                  </Link>
-                  <Link href="/schedule" style={quickLinkStyle}>
-                    Schedule
-                  </Link>
-                  <Link href="/waiver" style={quickLinkStyle}>
-                    Waiver
-                  </Link>
-                </div>
-              </div>
-            </>
-          )}
+          {renderPlayerTable(goalies, "Goalies")}
+          {renderPlayerTable(skaters, "Skaters")}
         </section>
       </div>
     </main>
