@@ -189,7 +189,7 @@ export default async function RosterPage() {
                         </div>
 
                         <Link
-                          href={`/roster/${slugifyTeamName(team.name)}`}
+                          href={`/rosters/${slugifyTeamName(team.name)}`}
                           style={buttonStyle}
                         >
                           View Roster
