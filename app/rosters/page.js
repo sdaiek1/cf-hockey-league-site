@@ -22,12 +22,13 @@ export default async function RosterPage() {
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   let players = [];
+  let games = [];
   let playersError = null;
 
   if (supabaseUrl && supabaseKey) {
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    const { data, error } = await supabase
+    const { data: playerData, error: playerError } = await supabase
       .from("players")
       .select(`
         id,
@@ -38,10 +39,22 @@ export default async function RosterPage() {
       `)
       .order("player_name", { ascending: true });
 
-    if (error) {
-      playersError = error.message;
+    const { data: gameData, error: gameError } = await supabase
+      .from("games")
+      .select(`
+        id,
+        status,
+        home_team_id,
+        away_team_id
+      `);
+
+    if (playerError) {
+      playersError = playerError.message;
+    } else if (gameError) {
+      playersError = gameError.message;
     } else {
-      players = data || [];
+      players = playerData || [];
+      games = gameData || [];
     }
   } else {
     playersError = "Missing Supabase environment variables.";
@@ -62,6 +75,7 @@ export default async function RosterPage() {
         totalPlayers: 0,
         goalies: 0,
         skaters: 0,
+        gamesPlayed: 0,
       };
     }
 
@@ -72,6 +86,18 @@ export default async function RosterPage() {
       teamMap[teamId].goalies += 1;
     } else {
       teamMap[teamId].skaters += 1;
+    }
+  }
+
+  for (const game of games) {
+    if (game.status !== "Final") continue;
+
+    if (teamMap[game.home_team_id]) {
+      teamMap[game.home_team_id].gamesPlayed += 1;
+    }
+
+    if (teamMap[game.away_team_id]) {
+      teamMap[game.away_team_id].gamesPlayed += 1;
     }
   }
 
@@ -133,7 +159,7 @@ export default async function RosterPage() {
     <main style={pageWrap}>
       <div style={shell}>
         <section style={card}>
-          <h1 style={{ fontSize: 40, marginTop: 0, marginBottom: 10 }}>Roster</h1>
+          <h1 style={{ fontSize: 40, marginTop: 0, marginBottom: 10 }}>Rosters</h1>
 
           <p
             style={{
@@ -177,22 +203,17 @@ export default async function RosterPage() {
                         </div>
 
                         <div style={{ color: "#cbd5e1", lineHeight: 1.8, fontSize: 15 }}>
-                          <div>
-                            <strong>Players:</strong> {team.totalPlayers}
-                          </div>
-                          <div>
-                            <strong>Goalies:</strong> {team.goalies}
-                          </div>
-                          <div>
-                            <strong>Skaters:</strong> {team.skaters}
-                          </div>
+                          <div><strong>Players:</strong> {team.totalPlayers}</div>
+                          <div><strong>Games Played:</strong> {team.gamesPlayed}</div>
+                          <div><strong>Goalies:</strong> {team.goalies}</div>
+                          <div><strong>Skaters:</strong> {team.skaters}</div>
                         </div>
 
                         <Link
                           href={`/rosters/${slugifyTeamName(team.name)}`}
                           style={buttonStyle}
                         >
-                          View Roster
+                          View Full Roster
                         </Link>
                       </div>
                     ))}
