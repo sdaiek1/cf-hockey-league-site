@@ -318,7 +318,7 @@ export default async function HomePage() {
                 alt="Cold Fusion Summer Hockey League logo"
                 style={{
                   maxWidth: "100%",
-                  maxHeight: 176,
+                  maxHeight: 230,
                   objectFit: "contain",
                   filter: "drop-shadow(0 0 20px rgba(34,211,238,0.18))",
                 }}
