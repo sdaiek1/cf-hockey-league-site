@@ -226,7 +226,7 @@ export default async function RosterPage() {
                             alt={`${team.name} logo`}
                             style={{
                               maxWidth: "100%",
-                              maxHeight: 80,
+                              maxHeight: 120,
                               objectFit: "contain",
                             }}
                           />
