@@ -220,7 +220,7 @@ export default async function HomePage() {
 
   const heroActions = {
     display: "flex",
-    gap: 16,
+    gap: 14,
     flexWrap: "wrap",
     justifyContent: "center",
     alignItems: "stretch",
@@ -229,28 +229,28 @@ export default async function HomePage() {
 
   const heroButtonBase = {
     textDecoration: "none",
-    padding: "16px 20px",
-    borderRadius: 16,
+    padding: "12px 16px",
+    borderRadius: 14,
     fontWeight: 800,
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
     textAlign: "center",
-    width: 260,
-    minHeight: 96,
-    lineHeight: 1.15,
+    width: 210,
+    minHeight: 72,
+    lineHeight: 1.1,
   };
 
   const heroButtonTitle = {
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: 800,
   };
-
+  
   const heroButtonSubtitle = {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: 700,
-    marginTop: 6,
+    marginTop: 4,
     opacity: 0.85,
     letterSpacing: "0.01em",
   };
@@ -383,7 +383,7 @@ export default async function HomePage() {
                     textAlign: "center",
                   }}
                 >
-                  contact: Shane - cfhockeyleague@gmail.com
+                  Contact: Shane at cfhockeyleague@gmail.com
                 </div>
               </div>
 
@@ -398,7 +398,7 @@ export default async function HomePage() {
                   textShadow: "0 8px 24px rgba(0,0,0,0.26)",
                 }}
               >
-                Welcome to Cold Fusion Hockey League 2026
+                Welcome to Cold Fusion Hockey League 2026!
               </h1>
 
               <p
@@ -668,7 +668,7 @@ export default async function HomePage() {
                 fontWeight: 600,
               }}
             >
-              Spouse doesn&apos;t believe you? Show them this. Look at those stats!
+              Spouse doesn&apos;t believe you? Show them this! Look at those stats!
             </p>
 
             <div
