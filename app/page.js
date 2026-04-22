@@ -212,6 +212,49 @@ export default async function HomePage() {
     lineHeight: 1.6,
   };
 
+  const heroBadgeWrap = {
+    display: "flex",
+    justifyContent: "center",
+    marginBottom: 12,
+  };
+
+  const heroActions = {
+    display: "flex",
+    gap: 16,
+    flexWrap: "wrap",
+    justifyContent: "center",
+    alignItems: "stretch",
+    marginTop: 6,
+  };
+
+  const heroButtonBase = {
+    textDecoration: "none",
+    padding: "16px 20px",
+    borderRadius: 16,
+    fontWeight: 800,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    textAlign: "center",
+    width: 260,
+    minHeight: 96,
+    lineHeight: 1.15,
+  };
+
+  const heroButtonTitle = {
+    fontSize: 22,
+    fontWeight: 800,
+  };
+
+  const heroButtonSubtitle = {
+    fontSize: 12,
+    fontWeight: 700,
+    marginTop: 6,
+    opacity: 0.85,
+    letterSpacing: "0.01em",
+  };
+
   return (
     <main
       style={{
@@ -300,7 +343,7 @@ export default async function HomePage() {
           >
             <div
               style={{
-                minHeight: 205,
+                minHeight: 260,
                 borderRadius: 22,
                 background:
                   "radial-gradient(circle at center, rgba(34,211,238,0.14) 0%, rgba(3,15,33,0.28) 42%, rgba(2,6,23,0.88) 100%)",
@@ -308,7 +351,7 @@ export default async function HomePage() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                padding: 16,
+                padding: 20,
                 boxShadow:
                   "inset 0 0 60px rgba(34,211,238,0.07), 0 0 24px rgba(34,211,238,0.05)",
               }}
@@ -326,20 +369,22 @@ export default async function HomePage() {
             </div>
 
             <div>
-              <div
-                style={{
-                  display: "inline-block",
-                  padding: "7px 12px",
-                  borderRadius: 999,
-                  background: "rgba(8,20,42,0.62)",
-                  color: "#7dd3fc",
-                  border: "1px solid rgba(34,211,238,0.14)",
-                  fontSize: 13,
-                  fontWeight: 800,
-                  marginBottom: 10,
-                }}
-              >
-                Codey Arena • West Orange, NJ
+              <div style={heroBadgeWrap}>
+                <div
+                  style={{
+                    display: "inline-block",
+                    padding: "7px 16px",
+                    borderRadius: 999,
+                    background: "rgba(8,20,42,0.62)",
+                    color: "#7dd3fc",
+                    border: "1px solid rgba(34,211,238,0.14)",
+                    fontSize: 13,
+                    fontWeight: 800,
+                    textAlign: "center",
+                  }}
+                >
+                  contact: Shane - cfhockeyleague@gmail.com
+                </div>
               </div>
 
               <h1
@@ -369,37 +414,18 @@ export default async function HomePage() {
                 standings, stats, team rosters, and featured stories all in one place.
               </p>
 
-              <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
+              <div style={heroActions}>
                 <a
                   href="/schedule"
                   style={{
-                    textDecoration: "none",
+                    ...heroButtonBase,
                     color: "#082f49",
                     background: "linear-gradient(180deg, #67e8f9 0%, #22d3ee 100%)",
-                    padding: "10px 18px",
-                    borderRadius: 14,
-                    fontWeight: 800,
                     boxShadow: "0 0 16px rgba(34,211,238,0.18)",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    minWidth: 190,
-                    minHeight: 58,
-                    lineHeight: 1.1,
-                    textAlign: "center",
                   }}
                 >
-                  <span style={{ fontSize: 20, fontWeight: 800 }}>View Schedule</span>
-                  <span
-                    style={{
-                      fontSize: 11,
-                      fontWeight: 700,
-                      marginTop: 4,
-                      opacity: 0.8,
-                      letterSpacing: "0.01em",
-                    }}
-                  >
+                  <span style={heroButtonTitle}>View Schedule</span>
+                  <span style={heroButtonSubtitle}>
                     (Link it to your Google Calendar)
                   </span>
                 </a>
@@ -409,40 +435,28 @@ export default async function HomePage() {
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{
-                    textDecoration: "none",
+                    ...heroButtonBase,
                     color: "#082f49",
                     background: "linear-gradient(180deg, #a5f3fc 0%, #67e8f9 100%)",
-                    padding: "16px 18px",
-                    borderRadius: 14,
-                    fontWeight: 800,
-                    marginTop: 8,
                     boxShadow: "0 0 16px rgba(34,211,238,0.18)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    textAlign: "center",
                   }}
                 >
-                  Printable Waiver
+                  <span style={heroButtonTitle}>Printable Waiver</span>
+                  <span style={heroButtonSubtitle}>Download PDF Form</span>
                 </a>
 
                 <a
                   href="/news"
                   style={{
-                    textDecoration: "none",
+                    ...heroButtonBase,
                     color: "#ffffff",
                     background: "rgba(8,20,42,0.58)",
                     border: "1px solid rgba(34,211,238,0.12)",
-                    padding: "13px 18px",
-                    borderRadius: 14,
-                    fontWeight: 700,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    textAlign: "center",
+                    boxShadow: "0 0 16px rgba(34,211,238,0.10)",
                   }}
                 >
-                  Recent News
+                  <span style={heroButtonTitle}>Recent News</span>
+                  <span style={heroButtonSubtitle}>Game recaps and updates</span>
                 </a>
               </div>
             </div>
@@ -494,7 +508,7 @@ export default async function HomePage() {
                           flexDirection: "column",
                           alignItems: "center",
                           textAlign: "center",
-                          gap: 8,
+                          gap: 10,
                         }}
                       >
                         <img
@@ -528,7 +542,7 @@ export default async function HomePage() {
                           flexDirection: "column",
                           alignItems: "center",
                           textAlign: "center",
-                          gap: 8,
+                          gap: 10,
                         }}
                       >
                         <img
