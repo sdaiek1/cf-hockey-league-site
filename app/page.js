@@ -159,6 +159,19 @@ export default async function HomePage() {
       .slice(0, 4);
   }
 
+  function formatGameDate(dateString) {
+    if (!dateString) return "";
+
+    const d = new Date(`${dateString}T12:00:00`);
+
+    return d.toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+  }
+
   const shell = {
     maxWidth: 1220,
     margin: "0 auto",
@@ -454,8 +467,16 @@ export default async function HomePage() {
               <div style={{ display: "grid", gap: 12 }}>
                 {upcomingGames.map((game) => (
                   <div key={game.id} style={subCard}>
-                    <div style={{ color: "#67e8f9", fontSize: 13, fontWeight: 700 }}>
-                      {game.game_date}
+                    <div
+                      style={{
+                        color: "#67e8f9",
+                        fontSize: 20,
+                        fontWeight: 800,
+                        textAlign: "center",
+                        marginBottom: 14,
+                      }}
+                    >
+                      {formatGameDate(game.game_date)}
                     </div>
 
                     <div
@@ -464,7 +485,7 @@ export default async function HomePage() {
                         gridTemplateColumns: "1fr auto 1fr",
                         alignItems: "center",
                         gap: 14,
-                        marginTop: 10,
+                        marginTop: 4,
                       }}
                     >
                       <div
@@ -525,7 +546,15 @@ export default async function HomePage() {
                       </div>
                     </div>
 
-                    <div style={{ color: "#cbd5e1", marginTop: 12 }}>
+                    <div
+                      style={{
+                        color: "#cbd5e1",
+                        marginTop: 16,
+                        fontSize: 20,
+                        fontWeight: 600,
+                        textAlign: "center",
+                      }}
+                    >
                       {game.game_time || "TBD"} • {game.rink || "Codey Arena"} • {game.status}
                     </div>
                   </div>
