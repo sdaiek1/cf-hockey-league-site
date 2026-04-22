@@ -17,6 +17,21 @@ function normalizePosition(position = "") {
   return String(position).trim().toLowerCase();
 }
 
+function getTeamLogoSrc(teamName = "") {
+  const TEAM_LOGOS = {
+    "Team Rasta": "/Rasta_Logo.JPG",
+    "Zero Pucks Given": "/ZPG_Logo.PNG",
+    "Mayhem": "/Mayhem_Logo.png",
+    "Swiss Army": "/Swiss_Logo.PNG",
+    "WCFD": "/WCFD_Logo.PNG",
+    "H-Town Assassins": "/logo.png",
+    "Replacements": "/logo.png",
+    "Venom": "/Venom_Logo.JPG",
+  };
+
+  return TEAM_LOGOS[teamName] || "/logo.png";
+}
+
 export default async function RosterPage() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -192,6 +207,31 @@ export default async function RosterPage() {
                   >
                     {teams.map((team) => (
                       <div key={team.id} style={teamCard}>
+                        <div
+                          style={{
+                            width: "100%",
+                            height: 100,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            marginBottom: 14,
+                            background: "rgba(255,255,255,0.02)",
+                            borderRadius: 14,
+                            border: "1px solid rgba(148,163,184,0.10)",
+                            padding: 10,
+                          }}
+                        >
+                          <img
+                            src={getTeamLogoSrc(team.name)}
+                            alt={`${team.name} logo`}
+                            style={{
+                              maxWidth: "100%",
+                              maxHeight: 80,
+                              objectFit: "contain",
+                            }}
+                          />
+                        </div>
+
                         <div
                           style={{
                             fontSize: 24,
