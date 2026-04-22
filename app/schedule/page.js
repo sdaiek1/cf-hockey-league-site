@@ -363,8 +363,8 @@ export default async function SchedulePage({ searchParams }) {
                           src={getTeamLogoSrc(game.home_team?.name)}
                           alt={`${game.home_team?.name || "Home team"} logo`}
                           style={{
-                            width: 75,
-                            height: 75,
+                            width: 100,
+                            height: 100,
                             objectFit: "contain",
                           }}
                         />
