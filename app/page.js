@@ -501,8 +501,8 @@ export default async function HomePage() {
                           src={getTeamLogoSrc(game.home_team?.name)}
                           alt={`${game.home_team?.name || "Home team"} logo`}
                           style={{
-                            width: 65,
-                            height: 65,
+                            width: 68,
+                            height: 68,
                             objectFit: "contain",
                           }}
                         />
@@ -535,8 +535,8 @@ export default async function HomePage() {
                           src={getTeamLogoSrc(game.away_team?.name)}
                           alt={`${game.away_team?.name || "Away team"} logo`}
                           style={{
-                            width: 65,
-                            height: 65,
+                            width: 68,
+                            height: 68,
                             objectFit: "contain",
                           }}
                         />
