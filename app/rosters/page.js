@@ -25,7 +25,7 @@ function getTeamLogoSrc(teamName = "") {
     "Swiss Army": "/Swiss_Logo.PNG",
     "WCFD": "/WCFD_Logo.PNG",
     "H-Town Assassins": "/logo.png",
-    "Replacements": "/logo.png",
+    "Replacements": "/Replacements_Logo.png",
     "Venom": "/Venom_Logo.JPG",
   };
 
