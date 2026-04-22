@@ -434,84 +434,91 @@ export default async function HomePage() {
             <h2 style={sectionTitle}>Upcoming Games</h2>
             <p style={sectionText}>The next games on the league calendar.</p>
 
-           {upcomingGames.map((game) => (
-            <div key={game.id} style={subCard}>
-              <div style={{ color: "#67e8f9", fontSize: 13, fontWeight: 700 }}>
-                {game.game_date}
-              </div>
-          
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr auto 1fr",
-                  alignItems: "center",
-                  gap: 14,
-                  marginTop: 10,
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    textAlign: "center",
-                    gap: 8,
-                  }}
-                >
-                  <img
-                    src={getTeamLogoSrc(game.home_team?.name)}
-                    alt={`${game.home_team?.name || "Home team"} logo`}
-                    style={{
-                      width: 56,
-                      height: 56,
-                      objectFit: "contain",
-                    }}
-                  />
-                  <div style={{ fontSize: 18, fontWeight: 800, lineHeight: 1.2 }}>
-                    {game.home_team?.name}
+            {upcomingGames.length === 0 ? (
+              <p style={{ color: "#cbd5e1" }}>No upcoming games posted yet.</p>
+            ) : (
+              <div style={{ display: "grid", gap: 12 }}>
+                {upcomingGames.map((game) => (
+                  <div key={game.id} style={subCard}>
+                    <div style={{ color: "#67e8f9", fontSize: 13, fontWeight: 700 }}>
+                      {game.game_date}
+                    </div>
+
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "1fr auto 1fr",
+                        alignItems: "center",
+                        gap: 14,
+                        marginTop: 10,
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          textAlign: "center",
+                          gap: 8,
+                        }}
+                      >
+                        <img
+                          src={getTeamLogoSrc(game.home_team?.name)}
+                          alt={`${game.home_team?.name || "Home team"} logo`}
+                          style={{
+                            width: 56,
+                            height: 56,
+                            objectFit: "contain",
+                          }}
+                        />
+                        <div style={{ fontSize: 18, fontWeight: 800, lineHeight: 1.2 }}>
+                          {game.home_team?.name}
+                        </div>
+                      </div>
+
+                      <div
+                        style={{
+                          fontSize: 18,
+                          fontWeight: 800,
+                          color: "#94a3b8",
+                          textAlign: "center",
+                        }}
+                      >
+                        vs
+                      </div>
+
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          textAlign: "center",
+                          gap: 8,
+                        }}
+                      >
+                        <img
+                          src={getTeamLogoSrc(game.away_team?.name)}
+                          alt={`${game.away_team?.name || "Away team"} logo`}
+                          style={{
+                            width: 56,
+                            height: 56,
+                            objectFit: "contain",
+                          }}
+                        />
+                        <div style={{ fontSize: 18, fontWeight: 800, lineHeight: 1.2 }}>
+                          {game.away_team?.name}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div style={{ color: "#cbd5e1", marginTop: 12 }}>
+                      {game.game_time || "TBD"} • {game.rink || "Codey Arena"} • {game.status}
+                    </div>
                   </div>
-                </div>
-          
-                <div
-                  style={{
-                    fontSize: 18,
-                    fontWeight: 800,
-                    color: "#94a3b8",
-                    textAlign: "center",
-                  }}
-                >
-                  vs
-                </div>
-          
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    textAlign: "center",
-                    gap: 8,
-                  }}
-                >
-                  <img
-                    src={getTeamLogoSrc(game.away_team?.name)}
-                    alt={`${game.away_team?.name || "Away team"} logo`}
-                    style={{
-                      width: 56,
-                      height: 56,
-                      objectFit: "contain",
-                    }}
-                  />
-                  <div style={{ fontSize: 18, fontWeight: 800, lineHeight: 1.2 }}>
-                    {game.away_team?.name}
-                  </div>
-                </div>
+                ))}
               </div>
-          
-              <div style={{ color: "#cbd5e1", marginTop: 12 }}>
-                {game.game_time || "TBD"} • {game.rink || "Codey Arena"} • {game.status}
-              </div>
-            </div>
-          ))}
+            )}
+          </div>
 
           <div style={card}>
             <h2 style={sectionTitle}>Top 4 Standings</h2>
@@ -676,13 +683,14 @@ export default async function HomePage() {
               </div>
             </div>
           </div>
+
           <div style={card}>
             <h2 style={sectionTitle}>The Hockey Truck</h2>
             <p style={sectionText}>
               Providing ice hockey pro-shop services like skate sharpening, and the sale
               of accessories on the go!
             </p>
-          
+
             <div
               style={{
                 ...subCard,
@@ -717,7 +725,7 @@ export default async function HomePage() {
                   }}
                 />
               </div>
-          
+
               <div
                 style={{
                   flex: 1,
@@ -736,7 +744,7 @@ export default async function HomePage() {
                 >
                   The Hockey Truck LLC.
                 </div>
-          
+
                 <p
                   style={{
                     color: "#e2e8f0",
