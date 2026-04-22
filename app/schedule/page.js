@@ -5,6 +5,21 @@ import { createClient } from "@supabase/supabase-js";
 
 const EVENT_DURATION_MINUTES = 90;
 
+function getTeamLogoSrc(teamName = "") {
+  const TEAM_LOGOS = {
+    "Team Rasta": "/Rasta_Logo.JPG",
+    "Zero Pucks Given": "/ZPG_Logo.PNG",
+    "Mayhem": "/Mayhem_Logo.png",
+    "Swiss Army": "/Swiss_Logo.PNG",
+    "WCFD": "/WCFD_Logo.PNG",
+    "H-Town Assassins": "/logo.png",
+    "Replacements": "/logo.png",
+    "Venom": "/Venom_Logo.JPG",
+  };
+
+  return TEAM_LOGOS[teamName] || "/logo.png";
+}
+
 function parseGameDateTime(gameDate, gameTime) {
   if (!gameDate || !gameTime) return null;
 
@@ -91,9 +106,10 @@ function formatDisplayDate(gameDate) {
   if (Number.isNaN(date.getTime())) return gameDate;
 
   return date.toLocaleDateString("en-US", {
-    weekday: "short",
-    month: "short",
-    day: "numeric",
+    weekday: "long",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
   });
 }
 
@@ -316,11 +332,10 @@ export default async function SchedulePage({ searchParams }) {
                     <div
                       style={{
                         color: "#67e8f9",
-                        fontSize: 13,
+                        fontSize: 20,
                         fontWeight: 800,
-                        marginBottom: 8,
-                        textTransform: "uppercase",
-                        letterSpacing: "0.06em",
+                        textAlign: "center",
+                        marginBottom: 14,
                       }}
                     >
                       {formatDisplayDate(game.game_date)}
@@ -328,35 +343,94 @@ export default async function SchedulePage({ searchParams }) {
 
                     <div
                       style={{
-                        fontSize: 28,
-                        fontWeight: 800,
-                        lineHeight: 1.15,
-                        marginBottom: 10,
+                        display: "grid",
+                        gridTemplateColumns: "1fr auto 1fr",
+                        alignItems: "center",
+                        gap: 14,
+                        marginTop: 4,
                       }}
                     >
-                      {game.home_team?.name} vs {game.away_team?.name}
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          textAlign: "center",
+                          gap: 10,
+                        }}
+                      >
+                        <img
+                          src={getTeamLogoSrc(game.home_team?.name)}
+                          alt={`${game.home_team?.name || "Home team"} logo`}
+                          style={{
+                            width: 68,
+                            height: 68,
+                            objectFit: "contain",
+                          }}
+                        />
+                        <div style={{ fontSize: 18, fontWeight: 800, lineHeight: 1.2 }}>
+                          {game.home_team?.name}
+                        </div>
+                      </div>
+
+                      <div
+                        style={{
+                          fontSize: 18,
+                          fontWeight: 800,
+                          color: "#94a3b8",
+                          textAlign: "center",
+                        }}
+                      >
+                        vs
+                      </div>
+
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          textAlign: "center",
+                          gap: 10,
+                        }}
+                      >
+                        <img
+                          src={getTeamLogoSrc(game.away_team?.name)}
+                          alt={`${game.away_team?.name || "Away team"} logo`}
+                          style={{
+                            width: 68,
+                            height: 68,
+                            objectFit: "contain",
+                          }}
+                        />
+                        <div style={{ fontSize: 18, fontWeight: 800, lineHeight: 1.2 }}>
+                          {game.away_team?.name}
+                        </div>
+                      </div>
                     </div>
 
                     <div
                       style={{
                         color: "#cbd5e1",
-                        fontSize: 16,
-                        lineHeight: 1.6,
+                        marginTop: 16,
+                        fontSize: 20,
+                        fontWeight: 600,
+                        textAlign: "center",
                       }}
                     >
-                      {game.game_time || "TBD"} • {game.rink || "Codey Arena"} •{" "}
-                      {game.status}
+                      {game.game_time || "TBD"} • {game.rink || "Codey Arena"} • {game.status}
                     </div>
 
                     {googleCalendarUrl ? (
-                      <a
-                        href={googleCalendarUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        style={calendarButton}
-                      >
-                        Add to Google Calendar
-                      </a>
+                      <div style={{ textAlign: "center" }}>
+                        <a
+                          href={googleCalendarUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          style={calendarButton}
+                        >
+                          Add to Google Calendar
+                        </a>
+                      </div>
                     ) : (
                       <div
                         style={{
@@ -364,6 +438,7 @@ export default async function SchedulePage({ searchParams }) {
                           color: "#94a3b8",
                           fontSize: 13,
                           fontStyle: "italic",
+                          textAlign: "center",
                         }}
                       >
                         Add-to-calendar button will appear once a game time is set.
