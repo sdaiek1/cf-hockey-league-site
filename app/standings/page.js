@@ -91,6 +91,11 @@ for (const team of teams) {
     home.gp += 1;
     away.gp += 1;
 
+    home.gf += Number(game.home_score || 0);
+    home.ga += Number(game.away_score || 0);
+    away.gf += Number(game.away_score || 0);
+    away.ga += Number(game.home_score || 0);
+
     const homeWon = game.home_score > game.away_score;
     const awayWon = game.away_score > game.home_score;
     const tied = game.home_score === game.away_score;
