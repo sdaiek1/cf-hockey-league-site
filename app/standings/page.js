@@ -59,20 +59,20 @@ export default async function StandingsPage() {
     gamesError = "Missing Supabase environment variables.";
   }
 
-const standingsMap = {};
-for (const team of teams) {
-  standingsMap[team.name] = {
-    team: team.name,
-    gp: 0,
-    w: 0,
-    l: 0,
-    otl: 0,
-    t: 0,
-    pts: 0,
-    gf: 0,
-    ga: 0,
-  };
-}
+  const standingsMap = {};
+  for (const team of teams) {
+    standingsMap[team.name] = {
+      team: team.name,
+      gp: 0,
+      w: 0,
+      l: 0,
+      otl: 0,
+      t: 0,
+      pts: 0,
+      gf: 0,
+      ga: 0,
+    };
+  }
 
   for (const game of games) {
     if (
@@ -198,6 +198,8 @@ for (const team of teams) {
                     <th style={thStyle}>L</th>
                     <th style={thStyle}>OTL</th>
                     <th style={thStyle}>T</th>
+                    <th style={thStyle}>GF</th>
+                    <th style={thStyle}>GA</th>
                     <th style={thStyle}>PTS</th>
                   </tr>
                 </thead>
@@ -221,6 +223,8 @@ for (const team of teams) {
                       <td style={tdStyle}>{row.l}</td>
                       <td style={tdStyle}>{row.otl}</td>
                       <td style={tdStyle}>{row.t}</td>
+                      <td style={tdStyle}>{row.gf}</td>
+                      <td style={tdStyle}>{row.ga}</td>
                       <td style={{ ...tdStyle, color: "#67e8f9", fontWeight: 800 }}>
                         {row.pts}
                       </td>
