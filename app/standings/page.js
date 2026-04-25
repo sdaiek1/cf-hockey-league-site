@@ -59,18 +59,20 @@ export default async function StandingsPage() {
     gamesError = "Missing Supabase environment variables.";
   }
 
-  const standingsMap = {};
-  for (const team of teams) {
-    standingsMap[team.name] = {
-      team: team.name,
-      gp: 0,
-      w: 0,
-      l: 0,
-      otl: 0,
-      t: 0,
-      pts: 0,
-    };
-  }
+const standingsMap = {};
+for (const team of teams) {
+  standingsMap[team.name] = {
+    team: team.name,
+    gp: 0,
+    w: 0,
+    l: 0,
+    otl: 0,
+    t: 0,
+    pts: 0,
+    gf: 0,
+    ga: 0,
+  };
+}
 
   for (const game of games) {
     if (
