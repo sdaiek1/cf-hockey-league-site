@@ -78,7 +78,7 @@ export default async function HomePage() {
       .maybeSingle();
 
     recentNews = newsPosts.slice(0, 3);
-    upcomingGames = games.filter((game) => game.status !== "Final").slice(0, 3);
+    upcomingGames = games.filter((game) => game.status !== "Final").slice(0, 4);
     playerOfWeek = playerOfWeekRow;
 
     const standingsMap = {};
@@ -224,7 +224,7 @@ export default async function HomePage() {
     alignItems: "stretch",
     marginTop: 6,
   };
-  
+
   const heroButtonBase = {
     textDecoration: "none",
     padding: "10px 14px",
@@ -239,12 +239,12 @@ export default async function HomePage() {
     minHeight: 64,
     lineHeight: 1.08,
   };
-  
+
   const heroButtonTitle = {
     fontSize: 16,
     fontWeight: 800,
   };
-  
+
   const heroButtonSubtitle = {
     fontSize: 10,
     fontWeight: 700,
@@ -576,281 +576,273 @@ export default async function HomePage() {
             )}
           </div>
 
-          <div style={card}>
-            <h2 style={sectionTitle}>Standings</h2>
-            <p style={sectionText}>Current standings for all teams.</p>
+          <div style={{ display: "grid", gap: 20 }}>
+            <div style={card}>
+              <h2 style={sectionTitle}>Standings</h2>
+              <p style={sectionText}>Current standings for all teams.</p>
 
-            {standings.length === 0 ? (
-              <p style={{ color: "#cbd5e1" }}>No standings yet.</p>
-            ) : (
-              <div
-                style={{
-                  overflowX: "auto",
-                  background: "rgba(2,6,23,0.20)",
-                  borderRadius: 16,
-                  padding: 12,
-                  border: "1px solid rgba(34,211,238,0.10)",
-                }}
-              >
-                <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                  <thead>
-                    <tr style={{ color: "#94a3b8", textAlign: "left" }}>
-                      <th style={{ paddingBottom: 10 }}>Team</th>
-                      <th>GP</th>
-                      <th>W</th>
-                      <th>PTS</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {standings.map((row) => (
-                      <tr key={row.team}>
-                        <td
-                          style={{
-                            padding: "10px 0",
-                            fontWeight: 700,
-                            borderTop: "1px solid rgba(51,65,85,0.30)",
-                          }}
-                        >
-                          {row.team}
-                        </td>
-                        <td style={{ borderTop: "1px solid rgba(51,65,85,0.30)" }}>
-                          {row.gp}
-                        </td>
-                        <td style={{ borderTop: "1px solid rgba(51,65,85,0.30)" }}>
-                          {row.w}
-                        </td>
-                        <td
-                          style={{
-                            color: "#67e8f9",
-                            fontWeight: 800,
-                            borderTop: "1px solid rgba(51,65,85,0.30)",
-                          }}
-                        >
-                          {row.pts}
-                        </td>
+              {standings.length === 0 ? (
+                <p style={{ color: "#cbd5e1" }}>No standings yet.</p>
+              ) : (
+                <div
+                  style={{
+                    overflowX: "auto",
+                    background: "rgba(2,6,23,0.20)",
+                    borderRadius: 16,
+                    padding: 12,
+                    border: "1px solid rgba(34,211,238,0.10)",
+                  }}
+                >
+                  <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                    <thead>
+                      <tr style={{ color: "#94a3b8", textAlign: "left" }}>
+                        <th style={{ paddingBottom: 10 }}>Team</th>
+                        <th>GP</th>
+                        <th>W</th>
+                        <th>PTS</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
+                    </thead>
+                    <tbody>
+                      {standings.map((row) => (
+                        <tr key={row.team}>
+                          <td
+                            style={{
+                              padding: "10px 0",
+                              fontWeight: 700,
+                              borderTop: "1px solid rgba(51,65,85,0.30)",
+                            }}
+                          >
+                            {row.team}
+                          </td>
+                          <td style={{ borderTop: "1px solid rgba(51,65,85,0.30)" }}>
+                            {row.gp}
+                          </td>
+                          <td style={{ borderTop: "1px solid rgba(51,65,85,0.30)" }}>
+                            {row.w}
+                          </td>
+                          <td
+                            style={{
+                              color: "#67e8f9",
+                              fontWeight: 800,
+                              borderTop: "1px solid rgba(51,65,85,0.30)",
+                            }}
+                          >
+                            {row.pts}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
 
-            <a
-              href="/standings"
-              style={{
-                display: "inline-block",
-                marginTop: 16,
-                color: "#67e8f9",
-                textDecoration: "none",
-                fontWeight: 800,
-              }}
-            >
-              Full standings →
-            </a>
-          </div>
-        </section>
-
-        <section
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: 20,
-            marginBottom: 24,
-            alignItems: "start",
-          }}
-        >
-          <div style={card}>
-            <h2 style={sectionTitle}>Player of the Week</h2>
-            <p
-              style={{
-                color: "rgba(248, 250, 252, 0.82)",
-                marginTop: 0,
-                marginBottom: 18,
-                lineHeight: 1.6,
-                fontSize: 13,
-                fontStyle: "italic",
-                fontWeight: 600,
-              }}
-            >
-              Spouse doesn&apos;t believe you? Show them this! Look at those stats!
-            </p>
-
-            <div
-              style={{
-                ...subCard,
-                display: "flex",
-                gap: 18,
-                alignItems: "center",
-                minHeight: 172,
-              }}
-            >
-              <img
-                src={playerOfWeek?.image_url || "/player-of-week-placeholder.png"}
-                alt={playerOfWeek?.player_name || "Player of the Week"}
+              <a
+                href="/standings"
                 style={{
-                  width: 140,
-                  height: 140,
-                  objectFit: "cover",
-                  borderRadius: 18,
-                  flexShrink: 0,
-                }}
-              />
-
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  minHeight: 140,
+                  display: "inline-block",
+                  marginTop: 16,
+                  color: "#67e8f9",
+                  textDecoration: "none",
+                  fontWeight: 800,
                 }}
               >
-                <p
-                  style={{
-                    margin: 0,
-                    fontSize: 34,
-                    fontWeight: 800,
-                    lineHeight: 1.05,
-                  }}
-                >
-                  {playerOfWeek?.player_name || "Player Name Here"}
-                </p>
-
-                <p
-                  style={{
-                    marginTop: 10,
-                    marginBottom: 0,
-                    color: "#67e8f9",
-                    fontSize: 16,
-                    fontWeight: 700,
-                  }}
-                >
-                  {playerOfWeek
-                    ? `${playerOfWeek.team_name || "Team Name"} • ${playerOfWeek.position || "Position"}`
-                    : "Team Name • Position"}
-                </p>
-
-                <p
-                  style={{
-                    marginTop: 18,
-                    marginBottom: 0,
-                    fontSize: 16,
-                    lineHeight: 1.5,
-                    color: "#e5e7eb",
-                  }}
-                >
-                  {playerOfWeek?.blurb ||
-                    "Add a weekly featured player here with a short writeup about a big performance, great sportsmanship, or standout week."}
-                </p>
-              </div>
+                Full standings →
+              </a>
             </div>
-          </div>
 
-          <div style={card}>
-            <h2 style={sectionTitle}>The Hockey Truck</h2>
-            <p style={sectionText}>
-              Providing ice hockey pro-shop services like skate sharpening, and the sale
-              of accessories on the go!
-            </p>
+            <div style={card}>
+              <h2 style={sectionTitle}>Player of the Week</h2>
+              <p
+                style={{
+                  color: "rgba(248, 250, 252, 0.82)",
+                  marginTop: 0,
+                  marginBottom: 18,
+                  lineHeight: 1.6,
+                  fontSize: 13,
+                  fontStyle: "italic",
+                  fontWeight: 600,
+                }}
+              >
+                Spouse doesn&apos;t believe you? Show them this! Look at those stats!
+              </p>
 
-            <div
-              style={{
-                ...subCard,
-                display: "flex",
-                gap: 22,
-                alignItems: "center",
-                minHeight: 172,
-              }}
-            >
               <div
                 style={{
-                  width: 250,
-                  height: 120,
-                  flexShrink: 0,
-                  borderRadius: 18,
-                  overflow: "hidden",
-                  background: "#000",
-                  border: "1px solid rgba(34,211,238,0.12)",
+                  ...subCard,
                   display: "flex",
+                  gap: 18,
                   alignItems: "center",
-                  justifyContent: "center",
-                  padding: 10,
+                  minHeight: 172,
                 }}
               >
                 <img
-                  src="/hockeytruck.png"
-                  alt="The Hockey Truck"
+                  src={playerOfWeek?.image_url || "/player-of-week-placeholder.png"}
+                  alt={playerOfWeek?.player_name || "Player of the Week"}
                   style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "contain",
+                    width: 140,
+                    height: 140,
+                    objectFit: "cover",
+                    borderRadius: 18,
+                    flexShrink: 0,
                   }}
                 />
-              </div>
 
-              <div
-                style={{
-                  flex: 1,
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                }}
-              >
                 <div
                   style={{
-                    fontSize: 26,
-                    fontWeight: 800,
-                    marginBottom: 14,
-                    lineHeight: 1.15,
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    minHeight: 140,
                   }}
                 >
-                  The Hockey Truck LLC.
-                </div>
+                  <p
+                    style={{
+                      margin: 0,
+                      fontSize: 34,
+                      fontWeight: 800,
+                      lineHeight: 1.05,
+                    }}
+                  >
+                    {playerOfWeek?.player_name || "Player Name Here"}
+                  </p>
 
-                <p
-                  style={{
-                    color: "#e2e8f0",
-                    lineHeight: 1.8,
-                    margin: 0,
-                    fontSize: 16,
-                  }}
-                >
-                  <strong>Phone:</strong>{" "}
-                  <a
-                    href="tel:9736464273"
-                    style={{ color: "#67e8f9", textDecoration: "none" }}
+                  <p
+                    style={{
+                      marginTop: 10,
+                      marginBottom: 0,
+                      color: "#67e8f9",
+                      fontSize: 16,
+                      fontWeight: 700,
+                    }}
                   >
-                    973-646-4273
-                  </a>
-                  <br />
-                  <strong>Email:</strong>{" "}
-                  <a
-                    href="mailto:thehockeytruck@gmail.com"
-                    style={{ color: "#67e8f9", textDecoration: "none" }}
+                    {playerOfWeek
+                      ? `${playerOfWeek.team_name || "Team Name"} • ${playerOfWeek.position || "Position"}`
+                      : "Team Name • Position"}
+                  </p>
+
+                  <p
+                    style={{
+                      marginTop: 18,
+                      marginBottom: 0,
+                      fontSize: 16,
+                      lineHeight: 1.5,
+                      color: "#e5e7eb",
+                    }}
                   >
-                    thehockeytruck@gmail.com
-                  </a>
-                  <br />
-                  <strong>Instagram:</strong>{" "}
-                  <a
-                    href="https://www.instagram.com/thehockeytruck"
-                    target="_blank"
-                    rel="noreferrer"
-                    style={{ color: "#67e8f9", textDecoration: "none" }}
-                  >
-                    thehockeytruck
-                  </a>
-                  <br />
-                  <strong>Website:</strong>{" "}
-                  <a
-                    href="https://www.thehockeytruck.com"
-                    target="_blank"
-                    rel="noreferrer"
-                    style={{ color: "#67e8f9", textDecoration: "none" }}
-                  >
-                    www.thehockeytruck.com
-                  </a>
-                </p>
+                    {playerOfWeek?.blurb ||
+                      "Add a weekly featured player here with a short writeup about a big performance, great sportsmanship, or standout week."}
+                  </p>
+                </div>
               </div>
+            </div>
+          </div>
+        </section>
+
+        <section style={{ ...card, marginBottom: 24 }}>
+          <h2 style={sectionTitle}>The Hockey Truck</h2>
+          <p style={sectionText}>
+            Providing ice hockey pro-shop services like skate sharpening, and the sale
+            of accessories on the go!
+          </p>
+
+          <div
+            style={{
+              ...subCard,
+              display: "flex",
+              gap: 24,
+              alignItems: "center",
+              minHeight: 180,
+            }}
+          >
+            <div
+              style={{
+                width: 320,
+                height: 150,
+                flexShrink: 0,
+                borderRadius: 18,
+                overflow: "hidden",
+                background: "#000",
+                border: "1px solid rgba(34,211,238,0.12)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: 12,
+              }}
+            >
+              <img
+                src="/hockeytruck.png"
+                alt="The Hockey Truck"
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "contain",
+                }}
+              />
+            </div>
+
+            <div
+              style={{
+                flex: 1,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: 28,
+                  fontWeight: 800,
+                  marginBottom: 14,
+                  lineHeight: 1.15,
+                }}
+              >
+                The Hockey Truck LLC.
+              </div>
+
+              <p
+                style={{
+                  color: "#e2e8f0",
+                  lineHeight: 1.85,
+                  margin: 0,
+                  fontSize: 17,
+                }}
+              >
+                <strong>Phone:</strong>{" "}
+                <a
+                  href="tel:9736464273"
+                  style={{ color: "#67e8f9", textDecoration: "none" }}
+                >
+                  973-646-4273
+                </a>
+                <br />
+                <strong>Email:</strong>{" "}
+                <a
+                  href="mailto:thehockeytruck@gmail.com"
+                  style={{ color: "#67e8f9", textDecoration: "none" }}
+                >
+                  thehockeytruck@gmail.com
+                </a>
+                <br />
+                <strong>Instagram:</strong>{" "}
+                <a
+                  href="https://www.instagram.com/thehockeytruck"
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ color: "#67e8f9", textDecoration: "none" }}
+                >
+                  thehockeytruck
+                </a>
+                <br />
+                <strong>Website:</strong>{" "}
+                <a
+                  href="https://www.thehockeytruck.com"
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ color: "#67e8f9", textDecoration: "none" }}
+                >
+                  www.thehockeytruck.com
+                </a>
+              </p>
             </div>
           </div>
         </section>
