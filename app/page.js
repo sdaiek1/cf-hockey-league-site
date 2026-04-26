@@ -171,7 +171,7 @@ export default async function HomePage() {
   }
 
   const shell = {
-    maxWidth: 1280,
+    maxWidth: 1220,
     margin: "0 auto",
     padding: 24,
     color: "#ffffff",
@@ -334,14 +334,14 @@ export default async function HomePage() {
               position: "relative",
               zIndex: 1,
               display: "grid",
-              gridTemplateColumns: "0.9fr 1.1fr",
-              gap: 24,
+              gridTemplateColumns: "0.8fr 1.2fr",
+              gap: 22,
               alignItems: "center",
             }}
           >
             <div
               style={{
-                minHeight: 300,
+                minHeight: 260,
                 borderRadius: 22,
                 background:
                   "radial-gradient(circle at center, rgba(34,211,238,0.14) 0%, rgba(3,15,33,0.28) 42%, rgba(2,6,23,0.88) 100%)",
@@ -349,7 +349,7 @@ export default async function HomePage() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                padding: 24,
+                padding: 20,
                 boxShadow:
                   "inset 0 0 60px rgba(34,211,238,0.07), 0 0 24px rgba(34,211,238,0.05)",
               }}
@@ -359,14 +359,14 @@ export default async function HomePage() {
                 alt="Cold Fusion Summer Hockey League logo"
                 style={{
                   maxWidth: "100%",
-                  maxHeight: 260,
+                  maxHeight: 230,
                   objectFit: "contain",
                   filter: "drop-shadow(0 0 20px rgba(34,211,238,0.18))",
                 }}
               />
             </div>
 
-            <div style={{ textAlign: "center" }}>
+            <div>
               <div style={heroBadgeWrap}>
                 <div
                   style={{
@@ -387,7 +387,7 @@ export default async function HomePage() {
 
               <h1
                 style={{
-                  fontSize: 32,
+                  fontSize: 30,
                   lineHeight: 1.0,
                   marginTop: 0,
                   marginBottom: 12,
@@ -401,11 +401,11 @@ export default async function HomePage() {
 
               <p
                 style={{
-                  fontSize: 18,
+                  fontSize: 17,
                   color: "#dbe7f3",
-                  maxWidth: 700,
-                  lineHeight: 1.65,
-                  margin: "0 auto 20px auto",
+                  maxWidth: 680,
+                  lineHeight: 1.6,
+                  marginBottom: 20,
                 }}
               >
                 Competitive adult summer hockey with league news, upcoming games,
@@ -464,9 +464,10 @@ export default async function HomePage() {
         <section
           style={{
             display: "grid",
-            gridTemplateColumns: "1.15fr 0.85fr",
+            gridTemplateColumns: "1.1fr 0.9fr",
             gap: 20,
             marginBottom: 24,
+            alignItems: "start",
           }}
         >
           <div style={card}>
@@ -655,6 +656,7 @@ export default async function HomePage() {
             gridTemplateColumns: "1fr 1fr",
             gap: 20,
             marginBottom: 24,
+            alignItems: "start",
           }}
         >
           <div style={card}>
@@ -677,17 +679,17 @@ export default async function HomePage() {
               style={{
                 ...subCard,
                 display: "flex",
-                gap: 22,
+                gap: 18,
                 alignItems: "center",
-                minHeight: 190,
+                minHeight: 172,
               }}
             >
               <img
                 src={playerOfWeek?.image_url || "/player-of-week-placeholder.png"}
                 alt={playerOfWeek?.player_name || "Player of the Week"}
                 style={{
-                  width: 165,
-                  height: 165,
+                  width: 140,
+                  height: 140,
                   objectFit: "cover",
                   borderRadius: 18,
                   flexShrink: 0,
@@ -699,13 +701,13 @@ export default async function HomePage() {
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "center",
-                  minHeight: 160,
+                  minHeight: 140,
                 }}
               >
                 <p
                   style={{
                     margin: 0,
-                    fontSize: 36,
+                    fontSize: 34,
                     fontWeight: 800,
                     lineHeight: 1.05,
                   }}
@@ -718,7 +720,7 @@ export default async function HomePage() {
                     marginTop: 10,
                     marginBottom: 0,
                     color: "#67e8f9",
-                    fontSize: 17,
+                    fontSize: 16,
                     fontWeight: 700,
                   }}
                 >
@@ -731,8 +733,8 @@ export default async function HomePage() {
                   style={{
                     marginTop: 18,
                     marginBottom: 0,
-                    fontSize: 17,
-                    lineHeight: 1.55,
+                    fontSize: 16,
+                    lineHeight: 1.5,
                     color: "#e5e7eb",
                   }}
                 >
@@ -756,13 +758,13 @@ export default async function HomePage() {
                 display: "flex",
                 gap: 22,
                 alignItems: "center",
-                minHeight: 190,
+                minHeight: 172,
               }}
             >
               <div
                 style={{
-                  width: 280,
-                  height: 145,
+                  width: 250,
+                  height: 120,
                   flexShrink: 0,
                   borderRadius: 18,
                   overflow: "hidden",
@@ -771,7 +773,7 @@ export default async function HomePage() {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  padding: 12,
+                  padding: 10,
                 }}
               >
                 <img
@@ -795,7 +797,7 @@ export default async function HomePage() {
               >
                 <div
                   style={{
-                    fontSize: 28,
+                    fontSize: 26,
                     fontWeight: 800,
                     marginBottom: 14,
                     lineHeight: 1.15,
@@ -809,7 +811,7 @@ export default async function HomePage() {
                     color: "#e2e8f0",
                     lineHeight: 1.8,
                     margin: 0,
-                    fontSize: 17,
+                    fontSize: 16,
                   }}
                 >
                   <strong>Phone:</strong>{" "}
@@ -863,30 +865,23 @@ export default async function HomePage() {
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+                gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
                 gap: 16,
               }}
             >
               {recentNews.map((post) => (
-                <div
-                  key={post.id}
-                  style={{
-                    ...subCard,
-                    minHeight: 220,
-                  }}
-                >
-                  <div style={{ fontSize: 26, fontWeight: 800, lineHeight: 1.2 }}>
+                <div key={post.id} style={subCard}>
+                  <div style={{ fontSize: 24, fontWeight: 800, lineHeight: 1.2 }}>
                     {post.title}
                   </div>
-                  <div style={{ color: "#67e8f9", marginTop: 8, fontSize: 15 }}>
+                  <div style={{ color: "#67e8f9", marginTop: 8 }}>
                     {new Date(post.created_at).toLocaleDateString()}
                   </div>
                   <div
                     style={{
                       color: "#e2e8f0",
                       marginTop: 12,
-                      lineHeight: 1.75,
-                      fontSize: 16,
+                      lineHeight: 1.7,
                       display: "-webkit-box",
                       WebkitLineClamp: 5,
                       WebkitBoxOrient: "vertical",
