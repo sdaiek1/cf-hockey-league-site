@@ -18,6 +18,18 @@ function getTeamLogoSrc(teamName = "") {
   return TEAM_LOGOS[teamName] || "/logo.png";
 }
 
+function getStarImageSrc(rank) {
+  if (rank === 1) return "/1st_Star.png";
+  if (rank === 2) return "/2nd_Star.png";
+  return "/3rd_Star.png";
+}
+
+function getStarLabel(rank) {
+  if (rank === 1) return "1st Star";
+  if (rank === 2) return "2nd Star";
+  return "3rd Star";
+}
+
 export default async function HomePage() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -70,10 +82,11 @@ export default async function HomePage() {
         team_name,
         position,
         blurb,
-        image_url
+        image_url,
+        star_rank
       `)
       .eq("is_active", true)
-      .order("created_at", { ascending: false })
+      .order("star_rank", { ascending: true })
       .limit(3);
 
     recentNews = newsPosts.slice(0, 3);
@@ -170,7 +183,13 @@ export default async function HomePage() {
   }
 
   const displayPlayers =
-    playersOfWeek.length > 0 ? playersOfWeek : [null, null, null];
+    playersOfWeek.length > 0
+      ? playersOfWeek
+      : [
+          { star_rank: 1, player_name: "Player 1", team_name: "Team A", position: "F", blurb: "Add player stats here." },
+          { star_rank: 2, player_name: "Player 2", team_name: "Team B", position: "F", blurb: "Add player stats here." },
+          { star_rank: 3, player_name: "Player 3", team_name: "Team C", position: "G", blurb: "Add player stats here." }
+        ];
 
   const shell = {
     maxWidth: 1220,
@@ -472,222 +491,110 @@ export default async function HomePage() {
             alignItems: "start",
           }}
         >
-          <div style={{ display: "grid", gap: 20 }}>
-            <div style={card}>
-              <h2 style={sectionTitle}>Upcoming Games</h2>
-              <p style={sectionText}>The next games on the league calendar.</p>
+          <div style={card}>
+            <h2 style={sectionTitle}>Upcoming Games</h2>
+            <p style={sectionText}>The next games on the league calendar.</p>
 
-              {upcomingGames.length === 0 ? (
-                <p style={{ color: "#cbd5e1" }}>No upcoming games posted yet.</p>
-              ) : (
-                <div style={{ display: "grid", gap: 12 }}>
-                  {upcomingGames.map((game) => (
-                    <div key={game.id} style={subCard}>
+            {upcomingGames.length === 0 ? (
+              <p style={{ color: "#cbd5e1" }}>No upcoming games posted yet.</p>
+            ) : (
+              <div style={{ display: "grid", gap: 12 }}>
+                {upcomingGames.map((game) => (
+                  <div key={game.id} style={subCard}>
+                    <div
+                      style={{
+                        color: "#67e8f9",
+                        fontSize: 20,
+                        fontWeight: 800,
+                        textAlign: "center",
+                        marginBottom: 14,
+                      }}
+                    >
+                      {formatGameDate(game.game_date)}
+                    </div>
+
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "1fr auto 1fr",
+                        alignItems: "center",
+                        gap: 14,
+                        marginTop: 4,
+                      }}
+                    >
                       <div
                         style={{
-                          color: "#67e8f9",
-                          fontSize: 20,
-                          fontWeight: 800,
-                          textAlign: "center",
-                          marginBottom: 14,
-                        }}
-                      >
-                        {formatGameDate(game.game_date)}
-                      </div>
-
-                      <div
-                        style={{
-                          display: "grid",
-                          gridTemplateColumns: "1fr auto 1fr",
+                          display: "flex",
+                          flexDirection: "column",
                           alignItems: "center",
-                          gap: 14,
-                          marginTop: 4,
+                          textAlign: "center",
+                          gap: 10,
                         }}
                       >
-                        <div
+                        <img
+                          src={getTeamLogoSrc(game.home_team?.name)}
+                          alt={`${game.home_team?.name || "Home team"} logo`}
                           style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            textAlign: "center",
-                            gap: 10,
+                            width: 68,
+                            height: 68,
+                            objectFit: "contain",
                           }}
-                        >
-                          <img
-                            src={getTeamLogoSrc(game.home_team?.name)}
-                            alt={`${game.home_team?.name || "Home team"} logo`}
-                            style={{
-                              width: 68,
-                              height: 68,
-                              objectFit: "contain",
-                            }}
-                          />
-                          <div style={{ fontSize: 18, fontWeight: 800, lineHeight: 1.2 }}>
-                            {game.home_team?.name}
-                          </div>
-                        </div>
-
-                        <div
-                          style={{
-                            fontSize: 18,
-                            fontWeight: 800,
-                            color: "#94a3b8",
-                            textAlign: "center",
-                          }}
-                        >
-                          vs
-                        </div>
-
-                        <div
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            textAlign: "center",
-                            gap: 10,
-                          }}
-                        >
-                          <img
-                            src={getTeamLogoSrc(game.away_team?.name)}
-                            alt={`${game.away_team?.name || "Away team"} logo`}
-                            style={{
-                              width: 68,
-                              height: 68,
-                              objectFit: "contain",
-                            }}
-                          />
-                          <div style={{ fontSize: 18, fontWeight: 800, lineHeight: 1.2 }}>
-                            {game.away_team?.name}
-                          </div>
+                        />
+                        <div style={{ fontSize: 18, fontWeight: 800, lineHeight: 1.2 }}>
+                          {game.home_team?.name}
                         </div>
                       </div>
 
                       <div
                         style={{
-                          color: "#cbd5e1",
-                          marginTop: 16,
-                          fontSize: 20,
-                          fontWeight: 600,
+                          fontSize: 18,
+                          fontWeight: 800,
+                          color: "#94a3b8",
                           textAlign: "center",
                         }}
                       >
-                        {game.game_time || "TBD"} • {game.rink || "Codey Arena"} •{" "}
-                        {game.status}
+                        vs
+                      </div>
+
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          textAlign: "center",
+                          gap: 10,
+                        }}
+                      >
+                        <img
+                          src={getTeamLogoSrc(game.away_team?.name)}
+                          alt={`${game.away_team?.name || "Away team"} logo`}
+                          style={{
+                            width: 68,
+                            height: 68,
+                            objectFit: "contain",
+                          }}
+                        />
+                        <div style={{ fontSize: 18, fontWeight: 800, lineHeight: 1.2 }}>
+                          {game.away_team?.name}
+                        </div>
                       </div>
                     </div>
-                  ))}
-                </div>
-              )}
-            </div>
 
-            <div style={card}>
-              <h2 style={sectionTitle}>The Hockey Truck</h2>
-              <p style={sectionText}>
-                Providing ice hockey pro-shop services like skate sharpening, and the sale
-                of accessories on the go!
-              </p>
-
-              <div
-                style={{
-                  ...subCard,
-                  display: "flex",
-                  gap: 22,
-                  alignItems: "center",
-                  minHeight: 172,
-                }}
-              >
-                <div
-                  style={{
-                    width: 250,
-                    height: 120,
-                    flexShrink: 0,
-                    borderRadius: 18,
-                    overflow: "hidden",
-                    background: "#000",
-                    border: "1px solid rgba(34,211,238,0.12)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    padding: 10,
-                  }}
-                >
-                  <img
-                    src="/hockeytruck.png"
-                    alt="The Hockey Truck"
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "contain",
-                    }}
-                  />
-                </div>
-
-                <div
-                  style={{
-                    flex: 1,
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                  }}
-                >
-                  <div
-                    style={{
-                      fontSize: 26,
-                      fontWeight: 800,
-                      marginBottom: 14,
-                      lineHeight: 1.15,
-                    }}
-                  >
-                    The Hockey Truck LLC.
+                    <div
+                      style={{
+                        color: "#cbd5e1",
+                        marginTop: 16,
+                        fontSize: 20,
+                        fontWeight: 600,
+                        textAlign: "center",
+                      }}
+                    >
+                      {game.game_time || "TBD"} • {game.rink || "Codey Arena"} • {game.status}
+                    </div>
                   </div>
-
-                  <p
-                    style={{
-                      color: "#e2e8f0",
-                      lineHeight: 1.8,
-                      margin: 0,
-                      fontSize: 16,
-                    }}
-                  >
-                    <strong>Phone:</strong>{" "}
-                    <a
-                      href="tel:9736464273"
-                      style={{ color: "#67e8f9", textDecoration: "none" }}
-                    >
-                      973-646-4273
-                    </a>
-                    <br />
-                    <strong>Email:</strong>{" "}
-                    <a
-                      href="mailto:thehockeytruck@gmail.com"
-                      style={{ color: "#67e8f9", textDecoration: "none" }}
-                    >
-                      thehockeytruck@gmail.com
-                    </a>
-                    <br />
-                    <strong>Instagram:</strong>{" "}
-                    <a
-                      href="https://www.instagram.com/thehockeytruck"
-                      target="_blank"
-                      rel="noreferrer"
-                      style={{ color: "#67e8f9", textDecoration: "none" }}
-                    >
-                      thehockeytruck
-                    </a>
-                    <br />
-                    <strong>Website:</strong>{" "}
-                    <a
-                      href="https://www.thehockeytruck.com"
-                      target="_blank"
-                      rel="noreferrer"
-                      style={{ color: "#67e8f9", textDecoration: "none" }}
-                    >
-                      www.thehockeytruck.com
-                    </a>
-                  </p>
-                </div>
+                ))}
               </div>
-            </div>
+            )}
           </div>
 
           <div style={{ display: "grid", gap: 20 }}>
@@ -764,16 +671,39 @@ export default async function HomePage() {
               </a>
             </div>
 
-            <div style={card}>
+            <div
+              style={{
+                ...card,
+                position: "relative",
+                overflow: "hidden",
+                paddingRight: 140,
+              }}
+            >
+              <img
+                src="/player-placeholder.png"
+                alt="Players of the Week graphic"
+                style={{
+                  position: "absolute",
+                  top: 18,
+                  right: 18,
+                  width: 96,
+                  height: 96,
+                  objectFit: "cover",
+                  borderRadius: 18,
+                  border: "1px solid rgba(34,211,238,0.14)",
+                  background: "#020617",
+                }}
+              />
+
               <h2 style={sectionTitle}>Players of the Week</h2>
-              <p style={sectionText}>
+              <p style={{ ...sectionText, maxWidth: 420 }}>
                 1st Star, 2nd Star, and 3rd Star from around the league.
               </p>
 
               <div style={{ display: "grid", gap: 12 }}>
                 {displayPlayers.map((player, index) => {
-                  const starLabel =
-                    index === 0 ? "1st Star" : index === 1 ? "2nd Star" : "3rd Star";
+                  const rank = player?.star_rank || index + 1;
+                  const starLabel = getStarLabel(rank);
 
                   return (
                     <div
@@ -781,25 +711,29 @@ export default async function HomePage() {
                       style={{
                         ...subCard,
                         display: "flex",
-                        gap: 16,
+                        gap: 18,
                         alignItems: "center",
-                        minHeight: 120,
+                        minHeight: 132,
+                        padding: 18,
                       }}
                     >
                       <img
-                        src={player?.image_url || "/player-of-week-placeholder.png"}
-                        alt={player?.player_name || starLabel}
+                        src={getStarImageSrc(rank)}
+                        alt={starLabel}
                         style={{
-                          width: 90,
-                          height: 90,
-                          objectFit: "cover",
+                          width: 82,
+                          height: 82,
+                          objectFit: "contain",
                           borderRadius: 14,
                           flexShrink: 0,
+                          background: "rgba(255,255,255,0.04)",
+                          padding: 6,
                         }}
                       />
 
                       <div
                         style={{
+                          flex: 1,
                           display: "flex",
                           flexDirection: "column",
                           justifyContent: "center",
@@ -808,11 +742,11 @@ export default async function HomePage() {
                       >
                         <div
                           style={{
-                            fontSize: 13,
+                            fontSize: 15,
                             fontWeight: 800,
                             color: "#67e8f9",
                             textTransform: "uppercase",
-                            letterSpacing: "0.04em",
+                            letterSpacing: "0.05em",
                             marginBottom: 4,
                           }}
                         >
@@ -821,9 +755,9 @@ export default async function HomePage() {
 
                         <div
                           style={{
-                            fontSize: 16,
+                            fontSize: 28,
                             fontWeight: 800,
-                            lineHeight: 1.2,
+                            lineHeight: 1.05,
                             color: "#f8fafc",
                           }}
                         >
@@ -834,8 +768,9 @@ export default async function HomePage() {
                           style={{
                             marginTop: 6,
                             color: "#67e8f9",
-                            fontSize: 14,
+                            fontSize: 17,
                             fontWeight: 700,
+                            lineHeight: 1.25,
                           }}
                         >
                           {player
@@ -845,8 +780,8 @@ export default async function HomePage() {
 
                         <div
                           style={{
-                            marginTop: 8,
-                            fontSize: 14,
+                            marginTop: 10,
+                            fontSize: 18,
                             lineHeight: 1.45,
                             color: "#e5e7eb",
                           }}
@@ -859,6 +794,116 @@ export default async function HomePage() {
                   );
                 })}
               </div>
+            </div>
+          </div>
+        </section>
+
+        <section style={{ ...card, marginBottom: 24 }}>
+          <h2 style={sectionTitle}>The Hockey Truck</h2>
+          <p style={sectionText}>
+            Providing ice hockey pro-shop services like skate sharpening, and the sale
+            of accessories on the go!
+          </p>
+
+          <div
+            style={{
+              ...subCard,
+              display: "flex",
+              gap: 24,
+              alignItems: "center",
+              minHeight: 184,
+              padding: 20,
+            }}
+          >
+            <div
+              style={{
+                width: 300,
+                height: 145,
+                flexShrink: 0,
+                borderRadius: 18,
+                overflow: "hidden",
+                background: "#000",
+                border: "1px solid rgba(34,211,238,0.12)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: 12,
+              }}
+            >
+              <img
+                src="/hockeytruck.png"
+                alt="The Hockey Truck"
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "contain",
+                }}
+              />
+            </div>
+
+            <div
+              style={{
+                flex: 1,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: 34,
+                  fontWeight: 800,
+                  marginBottom: 14,
+                  lineHeight: 1.05,
+                }}
+              >
+                The Hockey Truck LLC.
+              </div>
+
+              <p
+                style={{
+                  color: "#e2e8f0",
+                  lineHeight: 1.9,
+                  margin: 0,
+                  fontSize: 18,
+                }}
+              >
+                <strong>Phone:</strong>{" "}
+                <a
+                  href="tel:9736464273"
+                  style={{ color: "#67e8f9", textDecoration: "none" }}
+                >
+                  973-646-4273
+                </a>
+                <br />
+                <strong>Email:</strong>{" "}
+                <a
+                  href="mailto:thehockeytruck@gmail.com"
+                  style={{ color: "#67e8f9", textDecoration: "none" }}
+                >
+                  thehockeytruck@gmail.com
+                </a>
+                <br />
+                <strong>Instagram:</strong>{" "}
+                <a
+                  href="https://www.instagram.com/thehockeytruck"
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ color: "#67e8f9", textDecoration: "none" }}
+                >
+                  thehockeytruck
+                </a>
+                <br />
+                <strong>Website:</strong>{" "}
+                <a
+                  href="https://www.thehockeytruck.com"
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ color: "#67e8f9", textDecoration: "none" }}
+                >
+                  www.thehockeytruck.com
+                </a>
+              </p>
             </div>
           </div>
         </section>
