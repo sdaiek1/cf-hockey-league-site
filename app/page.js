@@ -186,9 +186,27 @@ export default async function HomePage() {
     playersOfWeek.length > 0
       ? playersOfWeek
       : [
-          { star_rank: 1, player_name: "Player 1", team_name: "Team A", position: "F", blurb: "Add player stats here." },
-          { star_rank: 2, player_name: "Player 2", team_name: "Team B", position: "F", blurb: "Add player stats here." },
-          { star_rank: 3, player_name: "Player 3", team_name: "Team C", position: "G", blurb: "Add player stats here." }
+          {
+            star_rank: 1,
+            player_name: "Player 1",
+            team_name: "Team A",
+            position: "F",
+            blurb: "Add player stats here.",
+          },
+          {
+            star_rank: 2,
+            player_name: "Player 2",
+            team_name: "Team B",
+            position: "F",
+            blurb: "Add player stats here.",
+          },
+          {
+            star_rank: 3,
+            player_name: "Player 3",
+            team_name: "Team C",
+            position: "G",
+            blurb: "Add player stats here.",
+          },
         ];
 
   const shell = {
@@ -201,7 +219,8 @@ export default async function HomePage() {
   };
 
   const card = {
-    background: "linear-gradient(180deg, rgba(7,16,34,0.56) 0%, rgba(4,10,24,0.68) 100%)",
+    background:
+      "linear-gradient(180deg, rgba(7,16,34,0.56) 0%, rgba(4,10,24,0.68) 100%)",
     border: "1px solid rgba(34, 211, 238, 0.14)",
     borderRadius: 24,
     padding: 22,
@@ -210,7 +229,8 @@ export default async function HomePage() {
   };
 
   const subCard = {
-    background: "linear-gradient(180deg, rgba(6,14,30,0.78) 0%, rgba(3,8,20,0.88) 100%)",
+    background:
+      "linear-gradient(180deg, rgba(6,14,30,0.78) 0%, rgba(3,8,20,0.88) 100%)",
     border: "1px solid rgba(34, 211, 238, 0.10)",
     borderRadius: 18,
     padding: 16,
@@ -439,7 +459,8 @@ export default async function HomePage() {
                   style={{
                     ...heroButtonBase,
                     color: "#082f49",
-                    background: "linear-gradient(180deg, #67e8f9 0%, #22d3ee 100%)",
+                    background:
+                      "linear-gradient(180deg, #67e8f9 0%, #22d3ee 100%)",
                     boxShadow: "0 0 16px rgba(34,211,238,0.18)",
                   }}
                 >
@@ -456,7 +477,8 @@ export default async function HomePage() {
                   style={{
                     ...heroButtonBase,
                     color: "#082f49",
-                    background: "linear-gradient(180deg, #a5f3fc 0%, #67e8f9 100%)",
+                    background:
+                      "linear-gradient(180deg, #a5f3fc 0%, #67e8f9 100%)",
                     boxShadow: "0 0 16px rgba(34,211,238,0.18)",
                   }}
                 >
@@ -491,110 +513,242 @@ export default async function HomePage() {
             alignItems: "start",
           }}
         >
-          <div style={card}>
-            <h2 style={sectionTitle}>Upcoming Games</h2>
-            <p style={sectionText}>The next games on the league calendar.</p>
+          <div style={{ display: "grid", gap: 20 }}>
+            <div style={card}>
+              <h2 style={sectionTitle}>Upcoming Games</h2>
+              <p style={sectionText}>The next games on the league calendar.</p>
 
-            {upcomingGames.length === 0 ? (
-              <p style={{ color: "#cbd5e1" }}>No upcoming games posted yet.</p>
-            ) : (
-              <div style={{ display: "grid", gap: 12 }}>
-                {upcomingGames.map((game) => (
-                  <div key={game.id} style={subCard}>
-                    <div
-                      style={{
-                        color: "#67e8f9",
-                        fontSize: 20,
-                        fontWeight: 800,
-                        textAlign: "center",
-                        marginBottom: 14,
-                      }}
-                    >
-                      {formatGameDate(game.game_date)}
-                    </div>
-
-                    <div
-                      style={{
-                        display: "grid",
-                        gridTemplateColumns: "1fr auto 1fr",
-                        alignItems: "center",
-                        gap: 14,
-                        marginTop: 4,
-                      }}
-                    >
+              {upcomingGames.length === 0 ? (
+                <p style={{ color: "#cbd5e1" }}>No upcoming games posted yet.</p>
+              ) : (
+                <div style={{ display: "grid", gap: 12 }}>
+                  {upcomingGames.map((game) => (
+                    <div key={game.id} style={subCard}>
                       <div
                         style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "center",
-                          textAlign: "center",
-                          gap: 10,
-                        }}
-                      >
-                        <img
-                          src={getTeamLogoSrc(game.home_team?.name)}
-                          alt={`${game.home_team?.name || "Home team"} logo`}
-                          style={{
-                            width: 68,
-                            height: 68,
-                            objectFit: "contain",
-                          }}
-                        />
-                        <div style={{ fontSize: 18, fontWeight: 800, lineHeight: 1.2 }}>
-                          {game.home_team?.name}
-                        </div>
-                      </div>
-
-                      <div
-                        style={{
-                          fontSize: 18,
+                          color: "#67e8f9",
+                          fontSize: 20,
                           fontWeight: 800,
-                          color: "#94a3b8",
                           textAlign: "center",
+                          marginBottom: 14,
                         }}
                       >
-                        vs
+                        {formatGameDate(game.game_date)}
                       </div>
 
                       <div
                         style={{
-                          display: "flex",
-                          flexDirection: "column",
+                          display: "grid",
+                          gridTemplateColumns: "1fr auto 1fr",
                           alignItems: "center",
-                          textAlign: "center",
-                          gap: 10,
+                          gap: 14,
+                          marginTop: 4,
                         }}
                       >
-                        <img
-                          src={getTeamLogoSrc(game.away_team?.name)}
-                          alt={`${game.away_team?.name || "Away team"} logo`}
+                        <div
                           style={{
-                            width: 68,
-                            height: 68,
-                            objectFit: "contain",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            textAlign: "center",
+                            gap: 10,
                           }}
-                        />
-                        <div style={{ fontSize: 18, fontWeight: 800, lineHeight: 1.2 }}>
-                          {game.away_team?.name}
+                        >
+                          <img
+                            src={getTeamLogoSrc(game.home_team?.name)}
+                            alt={`${game.home_team?.name || "Home team"} logo`}
+                            style={{
+                              width: 68,
+                              height: 68,
+                              objectFit: "contain",
+                            }}
+                          />
+                          <div
+                            style={{
+                              fontSize: 18,
+                              fontWeight: 800,
+                              lineHeight: 1.2,
+                            }}
+                          >
+                            {game.home_team?.name}
+                          </div>
+                        </div>
+
+                        <div
+                          style={{
+                            fontSize: 18,
+                            fontWeight: 800,
+                            color: "#94a3b8",
+                            textAlign: "center",
+                          }}
+                        >
+                          vs
+                        </div>
+
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            textAlign: "center",
+                            gap: 10,
+                          }}
+                        >
+                          <img
+                            src={getTeamLogoSrc(game.away_team?.name)}
+                            alt={`${game.away_team?.name || "Away team"} logo`}
+                            style={{
+                              width: 68,
+                              height: 68,
+                              objectFit: "contain",
+                            }}
+                          />
+                          <div
+                            style={{
+                              fontSize: 18,
+                              fontWeight: 800,
+                              lineHeight: 1.2,
+                            }}
+                          >
+                            {game.away_team?.name}
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    <div
-                      style={{
-                        color: "#cbd5e1",
-                        marginTop: 16,
-                        fontSize: 20,
-                        fontWeight: 600,
-                        textAlign: "center",
-                      }}
-                    >
-                      {game.game_time || "TBD"} • {game.rink || "Codey Arena"} • {game.status}
+                      <div
+                        style={{
+                          color: "#cbd5e1",
+                          marginTop: 16,
+                          fontSize: 20,
+                          fontWeight: 600,
+                          textAlign: "center",
+                        }}
+                      >
+                        {game.game_time || "TBD"} • {game.rink || "Codey Arena"} •{" "}
+                        {game.status}
+                      </div>
                     </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div style={card}>
+              <h2 style={sectionTitle}>League Reminders</h2>
+              <p style={sectionText}>
+                Important reminders for all players before and during game night.
+              </p>
+
+              <div style={{ display: "grid", gap: 12 }}>
+                <div
+                  style={{
+                    ...subCard,
+                    display: "flex",
+                    gap: 14,
+                    alignItems: "flex-start",
+                  }}
+                >
+                  <div
+                    style={{
+                      minWidth: 34,
+                      height: 34,
+                      borderRadius: 999,
+                      background: "rgba(34,211,238,0.14)",
+                      color: "#67e8f9",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontWeight: 800,
+                      fontSize: 18,
+                    }}
+                  >
+                    1
                   </div>
-                ))}
+                  <div
+                    style={{
+                      fontSize: 18,
+                      lineHeight: 1.5,
+                      color: "#e5e7eb",
+                      fontWeight: 600,
+                    }}
+                  >
+                    Remember to arrive to your first game with enough time to fill out a waiver.
+                  </div>
+                </div>
+
+                <div
+                  style={{
+                    ...subCard,
+                    display: "flex",
+                    gap: 14,
+                    alignItems: "flex-start",
+                  }}
+                >
+                  <div
+                    style={{
+                      minWidth: 34,
+                      height: 34,
+                      borderRadius: 999,
+                      background: "rgba(34,211,238,0.14)",
+                      color: "#67e8f9",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontWeight: 800,
+                      fontSize: 18,
+                    }}
+                  >
+                    2
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 18,
+                      lineHeight: 1.5,
+                      color: "#e5e7eb",
+                      fontWeight: 600,
+                    }}
+                  >
+                    Players MUST check-in upon arrival.
+                  </div>
+                </div>
+
+                <div
+                  style={{
+                    ...subCard,
+                    display: "flex",
+                    gap: 14,
+                    alignItems: "flex-start",
+                  }}
+                >
+                  <div
+                    style={{
+                      minWidth: 34,
+                      height: 34,
+                      borderRadius: 999,
+                      background: "rgba(34,211,238,0.14)",
+                      color: "#67e8f9",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontWeight: 800,
+                      fontSize: 18,
+                    }}
+                  >
+                    3
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 18,
+                      lineHeight: 1.5,
+                      color: "#e5e7eb",
+                      fontWeight: 600,
+                    }}
+                  >
+                    All players should have a jersey number matching the number listed on the roster.
+                  </div>
+                </div>
               </div>
-            )}
+            </div>
           </div>
 
           <div style={{ display: "grid", gap: 20 }}>
@@ -635,10 +789,18 @@ export default async function HomePage() {
                           >
                             {row.team}
                           </td>
-                          <td style={{ borderTop: "1px solid rgba(51,65,85,0.30)" }}>
+                          <td
+                            style={{
+                              borderTop: "1px solid rgba(51,65,85,0.30)",
+                            }}
+                          >
                             {row.gp}
                           </td>
-                          <td style={{ borderTop: "1px solid rgba(51,65,85,0.30)" }}>
+                          <td
+                            style={{
+                              borderTop: "1px solid rgba(51,65,85,0.30)",
+                            }}
+                          >
                             {row.w}
                           </td>
                           <td
@@ -924,7 +1086,13 @@ export default async function HomePage() {
             >
               {recentNews.map((post) => (
                 <div key={post.id} style={subCard}>
-                  <div style={{ fontSize: 24, fontWeight: 800, lineHeight: 1.2 }}>
+                  <div
+                    style={{
+                      fontSize: 24,
+                      fontWeight: 800,
+                      lineHeight: 1.2,
+                    }}
+                  >
                     {post.title}
                   </div>
                   <div style={{ color: "#67e8f9", marginTop: 8 }}>
