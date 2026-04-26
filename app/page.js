@@ -218,16 +218,16 @@ export default async function HomePage() {
 
   const heroActions = {
     display: "flex",
-    gap: 14,
-    flexWrap: "wrap",
+    gap: 12,
+    flexWrap: "nowrap",
     justifyContent: "center",
     alignItems: "stretch",
     marginTop: 6,
   };
-
+  
   const heroButtonBase = {
     textDecoration: "none",
-    padding: "12px 16px",
+    padding: "10px 14px",
     borderRadius: 14,
     fontWeight: 800,
     display: "flex",
@@ -235,20 +235,20 @@ export default async function HomePage() {
     alignItems: "center",
     justifyContent: "center",
     textAlign: "center",
-    width: 210,
-    minHeight: 72,
-    lineHeight: 1.1,
+    width: 180,
+    minHeight: 64,
+    lineHeight: 1.08,
   };
-
+  
   const heroButtonTitle = {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 800,
   };
-
+  
   const heroButtonSubtitle = {
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: 700,
-    marginTop: 4,
+    marginTop: 3,
     opacity: 0.85,
     letterSpacing: "0.01em",
   };
