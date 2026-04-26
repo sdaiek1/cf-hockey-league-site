@@ -472,110 +472,222 @@ export default async function HomePage() {
             alignItems: "start",
           }}
         >
-          <div style={card}>
-            <h2 style={sectionTitle}>Upcoming Games</h2>
-            <p style={sectionText}>The next games on the league calendar.</p>
+          <div style={{ display: "grid", gap: 20 }}>
+            <div style={card}>
+              <h2 style={sectionTitle}>Upcoming Games</h2>
+              <p style={sectionText}>The next games on the league calendar.</p>
 
-            {upcomingGames.length === 0 ? (
-              <p style={{ color: "#cbd5e1" }}>No upcoming games posted yet.</p>
-            ) : (
-              <div style={{ display: "grid", gap: 12 }}>
-                {upcomingGames.map((game) => (
-                  <div key={game.id} style={subCard}>
-                    <div
-                      style={{
-                        color: "#67e8f9",
-                        fontSize: 20,
-                        fontWeight: 800,
-                        textAlign: "center",
-                        marginBottom: 14,
-                      }}
-                    >
-                      {formatGameDate(game.game_date)}
-                    </div>
-
-                    <div
-                      style={{
-                        display: "grid",
-                        gridTemplateColumns: "1fr auto 1fr",
-                        alignItems: "center",
-                        gap: 14,
-                        marginTop: 4,
-                      }}
-                    >
+              {upcomingGames.length === 0 ? (
+                <p style={{ color: "#cbd5e1" }}>No upcoming games posted yet.</p>
+              ) : (
+                <div style={{ display: "grid", gap: 12 }}>
+                  {upcomingGames.map((game) => (
+                    <div key={game.id} style={subCard}>
                       <div
                         style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "center",
-                          textAlign: "center",
-                          gap: 10,
-                        }}
-                      >
-                        <img
-                          src={getTeamLogoSrc(game.home_team?.name)}
-                          alt={`${game.home_team?.name || "Home team"} logo`}
-                          style={{
-                            width: 68,
-                            height: 68,
-                            objectFit: "contain",
-                          }}
-                        />
-                        <div style={{ fontSize: 18, fontWeight: 800, lineHeight: 1.2 }}>
-                          {game.home_team?.name}
-                        </div>
-                      </div>
-
-                      <div
-                        style={{
-                          fontSize: 18,
+                          color: "#67e8f9",
+                          fontSize: 20,
                           fontWeight: 800,
-                          color: "#94a3b8",
                           textAlign: "center",
+                          marginBottom: 14,
                         }}
                       >
-                        vs
+                        {formatGameDate(game.game_date)}
                       </div>
 
                       <div
                         style={{
-                          display: "flex",
-                          flexDirection: "column",
+                          display: "grid",
+                          gridTemplateColumns: "1fr auto 1fr",
                           alignItems: "center",
-                          textAlign: "center",
-                          gap: 10,
+                          gap: 14,
+                          marginTop: 4,
                         }}
                       >
-                        <img
-                          src={getTeamLogoSrc(game.away_team?.name)}
-                          alt={`${game.away_team?.name || "Away team"} logo`}
+                        <div
                           style={{
-                            width: 68,
-                            height: 68,
-                            objectFit: "contain",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            textAlign: "center",
+                            gap: 10,
                           }}
-                        />
-                        <div style={{ fontSize: 18, fontWeight: 800, lineHeight: 1.2 }}>
-                          {game.away_team?.name}
+                        >
+                          <img
+                            src={getTeamLogoSrc(game.home_team?.name)}
+                            alt={`${game.home_team?.name || "Home team"} logo`}
+                            style={{
+                              width: 68,
+                              height: 68,
+                              objectFit: "contain",
+                            }}
+                          />
+                          <div style={{ fontSize: 18, fontWeight: 800, lineHeight: 1.2 }}>
+                            {game.home_team?.name}
+                          </div>
+                        </div>
+
+                        <div
+                          style={{
+                            fontSize: 18,
+                            fontWeight: 800,
+                            color: "#94a3b8",
+                            textAlign: "center",
+                          }}
+                        >
+                          vs
+                        </div>
+
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            textAlign: "center",
+                            gap: 10,
+                          }}
+                        >
+                          <img
+                            src={getTeamLogoSrc(game.away_team?.name)}
+                            alt={`${game.away_team?.name || "Away team"} logo`}
+                            style={{
+                              width: 68,
+                              height: 68,
+                              objectFit: "contain",
+                            }}
+                          />
+                          <div style={{ fontSize: 18, fontWeight: 800, lineHeight: 1.2 }}>
+                            {game.away_team?.name}
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    <div
-                      style={{
-                        color: "#cbd5e1",
-                        marginTop: 16,
-                        fontSize: 20,
-                        fontWeight: 600,
-                        textAlign: "center",
-                      }}
-                    >
-                      {game.game_time || "TBD"} • {game.rink || "Codey Arena"} • {game.status}
+                      <div
+                        style={{
+                          color: "#cbd5e1",
+                          marginTop: 16,
+                          fontSize: 20,
+                          fontWeight: 600,
+                          textAlign: "center",
+                        }}
+                      >
+                        {game.game_time || "TBD"} • {game.rink || "Codey Arena"} •{" "}
+                        {game.status}
+                      </div>
                     </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div style={card}>
+              <h2 style={sectionTitle}>The Hockey Truck</h2>
+              <p style={sectionText}>
+                Providing ice hockey pro-shop services like skate sharpening, and the sale
+                of accessories on the go!
+              </p>
+
+              <div
+                style={{
+                  ...subCard,
+                  display: "flex",
+                  gap: 22,
+                  alignItems: "center",
+                  minHeight: 172,
+                }}
+              >
+                <div
+                  style={{
+                    width: 250,
+                    height: 120,
+                    flexShrink: 0,
+                    borderRadius: 18,
+                    overflow: "hidden",
+                    background: "#000",
+                    border: "1px solid rgba(34,211,238,0.12)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: 10,
+                  }}
+                >
+                  <img
+                    src="/hockeytruck.png"
+                    alt="The Hockey Truck"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "contain",
+                    }}
+                  />
+                </div>
+
+                <div
+                  style={{
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: 26,
+                      fontWeight: 800,
+                      marginBottom: 14,
+                      lineHeight: 1.15,
+                    }}
+                  >
+                    The Hockey Truck LLC.
                   </div>
-                ))}
+
+                  <p
+                    style={{
+                      color: "#e2e8f0",
+                      lineHeight: 1.8,
+                      margin: 0,
+                      fontSize: 16,
+                    }}
+                  >
+                    <strong>Phone:</strong>{" "}
+                    <a
+                      href="tel:9736464273"
+                      style={{ color: "#67e8f9", textDecoration: "none" }}
+                    >
+                      973-646-4273
+                    </a>
+                    <br />
+                    <strong>Email:</strong>{" "}
+                    <a
+                      href="mailto:thehockeytruck@gmail.com"
+                      style={{ color: "#67e8f9", textDecoration: "none" }}
+                    >
+                      thehockeytruck@gmail.com
+                    </a>
+                    <br />
+                    <strong>Instagram:</strong>{" "}
+                    <a
+                      href="https://www.instagram.com/thehockeytruck"
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{ color: "#67e8f9", textDecoration: "none" }}
+                    >
+                      thehockeytruck
+                    </a>
+                    <br />
+                    <strong>Website:</strong>{" "}
+                    <a
+                      href="https://www.thehockeytruck.com"
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{ color: "#67e8f9", textDecoration: "none" }}
+                    >
+                      www.thehockeytruck.com
+                    </a>
+                  </p>
+                </div>
               </div>
-            )}
+            </div>
           </div>
 
           <div style={{ display: "grid", gap: 20 }}>
@@ -746,115 +858,6 @@ export default async function HomePage() {
                     </div>
                   );
                 })}
-              </div>
-            </div>
-
-            <div style={card}>
-              <h2 style={sectionTitle}>The Hockey Truck</h2>
-              <p style={sectionText}>
-                Providing ice hockey pro-shop services like skate sharpening, and the sale
-                of accessories on the go!
-              </p>
-
-              <div
-                style={{
-                  ...subCard,
-                  display: "flex",
-                  gap: 22,
-                  alignItems: "center",
-                  minHeight: 172,
-                }}
-              >
-                <div
-                  style={{
-                    width: 250,
-                    height: 120,
-                    flexShrink: 0,
-                    borderRadius: 18,
-                    overflow: "hidden",
-                    background: "#000",
-                    border: "1px solid rgba(34,211,238,0.12)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    padding: 10,
-                  }}
-                >
-                  <img
-                    src="/hockeytruck.png"
-                    alt="The Hockey Truck"
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "contain",
-                    }}
-                  />
-                </div>
-
-                <div
-                  style={{
-                    flex: 1,
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                  }}
-                >
-                  <div
-                    style={{
-                      fontSize: 26,
-                      fontWeight: 800,
-                      marginBottom: 14,
-                      lineHeight: 1.15,
-                    }}
-                  >
-                    The Hockey Truck LLC.
-                  </div>
-
-                  <p
-                    style={{
-                      color: "#e2e8f0",
-                      lineHeight: 1.8,
-                      margin: 0,
-                      fontSize: 16,
-                    }}
-                  >
-                    <strong>Phone:</strong>{" "}
-                    <a
-                      href="tel:9736464273"
-                      style={{ color: "#67e8f9", textDecoration: "none" }}
-                    >
-                      973-646-4273
-                    </a>
-                    <br />
-                    <strong>Email:</strong>{" "}
-                    <a
-                      href="mailto:thehockeytruck@gmail.com"
-                      style={{ color: "#67e8f9", textDecoration: "none" }}
-                    >
-                      thehockeytruck@gmail.com
-                    </a>
-                    <br />
-                    <strong>Instagram:</strong>{" "}
-                    <a
-                      href="https://www.instagram.com/thehockeytruck"
-                      target="_blank"
-                      rel="noreferrer"
-                      style={{ color: "#67e8f9", textDecoration: "none" }}
-                    >
-                      thehockeytruck
-                    </a>
-                    <br />
-                    <strong>Website:</strong>{" "}
-                    <a
-                      href="https://www.thehockeytruck.com"
-                      target="_blank"
-                      rel="noreferrer"
-                      style={{ color: "#67e8f9", textDecoration: "none" }}
-                    >
-                      www.thehockeytruck.com
-                    </a>
-                  </p>
-                </div>
               </div>
             </div>
           </div>
