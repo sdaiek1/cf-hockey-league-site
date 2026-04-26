@@ -383,7 +383,7 @@ export default async function HomePage() {
                     textAlign: "center",
                   }}
                 >
-                  Contact: Shane at cfhockeyleague@gmail.com
+                  For more info, contact: Shane - cfhockeyleague@gmail.com
                 </div>
               </div>
 
