@@ -150,14 +150,11 @@ export default async function HomePage() {
       }
     }
 
-    standings = Object.values(standingsMap)
-      .sort((a, b) => {
-        if (b.pts !== a.pts) return b.pts - a.pts;
-        if (b.w !== a.w) return b.w - a.w;
-        return a.team.localeCompare(b.team);
-      })
-      .slice(0, 4);
-  }
+    standings = Object.values(standingsMap).sort((a, b) => {
+      if (b.pts !== a.pts) return b.pts - a.pts;
+      if (b.w !== a.w) return b.w - a.w;
+      return a.team.localeCompare(b.team);
+    });
 
   function formatGameDate(dateString) {
     if (!dateString) return "";
@@ -472,8 +469,8 @@ export default async function HomePage() {
           }}
         >
           <div style={card}>
-            <h2 style={sectionTitle}>Upcoming Games</h2>
-            <p style={sectionText}>The next games on the league calendar.</p>
+            <h2 style={sectionTitle}>Standings</h2>
+            <p style={sectionText}>Current standings for all teams.</p>
 
             {upcomingGames.length === 0 ? (
               <p style={{ color: "#cbd5e1" }}>No upcoming games posted yet.</p>
