@@ -25,7 +25,7 @@ export default async function HomePage() {
   let upcomingGames = [];
   let standings = [];
   let recentNews = [];
-  let playerOfWeek = null;
+  let playersOfWeek = [];
 
   if (supabaseUrl && supabaseKey) {
     const supabase = createClient(supabaseUrl, supabaseKey);
@@ -62,7 +62,7 @@ export default async function HomePage() {
       .eq("is_published", true)
       .order("created_at", { ascending: false });
 
-    const { data: playerOfWeekRow = null } = await supabase
+    const { data: playerOfWeekRows = [] } = await supabase
       .from("player_of_week")
       .select(`
         id,
@@ -74,12 +74,11 @@ export default async function HomePage() {
       `)
       .eq("is_active", true)
       .order("created_at", { ascending: false })
-      .limit(1)
-      .maybeSingle();
+      .limit(3);
 
     recentNews = newsPosts.slice(0, 3);
     upcomingGames = games.filter((game) => game.status !== "Final").slice(0, 4);
-    playerOfWeek = playerOfWeekRow;
+    playersOfWeek = playerOfWeekRows || [];
 
     const standingsMap = {};
     for (const team of teams) {
@@ -169,6 +168,9 @@ export default async function HomePage() {
       day: "2-digit",
     });
   }
+
+  const displayPlayers =
+    playersOfWeek.length > 0 ? playersOfWeek : [null, null, null];
 
   const shell = {
     maxWidth: 1220,
@@ -464,7 +466,7 @@ export default async function HomePage() {
         <section
           style={{
             display: "grid",
-            gridTemplateColumns: "1.1fr 0.9fr",
+            gridTemplateColumns: "1fr 1fr",
             gap: 20,
             marginBottom: 24,
             alignItems: "start",
@@ -651,198 +653,209 @@ export default async function HomePage() {
             </div>
 
             <div style={card}>
-              <h2 style={sectionTitle}>Player of the Week</h2>
-              <p
-                style={{
-                  color: "rgba(248, 250, 252, 0.82)",
-                  marginTop: 0,
-                  marginBottom: 18,
-                  lineHeight: 1.6,
-                  fontSize: 13,
-                  fontStyle: "italic",
-                  fontWeight: 600,
-                }}
-              >
-                Spouse doesn&apos;t believe you? Show them this! Look at those stats!
+              <h2 style={sectionTitle}>Players of the Week</h2>
+              <p style={sectionText}>
+                1st Star, 2nd Star, and 3rd Star from around the league.
+              </p>
+
+              <div style={{ display: "grid", gap: 12 }}>
+                {displayPlayers.map((player, index) => {
+                  const starLabel =
+                    index === 0 ? "1st Star" : index === 1 ? "2nd Star" : "3rd Star";
+
+                  return (
+                    <div
+                      key={player?.id || `pow-${index}`}
+                      style={{
+                        ...subCard,
+                        display: "flex",
+                        gap: 16,
+                        alignItems: "center",
+                        minHeight: 120,
+                      }}
+                    >
+                      <img
+                        src={player?.image_url || "/player-of-week-placeholder.png"}
+                        alt={player?.player_name || starLabel}
+                        style={{
+                          width: 90,
+                          height: 90,
+                          objectFit: "cover",
+                          borderRadius: 14,
+                          flexShrink: 0,
+                        }}
+                      />
+
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          justifyContent: "center",
+                          minWidth: 0,
+                        }}
+                      >
+                        <div
+                          style={{
+                            fontSize: 13,
+                            fontWeight: 800,
+                            color: "#67e8f9",
+                            textTransform: "uppercase",
+                            letterSpacing: "0.04em",
+                            marginBottom: 4,
+                          }}
+                        >
+                          {starLabel}
+                        </div>
+
+                        <div
+                          style={{
+                            fontSize: 16,
+                            fontWeight: 800,
+                            lineHeight: 1.2,
+                            color: "#f8fafc",
+                          }}
+                        >
+                          {player?.player_name || "Player Name Here"}
+                        </div>
+
+                        <div
+                          style={{
+                            marginTop: 6,
+                            color: "#67e8f9",
+                            fontSize: 14,
+                            fontWeight: 700,
+                          }}
+                        >
+                          {player
+                            ? `${player.team_name || "Team Name"} • ${player.position || "Position"}`
+                            : "Team Name • Position"}
+                        </div>
+
+                        <div
+                          style={{
+                            marginTop: 8,
+                            fontSize: 14,
+                            lineHeight: 1.45,
+                            color: "#e5e7eb",
+                          }}
+                        >
+                          {player?.blurb ||
+                            "Add a featured player with a short stat line or highlight summary."}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div style={card}>
+              <h2 style={sectionTitle}>The Hockey Truck</h2>
+              <p style={sectionText}>
+                Providing ice hockey pro-shop services like skate sharpening, and the sale
+                of accessories on the go!
               </p>
 
               <div
                 style={{
                   ...subCard,
                   display: "flex",
-                  gap: 18,
+                  gap: 22,
                   alignItems: "center",
                   minHeight: 172,
                 }}
               >
-                <img
-                  src={playerOfWeek?.image_url || "/player-of-week-placeholder.png"}
-                  alt={playerOfWeek?.player_name || "Player of the Week"}
+                <div
                   style={{
-                    width: 140,
-                    height: 140,
-                    objectFit: "cover",
-                    borderRadius: 18,
+                    width: 250,
+                    height: 120,
                     flexShrink: 0,
+                    borderRadius: 18,
+                    overflow: "hidden",
+                    background: "#000",
+                    border: "1px solid rgba(34,211,238,0.12)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: 10,
                   }}
-                />
+                >
+                  <img
+                    src="/hockeytruck.png"
+                    alt="The Hockey Truck"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "contain",
+                    }}
+                  />
+                </div>
 
                 <div
                   style={{
+                    flex: 1,
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "center",
-                    minHeight: 140,
                   }}
                 >
-                  <p
+                  <div
                     style={{
-                      margin: 0,
-                      fontSize: 34,
+                      fontSize: 26,
                       fontWeight: 800,
-                      lineHeight: 1.05,
+                      marginBottom: 14,
+                      lineHeight: 1.15,
                     }}
                   >
-                    {playerOfWeek?.player_name || "Player Name Here"}
-                  </p>
+                    The Hockey Truck LLC.
+                  </div>
 
                   <p
                     style={{
-                      marginTop: 10,
-                      marginBottom: 0,
-                      color: "#67e8f9",
+                      color: "#e2e8f0",
+                      lineHeight: 1.8,
+                      margin: 0,
                       fontSize: 16,
-                      fontWeight: 700,
                     }}
                   >
-                    {playerOfWeek
-                      ? `${playerOfWeek.team_name || "Team Name"} • ${playerOfWeek.position || "Position"}`
-                      : "Team Name • Position"}
-                  </p>
-
-                  <p
-                    style={{
-                      marginTop: 18,
-                      marginBottom: 0,
-                      fontSize: 16,
-                      lineHeight: 1.5,
-                      color: "#e5e7eb",
-                    }}
-                  >
-                    {playerOfWeek?.blurb ||
-                      "Add a weekly featured player here with a short writeup about a big performance, great sportsmanship, or standout week."}
+                    <strong>Phone:</strong>{" "}
+                    <a
+                      href="tel:9736464273"
+                      style={{ color: "#67e8f9", textDecoration: "none" }}
+                    >
+                      973-646-4273
+                    </a>
+                    <br />
+                    <strong>Email:</strong>{" "}
+                    <a
+                      href="mailto:thehockeytruck@gmail.com"
+                      style={{ color: "#67e8f9", textDecoration: "none" }}
+                    >
+                      thehockeytruck@gmail.com
+                    </a>
+                    <br />
+                    <strong>Instagram:</strong>{" "}
+                    <a
+                      href="https://www.instagram.com/thehockeytruck"
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{ color: "#67e8f9", textDecoration: "none" }}
+                    >
+                      thehockeytruck
+                    </a>
+                    <br />
+                    <strong>Website:</strong>{" "}
+                    <a
+                      href="https://www.thehockeytruck.com"
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{ color: "#67e8f9", textDecoration: "none" }}
+                    >
+                      www.thehockeytruck.com
+                    </a>
                   </p>
                 </div>
               </div>
-            </div>
-          </div>
-        </section>
-
-        <section style={{ ...card, marginBottom: 24 }}>
-          <h2 style={sectionTitle}>The Hockey Truck</h2>
-          <p style={sectionText}>
-            Providing ice hockey pro-shop services like skate sharpening, and the sale
-            of accessories on the go!
-          </p>
-
-          <div
-            style={{
-              ...subCard,
-              display: "flex",
-              gap: 24,
-              alignItems: "center",
-              minHeight: 180,
-            }}
-          >
-            <div
-              style={{
-                width: 320,
-                height: 150,
-                flexShrink: 0,
-                borderRadius: 18,
-                overflow: "hidden",
-                background: "#000",
-                border: "1px solid rgba(34,211,238,0.12)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: 12,
-              }}
-            >
-              <img
-                src="/hockeytruck.png"
-                alt="The Hockey Truck"
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "contain",
-                }}
-              />
-            </div>
-
-            <div
-              style={{
-                flex: 1,
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: 28,
-                  fontWeight: 800,
-                  marginBottom: 14,
-                  lineHeight: 1.15,
-                }}
-              >
-                The Hockey Truck LLC.
-              </div>
-
-              <p
-                style={{
-                  color: "#e2e8f0",
-                  lineHeight: 1.85,
-                  margin: 0,
-                  fontSize: 17,
-                }}
-              >
-                <strong>Phone:</strong>{" "}
-                <a
-                  href="tel:9736464273"
-                  style={{ color: "#67e8f9", textDecoration: "none" }}
-                >
-                  973-646-4273
-                </a>
-                <br />
-                <strong>Email:</strong>{" "}
-                <a
-                  href="mailto:thehockeytruck@gmail.com"
-                  style={{ color: "#67e8f9", textDecoration: "none" }}
-                >
-                  thehockeytruck@gmail.com
-                </a>
-                <br />
-                <strong>Instagram:</strong>{" "}
-                <a
-                  href="https://www.instagram.com/thehockeytruck"
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{ color: "#67e8f9", textDecoration: "none" }}
-                >
-                  thehockeytruck
-                </a>
-                <br />
-                <strong>Website:</strong>{" "}
-                <a
-                  href="https://www.thehockeytruck.com"
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{ color: "#67e8f9", textDecoration: "none" }}
-                >
-                  www.thehockeytruck.com
-                </a>
-              </p>
             </div>
           </div>
         </section>
