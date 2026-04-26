@@ -90,7 +90,7 @@ export default async function HomePage() {
       .limit(3);
 
     recentNews = newsPosts.slice(0, 3);
-    upcomingGames = games.filter((game) => game.status !== "Final").slice(0, 4);
+    upcomingGames = games.filter((game) => game.status !== "Final").slice(0, 3);
     playersOfWeek = playerOfWeekRows || [];
 
     const standingsMap = {};
