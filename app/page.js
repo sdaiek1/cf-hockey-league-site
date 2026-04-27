@@ -216,14 +216,16 @@ export default async function HomePage() {
     "Please arrive early so games can start on time.",
   ];
 
-  const announcementStepSeconds = 30;
+  const announcementScrollSeconds = 27;
+  const announcementStartEverySeconds = 4;
   const announcementCount = announcements.length;
   const announcementDurationSeconds =
-    announcementCount * announcementStepSeconds;
-  const announcementWindowPct = 100 / announcementCount;
+    announcementCount * announcementStartEverySeconds;
+  const announcementVisiblePct =
+    (announcementScrollSeconds / announcementDurationSeconds) * 100;
   const announcementFadeInPct = 2;
-  const announcementTravelPct = announcementWindowPct * 0.96;
-  const announcementFadeOutPct = announcementWindowPct;
+  const announcementTravelPct = announcementVisiblePct * 0.92;
+  const announcementFadeOutPct = announcementVisiblePct;
 
   const shell = {
     maxWidth: 1220,
