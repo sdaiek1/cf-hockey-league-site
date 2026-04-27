@@ -209,6 +209,22 @@ export default async function HomePage() {
           },
         ];
 
+  const announcements = [
+    "Waiver required before your first game.",
+    "All players must check in upon arrival.",
+    "Jersey number must match the number listed on the roster.",
+    "Please arrive early so games can start on time.",
+  ];
+
+  const announcementStepSeconds = 8;
+  const announcementCount = announcements.length;
+  const announcementDurationSeconds =
+    announcementCount * announcementStepSeconds;
+  const announcementWindowPct = 100 / announcementCount;
+  const announcementFadeInPct = 2;
+  const announcementTravelPct = announcementWindowPct * 0.88;
+  const announcementFadeOutPct = announcementWindowPct;
+
   const shell = {
     maxWidth: 1220,
     margin: "0 auto",
@@ -294,6 +310,69 @@ export default async function HomePage() {
     letterSpacing: "0.01em",
   };
 
+  const announcementBar = {
+    marginBottom: 14,
+    overflow: "hidden",
+    borderRadius: 16,
+    border: "1px solid rgba(34,211,238,0.16)",
+    background:
+      "linear-gradient(90deg, rgba(6,14,30,0.88) 0%, rgba(8,37,70,0.78) 50%, rgba(6,14,30,0.88) 100%)",
+    boxShadow: "0 10px 26px rgba(0,0,0,0.18)",
+    minHeight: 42,
+    display: "flex",
+    alignItems: "center",
+  };
+
+  const announcementLabel = {
+    flexShrink: 0,
+    padding: "0 14px",
+    height: 42,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: 12,
+    fontWeight: 800,
+    color: "#67e8f9",
+    borderRight: "1px solid rgba(34,211,238,0.14)",
+    background: "rgba(2,6,23,0.30)",
+    textTransform: "uppercase",
+    letterSpacing: "0.06em",
+  };
+
+  const announcementViewport = {
+    position: "relative",
+    overflow: "hidden",
+    flex: 1,
+    height: 42,
+  };
+
+  const announcementItemBase = {
+    position: "absolute",
+    left: "100%",
+    top: 0,
+    bottom: 0,
+    display: "flex",
+    alignItems: "center",
+    whiteSpace: "nowrap",
+    width: "max-content",
+    color: "#e2e8f0",
+    fontSize: 14,
+    fontWeight: 600,
+    opacity: 0,
+    padding: "0 18px",
+    animationName: "leagueAnnouncementScroll",
+    animationTimingFunction: "linear",
+    animationIterationCount: "infinite",
+    animationFillMode: "both",
+  };
+
+  const announcementDot = {
+    color: "#67e8f9",
+    marginRight: 10,
+    fontSize: 16,
+    lineHeight: 1,
+  };
+
   return (
     <main
       style={{
@@ -343,6 +422,51 @@ export default async function HomePage() {
       />
 
       <div style={shell}>
+        <style>{`
+          @keyframes leagueAnnouncementScroll {
+            0% {
+              transform: translateX(0);
+              opacity: 0;
+            }
+            ${announcementFadeInPct}% {
+              transform: translateX(0);
+              opacity: 1;
+            }
+            ${announcementTravelPct}% {
+              transform: translateX(calc(-100% - 112vw));
+              opacity: 1;
+            }
+            ${announcementFadeOutPct}% {
+              transform: translateX(calc(-100% - 112vw));
+              opacity: 0;
+            }
+            100% {
+              transform: translateX(calc(-100% - 112vw));
+              opacity: 0;
+            }
+          }
+        `}</style>
+
+        <div style={announcementBar}>
+          <div style={announcementLabel}>League Announcements</div>
+
+          <div style={announcementViewport}>
+            {announcements.map((item, index) => (
+              <div
+                key={index}
+                style={{
+                  ...announcementItemBase,
+                  animationDuration: `${announcementDurationSeconds}s`,
+                  animationDelay: `${index * announcementStepSeconds}s`,
+                }}
+              >
+                <span style={announcementDot}>•</span>
+                <span>{item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
         <section
           style={{
             ...card,
@@ -672,7 +796,8 @@ export default async function HomePage() {
                       fontWeight: 600,
                     }}
                   >
-                    Remember to arrive to your first game with enough time to fill out a waiver.
+                    Remember to arrive to your first game with enough time to fill
+                    out a waiver.
                   </div>
                 </div>
 
@@ -744,7 +869,8 @@ export default async function HomePage() {
                       fontWeight: 600,
                     }}
                   >
-                    All players should have a jersey number matching the number listed on the roster.
+                    All players should have a jersey number matching the number
+                    listed on the roster.
                   </div>
                 </div>
               </div>
@@ -963,8 +1089,8 @@ export default async function HomePage() {
         <section style={{ ...card, marginBottom: 24 }}>
           <h2 style={sectionTitle}>The Hockey Truck</h2>
           <p style={sectionText}>
-            Providing ice hockey pro-shop services like skate sharpening, and the sale
-            of accessories on the go!
+            Providing ice hockey pro-shop services like skate sharpening, and the
+            sale of accessories on the go!
           </p>
 
           <div
