@@ -346,25 +346,25 @@ export default async function HomePage() {
     height: 42,
   };
 
-const announcementItemBase = {
-  position: "absolute",
-  left: "100%",
-  top: 0,
-  bottom: 0,
-  display: "flex",
-  alignItems: "center",
-  whiteSpace: "nowrap",
-  width: "max-content",
-  color: "#e2e8f0",
-  fontSize: 16,
-  fontWeight: 700,
-  opacity: 0,
-  padding: "0 8px",
-  animationName: "leagueAnnouncementScroll",
-  animationTimingFunction: "linear",
-  animationIterationCount: "infinite",
-  animationFillMode: "both",
-};
+  const announcementItemBase = {
+    position: "absolute",
+    left: "100%",
+    top: 0,
+    bottom: 0,
+    display: "flex",
+    alignItems: "center",
+    whiteSpace: "nowrap",
+    width: "max-content",
+    color: "#e2e8f0",
+    fontSize: 16,
+    fontWeight: 700,
+    opacity: 0,
+    padding: "0 8px",
+    animationName: "leagueAnnouncementScroll",
+    animationTimingFunction: "linear",
+    animationIterationCount: "infinite",
+    animationFillMode: "both",
+  };
 
   const announcementDot = {
     color: "#67e8f9",
