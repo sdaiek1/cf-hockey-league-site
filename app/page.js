@@ -423,7 +423,7 @@ export default async function HomePage() {
         }}
       />
 
-      <div style={shell}>
+      <div style={shell} className="home-shell">
         <style>{`
           @keyframes leagueAnnouncementScroll {
             0% {
@@ -447,15 +447,184 @@ export default async function HomePage() {
               opacity: 0;
             }
           }
+
+          @media (max-width: 900px) {
+            .home-shell {
+              padding: 14px !important;
+            }
+
+            .announcement-bar {
+              min-height: 40px !important;
+            }
+
+            .announcement-label {
+              font-size: 11px !important;
+              padding: 0 10px !important;
+              height: 40px !important;
+            }
+
+            .announcement-viewport {
+              height: 40px !important;
+            }
+
+            .announcement-item {
+              font-size: 14px !important;
+              padding: 0 6px !important;
+            }
+
+            .hero-grid {
+              grid-template-columns: 1fr !important;
+              gap: 16px !important;
+            }
+
+            .hero-logo-box {
+              min-height: 180px !important;
+              padding: 16px !important;
+            }
+
+            .hero-logo-image {
+              max-height: 160px !important;
+            }
+
+            .hero-copy {
+              text-align: center !important;
+            }
+
+            .hero-title {
+              font-size: 26px !important;
+              line-height: 1.05 !important;
+            }
+
+            .hero-description {
+              font-size: 16px !important;
+              max-width: none !important;
+            }
+
+            .hero-actions {
+              flex-wrap: wrap !important;
+              gap: 10px !important;
+            }
+
+            .hero-button {
+              width: calc(50% - 6px) !important;
+              min-width: 150px !important;
+              min-height: 56px !important;
+            }
+
+            .home-main-grid {
+              grid-template-columns: 1fr !important;
+            }
+
+            .players-week-card {
+              padding-right: 22px !important;
+            }
+
+            .players-week-top-image {
+              position: static !important;
+              display: block !important;
+              width: 72px !important;
+              height: 72px !important;
+              margin: 0 0 12px auto !important;
+            }
+
+            .players-week-row {
+              min-height: 118px !important;
+              padding: 16px !important;
+            }
+
+            .players-week-star {
+              width: 70px !important;
+              height: 70px !important;
+            }
+
+            .players-week-name {
+              font-size: 24px !important;
+            }
+
+            .players-week-meta {
+              font-size: 16px !important;
+            }
+
+            .players-week-blurb {
+              font-size: 17px !important;
+            }
+
+            .matchup-grid {
+              grid-template-columns: 1fr !important;
+              gap: 10px !important;
+            }
+
+            .matchup-vs {
+              margin: 2px 0 !important;
+            }
+
+            .team-logo {
+              width: 58px !important;
+              height: 58px !important;
+            }
+
+            .hockey-truck-inner {
+              flex-direction: column !important;
+              align-items: flex-start !important;
+            }
+
+            .hockey-truck-image-box {
+              width: 100% !important;
+              max-width: 320px !important;
+              height: 120px !important;
+            }
+          }
+
+          @media (max-width: 640px) {
+            .home-shell {
+              padding: 10px !important;
+            }
+
+            .hero-title {
+              font-size: 22px !important;
+            }
+
+            .hero-description {
+              font-size: 15px !important;
+            }
+
+            .hero-button {
+              width: 100% !important;
+            }
+
+            .section-title {
+              font-size: 24px !important;
+            }
+
+            .players-week-name {
+              font-size: 21px !important;
+            }
+
+            .players-week-meta {
+              font-size: 15px !important;
+            }
+
+            .players-week-blurb {
+              font-size: 15px !important;
+            }
+
+            .team-logo {
+              width: 52px !important;
+              height: 52px !important;
+            }
+          }
         `}</style>
 
-        <div style={announcementBar}>
-          <div style={announcementLabel}>League Announcements</div>
+        <div style={announcementBar} className="announcement-bar">
+          <div style={announcementLabel} className="announcement-label">
+            League Announcements
+          </div>
 
-          <div style={announcementViewport}>
+          <div style={announcementViewport} className="announcement-viewport">
             {announcements.map((item, index) => (
               <div
                 key={index}
+                className="announcement-item"
                 style={{
                   ...announcementItemBase,
                   animationDuration: `${announcementLoopSeconds}s`,
@@ -497,6 +666,7 @@ export default async function HomePage() {
           />
 
           <div
+            className="hero-grid"
             style={{
               position: "relative",
               zIndex: 1,
@@ -507,6 +677,7 @@ export default async function HomePage() {
             }}
           >
             <div
+              className="hero-logo-box"
               style={{
                 minHeight: 260,
                 borderRadius: 22,
@@ -522,6 +693,7 @@ export default async function HomePage() {
               }}
             >
               <img
+                className="hero-logo-image"
                 src="/logo.png"
                 alt="Cold Fusion Summer Hockey League logo"
                 style={{
@@ -533,7 +705,7 @@ export default async function HomePage() {
               />
             </div>
 
-            <div>
+            <div className="hero-copy">
               <div style={heroBadgeWrap}>
                 <div
                   style={{
@@ -553,6 +725,7 @@ export default async function HomePage() {
               </div>
 
               <h1
+                className="hero-title"
                 style={{
                   fontSize: 30,
                   lineHeight: 1.0,
@@ -567,6 +740,7 @@ export default async function HomePage() {
               </h1>
 
               <p
+                className="hero-description"
                 style={{
                   fontSize: 17,
                   color: "#dbe7f3",
@@ -576,11 +750,13 @@ export default async function HomePage() {
                 }}
               >
                 Competitive adult summer hockey with league news, upcoming games,
-                standings, stats, team rosters, and featured stories all in one place.
+                standings, stats, team rosters, and featured stories all in one
+                place.
               </p>
 
-              <div style={heroActions}>
+              <div style={heroActions} className="hero-actions">
                 <a
+                  className="hero-button"
                   href="/schedule"
                   style={{
                     ...heroButtonBase,
@@ -597,6 +773,7 @@ export default async function HomePage() {
                 </a>
 
                 <a
+                  className="hero-button"
                   href="/cf-waiver-2026.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -613,6 +790,7 @@ export default async function HomePage() {
                 </a>
 
                 <a
+                  className="hero-button"
                   href="/news"
                   style={{
                     ...heroButtonBase,
@@ -631,6 +809,7 @@ export default async function HomePage() {
         </section>
 
         <section
+          className="home-main-grid"
           style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
@@ -641,7 +820,9 @@ export default async function HomePage() {
         >
           <div style={{ display: "grid", gap: 20 }}>
             <div style={card}>
-              <h2 style={sectionTitle}>Upcoming Games</h2>
+              <h2 className="section-title" style={sectionTitle}>
+                Upcoming Games
+              </h2>
               <p style={sectionText}>The next games on the league calendar.</p>
 
               {upcomingGames.length === 0 ? (
@@ -663,6 +844,7 @@ export default async function HomePage() {
                       </div>
 
                       <div
+                        className="matchup-grid"
                         style={{
                           display: "grid",
                           gridTemplateColumns: "1fr auto 1fr",
@@ -681,6 +863,7 @@ export default async function HomePage() {
                           }}
                         >
                           <img
+                            className="team-logo"
                             src={getTeamLogoSrc(game.home_team?.name)}
                             alt={`${game.home_team?.name || "Home team"} logo`}
                             style={{
@@ -701,6 +884,7 @@ export default async function HomePage() {
                         </div>
 
                         <div
+                          className="matchup-vs"
                           style={{
                             fontSize: 18,
                             fontWeight: 800,
@@ -721,6 +905,7 @@ export default async function HomePage() {
                           }}
                         >
                           <img
+                            className="team-logo"
                             src={getTeamLogoSrc(game.away_team?.name)}
                             alt={`${game.away_team?.name || "Away team"} logo`}
                             style={{
@@ -760,7 +945,9 @@ export default async function HomePage() {
             </div>
 
             <div style={card}>
-              <h2 style={sectionTitle}>League Reminders</h2>
+              <h2 className="section-title" style={sectionTitle}>
+                League Reminders
+              </h2>
               <p style={sectionText}>
                 Important reminders for all players before and during game night.
               </p>
@@ -881,7 +1068,9 @@ export default async function HomePage() {
 
           <div style={{ display: "grid", gap: 20 }}>
             <div style={card}>
-              <h2 style={sectionTitle}>Standings</h2>
+              <h2 className="section-title" style={sectionTitle}>
+                Standings
+              </h2>
               <p style={sectionText}>Current standings for all teams.</p>
 
               {standings.length === 0 ? (
@@ -962,6 +1151,7 @@ export default async function HomePage() {
             </div>
 
             <div
+              className="players-week-card"
               style={{
                 ...card,
                 position: "relative",
@@ -970,6 +1160,7 @@ export default async function HomePage() {
               }}
             >
               <img
+                className="players-week-top-image"
                 src="/player-placeholder.png"
                 alt="Players of the Week graphic"
                 style={{
@@ -985,7 +1176,9 @@ export default async function HomePage() {
                 }}
               />
 
-              <h2 style={sectionTitle}>Players of the Week</h2>
+              <h2 className="section-title" style={sectionTitle}>
+                Players of the Week
+              </h2>
               <p style={{ ...sectionText, maxWidth: 420 }}>
                 1st Star, 2nd Star, and 3rd Star from around the league.
               </p>
@@ -998,6 +1191,7 @@ export default async function HomePage() {
                   return (
                     <div
                       key={player?.id || `pow-${index}`}
+                      className="players-week-row"
                       style={{
                         ...subCard,
                         display: "flex",
@@ -1008,6 +1202,7 @@ export default async function HomePage() {
                       }}
                     >
                       <img
+                        className="players-week-star"
                         src={getStarImageSrc(rank)}
                         alt={starLabel}
                         style={{
@@ -1044,6 +1239,7 @@ export default async function HomePage() {
                         </div>
 
                         <div
+                          className="players-week-name"
                           style={{
                             fontSize: 28,
                             fontWeight: 800,
@@ -1055,6 +1251,7 @@ export default async function HomePage() {
                         </div>
 
                         <div
+                          className="players-week-meta"
                           style={{
                             marginTop: 6,
                             color: "#67e8f9",
@@ -1069,6 +1266,7 @@ export default async function HomePage() {
                         </div>
 
                         <div
+                          className="players-week-blurb"
                           style={{
                             marginTop: 10,
                             fontSize: 18,
@@ -1089,13 +1287,16 @@ export default async function HomePage() {
         </section>
 
         <section style={{ ...card, marginBottom: 24 }}>
-          <h2 style={sectionTitle}>The Hockey Truck</h2>
+          <h2 className="section-title" style={sectionTitle}>
+            The Hockey Truck
+          </h2>
           <p style={sectionText}>
             Providing ice hockey pro-shop services like skate sharpening, and the
             sale of accessories on the go!
           </p>
 
           <div
+            className="hockey-truck-inner"
             style={{
               ...subCard,
               display: "flex",
@@ -1106,6 +1307,7 @@ export default async function HomePage() {
             }}
           >
             <div
+              className="hockey-truck-image-box"
               style={{
                 width: 300,
                 height: 145,
@@ -1199,7 +1401,9 @@ export default async function HomePage() {
         </section>
 
         <section style={{ ...card, marginBottom: 24 }}>
-          <h2 style={sectionTitle}>Recent News</h2>
+          <h2 className="section-title" style={sectionTitle}>
+            Recent News
+          </h2>
           <p style={sectionText}>Latest game summaries and league stories.</p>
 
           {recentNews.length === 0 ? (
