@@ -216,13 +216,13 @@ export default async function HomePage() {
     "Please arrive early so games can start on time.",
   ];
 
-  const announcementScrollSeconds = 27;
+  const announcementScrollSeconds = 28;
   const announcementStartEverySeconds = 4;
   const announcementCount = announcements.length;
-  const announcementDurationSeconds =
+  const announcementLoopSeconds =
     announcementCount * announcementStartEverySeconds;
   const announcementVisiblePct =
-    (announcementScrollSeconds / announcementDurationSeconds) * 100;
+    (announcementScrollSeconds / announcementLoopSeconds) * 100;
   const announcementFadeInPct = 2;
   const announcementTravelPct = announcementVisiblePct * 0.92;
   const announcementFadeOutPct = announcementVisiblePct;
@@ -332,7 +332,7 @@ export default async function HomePage() {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: 800,
     color: "#67e8f9",
     borderRight: "1px solid rgba(34,211,238,0.14)",
@@ -458,8 +458,8 @@ export default async function HomePage() {
                 key={index}
                 style={{
                   ...announcementItemBase,
-                  animationDuration: `${announcementDurationSeconds}s`,
-                  animationDelay: `${index * announcementStepSeconds}s`,
+                  animationDuration: `${announcementLoopSeconds}s`,
+                  animationDelay: `${index * announcementStartEverySeconds}s`,
                 }}
               >
                 <span style={announcementDot}>•</span>
