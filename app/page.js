@@ -210,10 +210,10 @@ export default async function HomePage() {
         ];
 
   const announcements = [
-    "Waiver required before your first game.",
-    "All players must check in upon arrival.",
-    "Jersey number must match the number listed on the roster.",
-    "Please arrive early so games can start on time.",
+    "A signed waiver is required before your first game",
+    "All players must check in upon arrival",
+    "Jersey number must match the number listed on the roster",
+    "Remember: This is just for fun... Its not that serious!",
   ];
 
   const announcementScrollSeconds = 45;
