@@ -216,7 +216,7 @@ export default async function HomePage() {
     "Please arrive early so games can start on time.",
   ];
 
-  const announcementStepSeconds = 12;
+  const announcementStepSeconds = 20;
   const announcementCount = announcements.length;
   const announcementDurationSeconds =
     announcementCount * announcementStepSeconds;
