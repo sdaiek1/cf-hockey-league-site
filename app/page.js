@@ -216,13 +216,13 @@ export default async function HomePage() {
     "Please arrive early so games can start on time.",
   ];
 
-  const announcementStepSeconds = 8;
+  const announcementStepSeconds = 12;
   const announcementCount = announcements.length;
   const announcementDurationSeconds =
     announcementCount * announcementStepSeconds;
   const announcementWindowPct = 100 / announcementCount;
   const announcementFadeInPct = 2;
-  const announcementTravelPct = announcementWindowPct * 0.88;
+  const announcementTravelPct = announcementWindowPct * 0.92;
   const announcementFadeOutPct = announcementWindowPct;
 
   const shell = {
@@ -359,7 +359,7 @@ export default async function HomePage() {
     fontSize: 14,
     fontWeight: 600,
     opacity: 0,
-    padding: "0 18px",
+    padding: "0 8px",
     animationName: "leagueAnnouncementScroll",
     animationTimingFunction: "linear",
     animationIterationCount: "infinite",
