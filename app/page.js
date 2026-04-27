@@ -217,7 +217,7 @@ export default async function HomePage() {
   ];
 
   const announcementScrollSeconds = 45;
-  const announcementStartEverySeconds = 4;
+  const announcementStartEverySeconds = 8;
   const announcementCount = announcements.length;
   const announcementLoopSeconds =
     announcementCount * announcementStartEverySeconds;
