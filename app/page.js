@@ -216,13 +216,13 @@ export default async function HomePage() {
     "Please arrive early so games can start on time.",
   ];
 
-  const announcementStepSeconds = 20;
+  const announcementStepSeconds = 7;
   const announcementCount = announcements.length;
   const announcementDurationSeconds =
     announcementCount * announcementStepSeconds;
   const announcementWindowPct = 100 / announcementCount;
   const announcementFadeInPct = 2;
-  const announcementTravelPct = announcementWindowPct * 0.92;
+  const announcementTravelPct = announcementWindowPct * 0.96;
   const announcementFadeOutPct = announcementWindowPct;
 
   const shell = {
