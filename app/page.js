@@ -216,6 +216,26 @@ export default async function HomePage() {
     "Remember: This is just for fun... Its not that serious!",
   ];
 
+  const heroRotatingImages = [
+    "/logo.png",
+    "/Mayhem_Logo.png",
+    "/Rasta_Logo.JPG",
+    "/Swiss_Logo.PNG",
+    "/Venom_Logo.JPG",
+    "/WCFD_Logo.PNG",
+    "/ZPG_Logo.PNG",
+    "/H-Town_Logo.png",
+    "/Replacements_Logo.png",
+  ];
+
+  const heroSlideSeconds = 3;
+  const heroSlideCount = heroRotatingImages.length;
+  const heroSlideDuration = heroSlideCount * heroSlideSeconds;
+  const heroSlideVisiblePct = (heroSlideSeconds / heroSlideDuration) * 100;
+  const heroSlideFadeInPct = heroSlideVisiblePct * 0.14;
+  const heroSlideHoldPct = heroSlideVisiblePct * 0.82;
+  const heroSlideFadeOutPct = heroSlideVisiblePct;
+
   const announcementScrollSeconds = 45;
   const announcementStartEverySeconds = 8;
   const announcementCount = announcements.length;
@@ -448,6 +468,29 @@ export default async function HomePage() {
             }
           }
 
+          @keyframes heroLogoRotate {
+            0% {
+              opacity: 0;
+              transform: scale(0.98);
+            }
+            ${heroSlideFadeInPct}% {
+              opacity: 1;
+              transform: scale(1);
+            }
+            ${heroSlideHoldPct}% {
+              opacity: 1;
+              transform: scale(1);
+            }
+            ${heroSlideFadeOutPct}% {
+              opacity: 0;
+              transform: scale(1.02);
+            }
+            100% {
+              opacity: 0;
+              transform: scale(1.02);
+            }
+          }
+
           @media (max-width: 900px) {
             .home-shell {
               padding: 14px !important;
@@ -482,7 +525,11 @@ export default async function HomePage() {
               padding: 16px !important;
             }
 
-            .hero-logo-image {
+            .hero-rotating-stage {
+              height: 170px !important;
+            }
+
+            .hero-rotating-image {
               max-height: 160px !important;
             }
 
@@ -692,17 +739,44 @@ export default async function HomePage() {
                   "inset 0 0 60px rgba(34,211,238,0.07), 0 0 24px rgba(34,211,238,0.05)",
               }}
             >
-              <img
-                className="hero-logo-image"
-                src="/logo.png"
-                alt="Cold Fusion Summer Hockey League logo"
+              <div
+                className="hero-rotating-stage"
                 style={{
-                  maxWidth: "100%",
-                  maxHeight: 230,
-                  objectFit: "contain",
-                  filter: "drop-shadow(0 0 20px rgba(34,211,238,0.18))",
+                  position: "relative",
+                  width: "100%",
+                  height: 240,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
-              />
+              >
+                {heroRotatingImages.map((src, index) => (
+                  <img
+                    key={src}
+                    className="hero-rotating-image"
+                    src={src}
+                    alt="Cold Fusion Hockey League team logo"
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      margin: "auto",
+                      maxWidth: "100%",
+                      maxHeight: 230,
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "contain",
+                      filter: "drop-shadow(0 0 20px rgba(34,211,238,0.18))",
+                      opacity: 0,
+                      animationName: "heroLogoRotate",
+                      animationDuration: `${heroSlideDuration}s`,
+                      animationTimingFunction: "linear",
+                      animationIterationCount: "infinite",
+                      animationFillMode: "both",
+                      animationDelay: `${index * heroSlideSeconds}s`,
+                    }}
+                  />
+                ))}
+              </div>
             </div>
 
             <div className="hero-copy">
