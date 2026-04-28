@@ -228,7 +228,7 @@ export default async function HomePage() {
     "/Replacements_Logo.png",
   ];
 
-  const heroSlideSeconds = 3;
+  const heroSlideSeconds = 4;
   const heroSlideCount = heroRotatingImages.length;
   const heroSlideDuration = heroSlideCount * heroSlideSeconds;
   const heroSlideVisiblePct = (heroSlideSeconds / heroSlideDuration) * 100;
@@ -237,7 +237,7 @@ export default async function HomePage() {
   const heroSlideFadeOutPct = heroSlideVisiblePct;
 
   const announcementScrollSeconds = 45;
-  const announcementStartEverySeconds = 8;
+  const announcementStartEverySeconds = 13;
   const announcementCount = announcements.length;
   const announcementLoopSeconds =
     announcementCount * announcementStartEverySeconds;
