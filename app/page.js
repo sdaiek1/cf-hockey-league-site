@@ -237,7 +237,7 @@ export default async function HomePage() {
   const heroSlideFadeOutPct = heroSlideVisiblePct;
 
   const announcementScrollSeconds = 45;
-  const announcementStartEverySeconds = 13;
+  const announcementStartEverySeconds = 20;
   const announcementCount = announcements.length;
   const announcementLoopSeconds =
     announcementCount * announcementStartEverySeconds;
