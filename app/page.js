@@ -35,6 +35,7 @@ export default async function HomePage() {
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   let upcomingGames = [];
+  let scoreStripGames = [];
   let standings = [];
   let recentNews = [];
   let playersOfWeek = [];
