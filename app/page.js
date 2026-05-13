@@ -7,12 +7,12 @@ function getTeamLogoSrc(teamName = "") {
   const TEAM_LOGOS = {
     "Team Rasta": "/Rasta_Logo.JPG",
     "Zero Pucks Given": "/ZPG_Logo.PNG",
-    "Mayhem": "/Mayhem_Logo.png",
+    Mayhem: "/Mayhem_Logo.png",
     "Swiss Army": "/Swiss_Logo.PNG",
-    "WCFD": "/WCFD_Logo.PNG",
+    WCFD: "/WCFD_Logo.PNG",
     "H-Town Assassins": "/H-Town_Logo.png",
-    "Replacements": "/Replacements_Logo.png",
-    "Venom": "/Venom_Logo.JPG",
+    Replacements: "/Replacements_Logo.png",
+    Venom: "/Venom_Logo.JPG",
   };
 
   return TEAM_LOGOS[teamName] || "/logo.png";
@@ -91,7 +91,28 @@ export default async function HomePage() {
       .limit(3);
 
     recentNews = newsPosts.slice(0, 3);
-    upcomingGames = games.filter((game) => game.status !== "Final").slice(0, 3);
+
+    const nowEastern = getEasternNowParts();
+
+    const completedGames = games
+      .filter((game) => isCompletedGame(game) && hasGameScore(game))
+      .sort(compareGamesDesc)
+      .slice(0, 5);
+
+    const futureGames = games
+      .filter((game) => !isCompletedGame(game) && isUpcomingGame(game, nowEastern))
+      .sort(compareGamesAsc);
+
+    upcomingGames = futureGames.slice(0, 3);
+
+    scoreStripGames = [
+      ...completedGames.map((game) => ({ ...game, stripType: "final" })),
+      ...futureGames.slice(0, 5).map((game) => ({
+        ...game,
+        stripType: "upcoming",
+      })),
+    ].slice(0, 10);
+
     playersOfWeek = playerOfWeekRows || [];
 
     const standingsMap = {};
@@ -109,9 +130,8 @@ export default async function HomePage() {
 
     for (const game of games) {
       if (
-        game.status !== "Final" ||
-        game.home_score === null ||
-        game.away_score === null ||
+        !isCompletedGame(game) ||
+        !hasGameScore(game) ||
         !game.home_team?.name ||
         !game.away_team?.name
       ) {
@@ -168,6 +188,92 @@ export default async function HomePage() {
       if (b.w !== a.w) return b.w - a.w;
       return a.team.localeCompare(b.team);
     });
+  }
+
+  function getEasternNowParts() {
+    const parts = new Intl.DateTimeFormat("en-US", {
+      timeZone: "America/New_York",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hourCycle: "h23",
+    }).formatToParts(new Date());
+
+    const values = {};
+    for (const part of parts) {
+      values[part.type] = part.value;
+    }
+
+    return {
+      dateString: `${values.year}-${values.month}-${values.day}`,
+      minutes: Number(values.hour) * 60 + Number(values.minute),
+    };
+  }
+
+  function hasGameScore(game) {
+    return (
+      game.home_score !== null &&
+      game.home_score !== undefined &&
+      game.away_score !== null &&
+      game.away_score !== undefined
+    );
+  }
+
+  function isCompletedGame(game) {
+    return String(game.status || "").toLowerCase() === "final" || hasGameScore(game);
+  }
+
+  function parseGameTimeToMinutes(timeString = "") {
+    const cleaned = String(timeString || "")
+      .trim()
+      .toUpperCase()
+      .split("-")[0]
+      .trim();
+
+    if (!cleaned || cleaned === "TBD") return 23 * 60 + 59;
+
+    const twelveHourMatch = cleaned.match(/^(\d{1,2})(?::(\d{2}))?\s*(AM|PM)$/);
+    if (twelveHourMatch) {
+      let hours = Number(twelveHourMatch[1]);
+      const minutes = Number(twelveHourMatch[2] || 0);
+      const meridiem = twelveHourMatch[3];
+
+      if (meridiem === "PM" && hours !== 12) hours += 12;
+      if (meridiem === "AM" && hours === 12) hours = 0;
+
+      return hours * 60 + minutes;
+    }
+
+    const twentyFourHourMatch = cleaned.match(/^(\d{1,2}):(\d{2})(?::\d{2})?$/);
+    if (twentyFourHourMatch) {
+      return Number(twentyFourHourMatch[1]) * 60 + Number(twentyFourHourMatch[2]);
+    }
+
+    return 23 * 60 + 59;
+  }
+
+  function getGameSortValue(game) {
+    const dateValue = Number(String(game.game_date || "").replaceAll("-", ""));
+    return dateValue * 1440 + parseGameTimeToMinutes(game.game_time);
+  }
+
+  function compareGamesAsc(a, b) {
+    return getGameSortValue(a) - getGameSortValue(b);
+  }
+
+  function compareGamesDesc(a, b) {
+    return getGameSortValue(b) - getGameSortValue(a);
+  }
+
+  function isUpcomingGame(game, nowEastern) {
+    if (!game.game_date) return false;
+
+    if (game.game_date > nowEastern.dateString) return true;
+    if (game.game_date < nowEastern.dateString) return false;
+
+    return parseGameTimeToMinutes(game.game_time) >= nowEastern.minutes;
   }
 
   function formatGameDate(dateString) {
@@ -307,7 +413,7 @@ export default async function HomePage() {
 
   const heroButtonBase = {
     textDecoration: "none",
-    padding: "10px 14px",
+    padding: "8px 12px",
     borderRadius: 14,
     fontWeight: 800,
     display: "flex",
@@ -315,8 +421,8 @@ export default async function HomePage() {
     alignItems: "center",
     justifyContent: "center",
     textAlign: "center",
-    width: 180,
-    minHeight: 64,
+    width: 170,
+    minHeight: 54,
     lineHeight: 1.08,
   };
 
@@ -394,6 +500,97 @@ export default async function HomePage() {
     marginRight: 10,
     fontSize: 16,
     lineHeight: 1,
+  };
+
+  const scoreStripBar = {
+    marginBottom: 18,
+    overflow: "hidden",
+    borderRadius: 18,
+    border: "1px solid rgba(34,211,238,0.16)",
+    background:
+      "linear-gradient(90deg, rgba(3,8,20,0.90) 0%, rgba(8,30,58,0.82) 50%, rgba(3,8,20,0.90) 100%)",
+    boxShadow: "0 12px 30px rgba(0,0,0,0.22)",
+  };
+
+  const scoreStripHeader = {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 12,
+    padding: "10px 14px",
+    borderBottom: "1px solid rgba(34,211,238,0.12)",
+  };
+
+  const scoreStripTitle = {
+    color: "#67e8f9",
+    fontSize: 13,
+    fontWeight: 900,
+    textTransform: "uppercase",
+    letterSpacing: "0.08em",
+  };
+
+  const scoreStripLink = {
+    color: "#cbd5e1",
+    fontSize: 13,
+    fontWeight: 800,
+    textDecoration: "none",
+  };
+
+  const scoreStripScroller = {
+    display: "flex",
+    gap: 10,
+    overflowX: "auto",
+    padding: 12,
+    scrollbarWidth: "thin",
+  };
+
+  const scoreGameCard = {
+    minWidth: 225,
+    background:
+      "linear-gradient(180deg, rgba(6,14,30,0.88) 0%, rgba(3,8,20,0.94) 100%)",
+    border: "1px solid rgba(34,211,238,0.10)",
+    borderRadius: 14,
+    padding: 12,
+    flexShrink: 0,
+  };
+
+  const scoreGameStatus = {
+    color: "#94a3b8",
+    fontSize: 12,
+    fontWeight: 800,
+    textTransform: "uppercase",
+    letterSpacing: "0.06em",
+    marginBottom: 8,
+  };
+
+  const scoreTeamLine = {
+    display: "grid",
+    gridTemplateColumns: "26px 1fr auto",
+    alignItems: "center",
+    gap: 8,
+    marginTop: 7,
+  };
+
+  const scoreTeamLogo = {
+    width: 24,
+    height: 24,
+    objectFit: "contain",
+  };
+
+  const scoreTeamName = {
+    color: "#f8fafc",
+    fontSize: 14,
+    fontWeight: 800,
+    lineHeight: 1.15,
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+  };
+
+  const scoreNumber = {
+    color: "#ffffff",
+    fontSize: 18,
+    fontWeight: 900,
   };
 
   return (
@@ -522,16 +719,16 @@ export default async function HomePage() {
             }
 
             .hero-logo-box {
-              min-height: 180px !important;
-              padding: 16px !important;
+              min-height: 145px !important;
+              padding: 12px !important;
             }
 
             .hero-rotating-stage {
-              height: 170px !important;
+              height: 135px !important;
             }
 
             .hero-rotating-image {
-              max-height: 160px !important;
+              max-height: 125px !important;
             }
 
             .hero-copy {
@@ -686,6 +883,76 @@ export default async function HomePage() {
           </div>
         </div>
 
+        <div style={scoreStripBar} className="score-strip-bar">
+          <div style={scoreStripHeader}>
+            <div style={scoreStripTitle}>Recent Scores & Upcoming Games</div>
+            <a href="/schedule" style={scoreStripLink}>
+              Full Schedule →
+            </a>
+          </div>
+
+          {scoreStripGames.length === 0 ? (
+            <div style={{ padding: 14, color: "#cbd5e1", fontWeight: 700 }}>
+              No recent or upcoming games posted yet.
+            </div>
+          ) : (
+            <div style={scoreStripScroller} className="score-strip-scroller">
+              {scoreStripGames.map((game) => {
+                const isFinal = game.stripType === "final";
+
+                return (
+                  <div key={`${game.stripType}-${game.id}`} style={scoreGameCard}>
+                    <div style={scoreGameStatus}>
+                      {isFinal
+                        ? "Final"
+                        : `${formatGameDate(game.game_date)} • ${
+                            game.game_time || "TBD"
+                          }`}
+                    </div>
+
+                    <div style={scoreTeamLine}>
+                      <img
+                        src={getTeamLogoSrc(game.away_team?.name)}
+                        alt={`${game.away_team?.name || "Away team"} logo`}
+                        style={scoreTeamLogo}
+                      />
+                      <div style={scoreTeamName}>{game.away_team?.name}</div>
+                      <div style={scoreNumber}>
+                        {isFinal ? game.away_score : ""}
+                      </div>
+                    </div>
+
+                    <div style={scoreTeamLine}>
+                      <img
+                        src={getTeamLogoSrc(game.home_team?.name)}
+                        alt={`${game.home_team?.name || "Home team"} logo`}
+                        style={scoreTeamLogo}
+                      />
+                      <div style={scoreTeamName}>{game.home_team?.name}</div>
+                      <div style={scoreNumber}>
+                        {isFinal ? game.home_score : ""}
+                      </div>
+                    </div>
+
+                    {!isFinal && (
+                      <div
+                        style={{
+                          marginTop: 10,
+                          color: "#67e8f9",
+                          fontSize: 12,
+                          fontWeight: 800,
+                        }}
+                      >
+                        {game.rink || "Codey Arena"}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
         <section
           style={{
             ...card,
@@ -694,8 +961,8 @@ export default async function HomePage() {
             background:
               "linear-gradient(135deg, rgba(8,37,70,0.52) 0%, rgba(5,23,48,0.60) 42%, rgba(2,10,28,0.72) 100%)",
             border: "1px solid rgba(34,211,238,0.18)",
-            padding: 18,
-            marginBottom: 26,
+            padding: 14,
+            marginBottom: 22,
             boxShadow:
               "0 0 50px rgba(34,211,238,0.04), 0 20px 44px rgba(0,0,0,0.24), inset 0 1px 0 rgba(255,255,255,0.03)",
           }}
@@ -727,7 +994,7 @@ export default async function HomePage() {
             <div
               className="hero-logo-box"
               style={{
-                minHeight: 260,
+                minHeight: 180,
                 borderRadius: 22,
                 background:
                   "radial-gradient(circle at center, rgba(34,211,238,0.14) 0%, rgba(3,15,33,0.28) 42%, rgba(2,6,23,0.88) 100%)",
@@ -735,7 +1002,7 @@ export default async function HomePage() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                padding: 20,
+                padding: 14,
                 boxShadow:
                   "inset 0 0 60px rgba(34,211,238,0.07), 0 0 24px rgba(34,211,238,0.05)",
               }}
@@ -745,7 +1012,7 @@ export default async function HomePage() {
                 style={{
                   position: "relative",
                   width: "100%",
-                  height: 240,
+                  height: 165,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -762,7 +1029,7 @@ export default async function HomePage() {
                       inset: 0,
                       margin: "auto",
                       maxWidth: "100%",
-                      maxHeight: 230,
+                      maxHeight: 155,
                       width: "100%",
                       height: "100%",
                       objectFit: "contain",
@@ -802,10 +1069,10 @@ export default async function HomePage() {
               <h1
                 className="hero-title"
                 style={{
-                  fontSize: 30,
+                  fontSize: 26,
                   lineHeight: 1.0,
                   marginTop: 0,
-                  marginBottom: 12,
+                  marginBottom: 8,
                   color: "#f8fafc",
                   letterSpacing: "-0.04em",
                   textShadow: "0 8px 24px rgba(0,0,0,0.26)",
@@ -817,11 +1084,11 @@ export default async function HomePage() {
               <p
                 className="hero-description"
                 style={{
-                  fontSize: 17,
+                  fontSize: 15,
                   color: "#dbe7f3",
                   maxWidth: 680,
-                  lineHeight: 1.6,
-                  marginBottom: 20,
+                  lineHeight: 1.45,
+                  marginBottom: 14,
                 }}
               >
                 Competitive adult summer hockey with league news, upcoming games,
@@ -1336,7 +1603,9 @@ export default async function HomePage() {
                           }}
                         >
                           {player
-                            ? `${player.team_name || "Team Name"} • ${player.position || "Position"}`
+                            ? `${player.team_name || "Team Name"} • ${
+                                player.position || "Position"
+                              }`
                             : "Team Name • Position"}
                         </div>
 
