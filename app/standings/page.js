@@ -136,7 +136,7 @@ export default async function StandingsPage() {
 
   const standings = Object.values(standingsMap).sort((a, b) => {
     if (b.pts !== a.pts) return b.pts - a.pts;
-    if (b.w !== a.w) return b.w - a.w;
+    if (b.gf !== a.gf) return b.gf - a.gf;
     return a.team.localeCompare(b.team);
   });
 
