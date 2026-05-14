@@ -59,7 +59,9 @@ export default function AdminPage() {
     games_played: "",
     goals: "",
     assists: "",
-    penalty_minutes: ""
+    penalty_minutes: "",
+    goalie_wins: "",
+    goalie_shutouts: ""
   });
 
   const [newsForm, setNewsForm] = useState({
@@ -187,7 +189,10 @@ export default function AdminPage() {
         goals,
         assists,
         points,
+        points_per_game,
         penalty_minutes,
+        goalie_wins,
+        goalie_shutouts,
         team:team_id(name)
       `)
       .order("player_name", { ascending: true });
@@ -352,6 +357,8 @@ export default function AdminPage() {
       goals: 0,
       assists: 0,
       penalty_minutes: 0,
+      goalie_wins: 0,
+      goalie_shutouts: 0,
       is_active: true
     });
 
@@ -401,7 +408,9 @@ export default function AdminPage() {
         games_played: Number(statsForm.games_played || 0),
         goals: Number(statsForm.goals || 0),
         assists: Number(statsForm.assists || 0),
-        penalty_minutes: Number(statsForm.penalty_minutes || 0)
+        penalty_minutes: Number(statsForm.penalty_minutes || 0),
+        goalie_wins: Number(statsForm.goalie_wins || 0),
+        goalie_shutouts: Number(statsForm.goalie_shutouts || 0)
       })
       .eq("id", statsForm.player_id);
 
@@ -416,7 +425,9 @@ export default function AdminPage() {
       games_played: "",
       goals: "",
       assists: "",
-      penalty_minutes: ""
+      penalty_minutes: "",
+      goalie_wins: "",
+      goalie_shutouts: ""
     });
     loadPlayers();
   }
@@ -554,9 +565,39 @@ export default function AdminPage() {
   }
 
   function handleStatsChange(e) {
+    const { name, value } = e.target;
+
+    if (name === "player_id") {
+      const selectedPlayer = players.find((player) => player.id === value);
+
+      if (!selectedPlayer) {
+        setStatsForm({
+          player_id: value,
+          games_played: "",
+          goals: "",
+          assists: "",
+          penalty_minutes: "",
+          goalie_wins: "",
+          goalie_shutouts: ""
+        });
+        return;
+      }
+
+      setStatsForm({
+        player_id: value,
+        games_played: selectedPlayer.games_played ?? "",
+        goals: selectedPlayer.goals ?? "",
+        assists: selectedPlayer.assists ?? "",
+        penalty_minutes: selectedPlayer.penalty_minutes ?? "",
+        goalie_wins: selectedPlayer.goalie_wins ?? "",
+        goalie_shutouts: selectedPlayer.goalie_shutouts ?? ""
+      });
+      return;
+    }
+
     setStatsForm((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [name]: value
     }));
   }
 
@@ -585,6 +626,25 @@ export default function AdminPage() {
 
   function gameLabel(game) {
     return `${game.game_date} - ${game.home_team?.name || ""} vs ${game.away_team?.name || ""}`;
+  }
+
+  function playerPoints(player) {
+    if (player.points !== null && player.points !== undefined) {
+      return Number(player.points || 0);
+    }
+
+    return Number(player.goals || 0) + Number(player.assists || 0);
+  }
+
+  function playerPpg(player) {
+    if (player.points_per_game !== null && player.points_per_game !== undefined) {
+      return Number(player.points_per_game || 0).toFixed(2);
+    }
+
+    const gp = Number(player.games_played || 0);
+    if (gp <= 0) return "0.00";
+
+    return (playerPoints(player) / gp).toFixed(2);
   }
 
   const activePlayerOfWeekEntries = playerOfWeekEntries
@@ -804,6 +864,10 @@ export default function AdminPage() {
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1.2fr", gap: 20 }}>
           <div style={{ padding: 20, borderRadius: 20, background: "#0f172a", border: "1px solid #1e293b" }}>
             <h2>Update Player Stats</h2>
+            <p style={{ color: "#cbd5e1", marginTop: 4 }}>
+              PTS and PPG are calculated automatically from goals, assists, and games played.
+            </p>
+
             <form onSubmit={updateStats} style={{ display: "grid", gap: 12, marginTop: 16 }}>
               <select
                 name="player_id"
@@ -819,10 +883,12 @@ export default function AdminPage() {
                 ))}
               </select>
 
-              <input name="games_played" type="number" value={statsForm.games_played} onChange={handleStatsChange} placeholder="Games played" style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }} />
-              <input name="goals" type="number" value={statsForm.goals} onChange={handleStatsChange} placeholder="Goals" style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }} />
-              <input name="assists" type="number" value={statsForm.assists} onChange={handleStatsChange} placeholder="Assists" style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }} />
-              <input name="penalty_minutes" type="number" value={statsForm.penalty_minutes} onChange={handleStatsChange} placeholder="Penalty minutes" style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }} />
+              <input name="games_played" type="number" min="0" value={statsForm.games_played} onChange={handleStatsChange} placeholder="Games played" style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }} />
+              <input name="goals" type="number" min="0" value={statsForm.goals} onChange={handleStatsChange} placeholder="Goals" style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }} />
+              <input name="assists" type="number" min="0" value={statsForm.assists} onChange={handleStatsChange} placeholder="Assists" style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }} />
+              <input name="penalty_minutes" type="number" min="0" value={statsForm.penalty_minutes} onChange={handleStatsChange} placeholder="Penalty minutes" style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }} />
+              <input name="goalie_wins" type="number" min="0" value={statsForm.goalie_wins} onChange={handleStatsChange} placeholder="Goalie wins" style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }} />
+              <input name="goalie_shutouts" type="number" min="0" value={statsForm.goalie_shutouts} onChange={handleStatsChange} placeholder="Goalie shutouts" style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }} />
 
               <button type="submit" style={{ padding: 12, borderRadius: 12, border: 0, background: "#22d3ee", color: "#082f49", fontWeight: 700 }}>
                 Save Stats
@@ -841,8 +907,10 @@ export default function AdminPage() {
                   <div style={{ color: "#cbd5e1", marginBottom: 8 }}>
                     {player.team?.name || "No team"}{player.position ? ` • ${player.position}` : ""}
                   </div>
-                  <div style={{ color: "#e2e8f0" }}>
-                    GP: {player.games_played} • G: {player.goals} • A: {player.assists} • PTS: {player.points} • PIM: {player.penalty_minutes}
+                  <div style={{ color: "#e2e8f0", lineHeight: 1.6 }}>
+                    GP: {player.games_played || 0} • G: {player.goals || 0} • A: {player.assists || 0} • PTS: {playerPoints(player)} • PPG: {playerPpg(player)} • PIM: {player.penalty_minutes || 0}
+                    <br />
+                    Goalie W: {player.goalie_wins || 0} • SO: {player.goalie_shutouts || 0}
                   </div>
                 </div>
               ))}
