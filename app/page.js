@@ -189,11 +189,11 @@ export default async function HomePage() {
       }
     }
 
-  standings = Object.values(standingsMap).sort((a, b) => {
-    if (b.pts !== a.pts) return b.pts - a.pts;
-    if (b.gf !== a.gf) return b.gf - a.gf;
-    return a.team.localeCompare(b.team);
-  });
+      standings = Object.values(standingsMap).sort((a, b) => {
+        if (b.pts !== a.pts) return b.pts - a.pts;
+        if (b.gf !== a.gf) return b.gf - a.gf;
+        return a.team.localeCompare(b.team);
+      });
 
   function getEasternNowParts() {
     const parts = new Intl.DateTimeFormat("en-US", {
