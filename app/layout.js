@@ -34,6 +34,272 @@ export default function RootLayout({ children }) {
           backgroundAttachment: "fixed"
         }}
       >
+        <style>{`
+          * {
+            box-sizing: border-box;
+          }
+
+          html {
+            -webkit-text-size-adjust: 100%;
+          }
+
+          body {
+            overflow-x: hidden;
+          }
+
+          button,
+          input,
+          select,
+          textarea {
+            font-family: inherit;
+          }
+
+          a,
+          button,
+          summary {
+            -webkit-tap-highlight-color: transparent;
+          }
+
+          .site-header-inner {
+            max-width: 1220px;
+            margin: 0 auto;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+          }
+
+          .brand-wrap {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            min-width: 0;
+          }
+
+          .site-logo {
+            width: 64px;
+            height: 64px;
+            object-fit: contain;
+            border-radius: 12px;
+            background: #0b1220;
+            border: 1px solid #1e293b;
+            padding: 6px;
+            box-shadow: 0 0 18px rgba(34,211,238,0.16);
+            flex-shrink: 0;
+          }
+
+          .site-title {
+            color: white;
+            text-decoration: none;
+            font-size: 24px;
+            font-weight: 800;
+            line-height: 1.08;
+            display: inline-block;
+          }
+
+          .site-subtitle {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-top: 4px;
+          }
+
+          .desktop-nav {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+          }
+
+          .nav-link {
+            text-decoration: none;
+            color: #e2e8f0;
+            background: rgba(17, 24, 39, 0.82);
+            border: 1px solid #1f2937;
+            padding: 10px 14px;
+            border-radius: 999px;
+            font-size: 14px;
+            font-weight: 700;
+            min-height: 42px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+          }
+
+          .nav-link-admin {
+            color: #082f49;
+            background: #22d3ee;
+            border: 1px solid rgba(34,211,238,0.55);
+            font-weight: 800;
+            box-shadow: 0 0 16px rgba(34,211,238,0.28);
+          }
+
+          .mobile-menu {
+            display: none;
+            position: relative;
+            flex-shrink: 0;
+          }
+
+          .mobile-menu summary {
+            list-style: none;
+            cursor: pointer;
+            user-select: none;
+          }
+
+          .mobile-menu summary::-webkit-details-marker {
+            display: none;
+          }
+
+          .mobile-menu-button {
+            min-height: 44px;
+            min-width: 44px;
+            padding: 10px 13px;
+            border-radius: 14px;
+            border: 1px solid rgba(34,211,238,0.26);
+            background: rgba(8,20,42,0.92);
+            color: #e2e8f0;
+            font-size: 22px;
+            font-weight: 900;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 14px rgba(34,211,238,0.10);
+          }
+
+          .mobile-menu-panel {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            width: min(84vw, 320px);
+            padding: 12px;
+            border-radius: 18px;
+            background: rgba(2, 6, 23, 0.98);
+            border: 1px solid rgba(34,211,238,0.18);
+            box-shadow: 0 24px 50px rgba(0,0,0,0.40);
+            display: grid;
+            gap: 8px;
+          }
+
+          .mobile-nav-link {
+            text-decoration: none;
+            color: #e2e8f0;
+            background: rgba(17, 24, 39, 0.88);
+            border: 1px solid #1f2937;
+            padding: 13px 14px;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 800;
+            min-height: 46px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+          }
+
+          .mobile-nav-link::after {
+            content: "›";
+            color: #67e8f9;
+            font-size: 22px;
+            line-height: 1;
+          }
+
+          .mobile-admin-link {
+            color: #082f49;
+            background: #22d3ee;
+            border-color: rgba(34,211,238,0.65);
+          }
+
+          .mobile-admin-link::after {
+            color: #082f49;
+          }
+
+          @media (max-width: 980px) {
+            .desktop-nav {
+              display: none;
+            }
+
+            .mobile-menu {
+              display: block;
+            }
+
+            .site-header-inner {
+              flex-wrap: nowrap;
+            }
+          }
+
+          @media (max-width: 768px) {
+            body {
+              background-attachment: scroll !important;
+            }
+          }
+
+          @media (max-width: 640px) {
+            .site-header-inner {
+              padding: 10px 12px;
+              gap: 10px;
+            }
+
+            .brand-wrap {
+              gap: 10px;
+              flex: 1;
+              min-width: 0;
+            }
+
+            .site-logo {
+              width: 50px;
+              height: 50px;
+              border-radius: 10px;
+              padding: 5px;
+            }
+
+            .brand-text {
+              min-width: 0;
+            }
+
+            .site-title {
+              font-size: 18px;
+              line-height: 1.08;
+              max-width: 210px;
+            }
+
+            .site-subtitle {
+              font-size: 12px;
+              margin-top: 3px;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              max-width: 210px;
+            }
+
+            .mobile-menu-button {
+              min-width: 44px;
+              min-height: 44px;
+              padding: 8px 12px;
+            }
+
+            .mobile-menu-panel {
+              top: calc(100% + 8px);
+              right: 0;
+              width: min(88vw, 310px);
+            }
+          }
+
+          @media (max-width: 390px) {
+            .site-title {
+              font-size: 16px;
+              max-width: 180px;
+            }
+
+            .site-subtitle {
+              max-width: 180px;
+            }
+
+            .site-logo {
+              width: 46px;
+              height: 46px;
+            }
+          }
+        `}</style>
+
         <div
           style={{
             position: "fixed",
@@ -71,95 +337,53 @@ export default function RootLayout({ children }) {
             backdropFilter: "blur(14px)"
           }}
         >
-          <div
-            style={{
-              maxWidth: 1220,
-              margin: "0 auto",
-              padding: "16px 20px",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              gap: 16,
-              flexWrap: "wrap"
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          <div className="site-header-inner">
+            <div className="brand-wrap">
               <a href="/" style={{ display: "inline-flex", alignItems: "center" }}>
                 <img
+                  className="site-logo"
                   src="/logo1.png"
                   alt="Cold Fusion Summer Hockey League logo"
-                  style={{
-                    width: 64,
-                    height: 64,
-                    objectFit: "contain",
-                    borderRadius: 12,
-                    background: "#0b1220",
-                    border: "1px solid #1e293b",
-                    padding: 6,
-                    boxShadow: "0 0 18px rgba(34,211,238,0.16)"
-                  }}
                 />
               </a>
 
-              <div>
-                <a
-                  href="/"
-                  style={{
-                    color: "white",
-                    textDecoration: "none",
-                    fontSize: 24,
-                    fontWeight: 800
-                  }}
-                >
+              <div className="brand-text">
+                <a href="/" className="site-title">
                   Cold Fusion Summer Hockey League
                 </a>
-                <div style={{ color: "#94a3b8", fontSize: 14, marginTop: 4 }}>
+                <div className="site-subtitle">
                   Codey Arena • West Orange, NJ
                 </div>
               </div>
             </div>
 
-            <nav
-              style={{
-                display: "flex",
-                gap: 10,
-                flexWrap: "wrap"
-              }}
-            >
+            <nav className="desktop-nav" aria-label="Main navigation">
               {navLinks.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  style={{
-                    textDecoration: "none",
-                    color: "#e2e8f0",
-                    background: "rgba(17, 24, 39, 0.82)",
-                    border: "1px solid #1f2937",
-                    padding: "10px 14px",
-                    borderRadius: 999,
-                    fontSize: 14,
-                    fontWeight: 700
-                  }}
-                >
+                <a key={link.href} href={link.href} className="nav-link">
                   {link.label}
                 </a>
               ))}
-              <a
-                href="/admin"
-                style={{
-                  textDecoration: "none",
-                  color: "#082f49",
-                  background: "#22d3ee",
-                  padding: "10px 14px",
-                  borderRadius: 999,
-                  fontSize: 14,
-                  fontWeight: 800,
-                  boxShadow: "0 0 16px rgba(34,211,238,0.28)"
-                }}
-              >
+              <a href="/admin" className="nav-link nav-link-admin">
                 Admin
               </a>
             </nav>
+
+            <details className="mobile-menu">
+              <summary aria-label="Open navigation menu">
+                <span className="mobile-menu-button">☰</span>
+              </summary>
+
+              <nav className="mobile-menu-panel" aria-label="Mobile navigation">
+                {navLinks.map((link) => (
+                  <a key={link.href} href={link.href} className="mobile-nav-link">
+                    {link.label}
+                  </a>
+                ))}
+                <a href="/admin" className="mobile-nav-link mobile-admin-link">
+                  Admin
+                </a>
+              </nav>
+            </details>
           </div>
         </header>
 
