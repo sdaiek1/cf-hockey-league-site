@@ -60,8 +60,8 @@ export default function AdminPage() {
     goals: "",
     assists: "",
     penalty_minutes: "",
-    goalie_wins: "",
-    goalie_shutouts: ""
+    wins: "",
+    shutouts: ""
   });
 
   const [newsForm, setNewsForm] = useState({
