@@ -169,8 +169,8 @@ export default async function StatsPage({ searchParams }) {
     {
       title: "Goalie Shutouts",
       shortTitle: "Shutouts",
-      key: "goalie_shutouts",
-      leaders: getLeaders(goaliePlayers, "goalie_shutouts"),
+      key: "shutouts",
+      leaders: getLeaders(goaliePlayers, "shutouts"),
     },
   ];
 
