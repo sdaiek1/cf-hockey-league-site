@@ -9,12 +9,12 @@ function getTeamLogoSrc(teamName = "") {
   const TEAM_LOGOS = {
     "Team Rasta": "/Rasta_Logo.JPG",
     "Zero Pucks Given": "/ZPG_Logo.PNG",
-    "Mayhem": "/Mayhem_Logo.png",
+    Mayhem: "/Mayhem_Logo.png",
     "Swiss Army": "/Swiss_Logo.PNG",
-    "WCFD": "/WCFD_Logo.PNG",
+    WCFD: "/WCFD_Logo.PNG",
     "H-Town Assassins": "/H-Town_Logo.png",
-    "Replacements": "/Replacements_Logo.png",
-    "Venom": "/Venom_Logo.JPG",
+    Replacements: "/Replacements_Logo.png",
+    Venom: "/Venom_Logo.JPG",
   };
 
   return TEAM_LOGOS[teamName] || "/logo.png";
@@ -52,6 +52,66 @@ function parseGameDateTime(gameDate, gameTime) {
   }
 
   return new Date(year, month - 1, day, hours, minutes, 0);
+}
+
+function parseGameTimeToMinutes(timeString = "") {
+  const cleaned = String(timeString || "")
+    .trim()
+    .toUpperCase()
+    .split("-")[0]
+    .trim();
+
+  if (!cleaned || cleaned === "TBD") return 23 * 60 + 59;
+
+  const twelveHourMatch = cleaned.match(/^(\d{1,2})(?::(\d{2}))?\s*(AM|PM)$/);
+  if (twelveHourMatch) {
+    let hours = Number(twelveHourMatch[1]);
+    const minutes = Number(twelveHourMatch[2] || 0);
+    const meridiem = twelveHourMatch[3];
+
+    if (meridiem === "PM" && hours !== 12) hours += 12;
+    if (meridiem === "AM" && hours === 12) hours = 0;
+
+    return hours * 60 + minutes;
+  }
+
+  const twentyFourHourMatch = cleaned.match(/^(\d{1,2}):(\d{2})(?::\d{2})?$/);
+  if (twentyFourHourMatch) {
+    return Number(twentyFourHourMatch[1]) * 60 + Number(twentyFourHourMatch[2]);
+  }
+
+  return 23 * 60 + 59;
+}
+
+function getEasternNowParts() {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/New_York",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(new Date());
+
+  const values = {};
+  for (const part of parts) {
+    values[part.type] = part.value;
+  }
+
+  return {
+    dateString: `${values.year}-${values.month}-${values.day}`,
+    minutes: Number(values.hour) * 60 + Number(values.minute),
+  };
+}
+
+function isUpcomingGame(game, nowEastern) {
+  if (!game.game_date) return false;
+
+  if (game.game_date > nowEastern.dateString) return true;
+  if (game.game_date < nowEastern.dateString) return false;
+
+  return parseGameTimeToMinutes(game.game_time) >= nowEastern.minutes;
 }
 
 function formatGoogleDate(date) {
@@ -148,16 +208,14 @@ export default async function SchedulePage({ searchParams }) {
         `)
         .neq("status", "Final")
         .order("game_date", { ascending: true }),
-      supabase
-        .from("teams")
-        .select("name")
-        .order("name", { ascending: true }),
+      supabase.from("teams").select("name").order("name", { ascending: true }),
     ]);
 
     if (gamesFetchError) {
       gamesError = gamesFetchError.message;
     } else {
-      games = gamesData || [];
+      const nowEastern = getEasternNowParts();
+      games = (gamesData || []).filter((game) => isUpcomingGame(game, nowEastern));
     }
 
     if (!gamesError && teamsFetchError) {
@@ -212,15 +270,18 @@ export default async function SchedulePage({ searchParams }) {
   };
 
   const calendarButton = {
-    display: "inline-block",
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
     marginTop: 14,
     color: "#082f49",
     background: "linear-gradient(180deg, #67e8f9 0%, #22d3ee 100%)",
-    padding: "10px 14px",
+    padding: "11px 15px",
     borderRadius: 12,
     fontWeight: 800,
     textDecoration: "none",
     fontSize: 14,
+    minHeight: 44,
     boxShadow: "0 8px 20px rgba(34,211,238,0.18)",
   };
 
@@ -238,9 +299,10 @@ export default async function SchedulePage({ searchParams }) {
     border: "1px solid rgba(34,211,238,0.12)",
     background: "#0b1220",
     color: "#ffffff",
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: 700,
     minWidth: 220,
+    minHeight: 46,
   };
 
   const submitButton = {
@@ -249,16 +311,184 @@ export default async function SchedulePage({ searchParams }) {
     border: "1px solid rgba(34,211,238,0.18)",
     background: "linear-gradient(180deg, #67e8f9 0%, #22d3ee 100%)",
     color: "#082f49",
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: 800,
     cursor: "pointer",
+    minHeight: 46,
   };
 
   return (
-    <main style={pageWrap}>
-      <div style={shell}>
-        <section style={card}>
+    <main style={pageWrap} className="schedule-page">
+      <style>{`
+        .schedule-card {
+          transition: transform 160ms ease, border-color 160ms ease;
+        }
+
+        .schedule-card:hover {
+          transform: translateY(-1px);
+          border-color: rgba(34,211,238,0.22);
+        }
+
+        .schedule-matchup-grid {
+          display: grid;
+          grid-template-columns: 1fr auto 1fr;
+          align-items: center;
+          gap: 14px;
+          margin-top: 4px;
+        }
+
+        .schedule-team {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+          gap: 10px;
+          min-width: 0;
+        }
+
+        .schedule-team-logo {
+          width: 100px;
+          height: 100px;
+          object-fit: contain;
+        }
+
+        .schedule-team-name {
+          font-size: 18px;
+          font-weight: 800;
+          line-height: 1.2;
+        }
+
+        .schedule-vs {
+          font-size: 18px;
+          font-weight: 800;
+          color: #94a3b8;
+          text-align: center;
+        }
+
+        .schedule-game-meta {
+          color: #cbd5e1;
+          margin-top: 16px;
+          font-size: 20px;
+          font-weight: 600;
+          text-align: center;
+          line-height: 1.35;
+        }
+
+        @media (max-width: 760px) {
+          .schedule-page {
+            padding: 14px !important;
+          }
+
+          .schedule-shell {
+            max-width: 100% !important;
+          }
+
+          .schedule-main-card {
+            padding: 18px !important;
+            border-radius: 20px !important;
+          }
+
+          .schedule-title {
+            font-size: 30px !important;
+            line-height: 1.05 !important;
+          }
+
+          .schedule-intro {
+            font-size: 15px !important;
+            margin-bottom: 18px !important;
+          }
+
+          .schedule-filter-form {
+            display: grid !important;
+            grid-template-columns: 1fr !important;
+            gap: 10px !important;
+            margin-bottom: 18px !important;
+          }
+
+          .schedule-filter-form select,
+          .schedule-filter-form button {
+            width: 100% !important;
+          }
+
+          .schedule-card {
+            padding: 16px !important;
+            border-radius: 18px !important;
+          }
+
+          .schedule-date {
+            font-size: 17px !important;
+            line-height: 1.3 !important;
+            margin-bottom: 12px !important;
+          }
+
+          .schedule-matchup-grid {
+            grid-template-columns: 1fr !important;
+            gap: 8px !important;
+          }
+
+          .schedule-vs {
+            margin: 0 !important;
+            font-size: 14px !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.08em !important;
+          }
+
+          .schedule-team {
+            display: grid !important;
+            grid-template-columns: 56px 1fr !important;
+            align-items: center !important;
+            text-align: left !important;
+            gap: 12px !important;
+            width: 100% !important;
+            background: rgba(2,6,23,0.24) !important;
+            border: 1px solid rgba(34,211,238,0.08) !important;
+            border-radius: 14px !important;
+            padding: 10px !important;
+          }
+
+          .schedule-team-logo {
+            width: 50px !important;
+            height: 50px !important;
+          }
+
+          .schedule-team-name {
+            font-size: 17px !important;
+          }
+
+          .schedule-game-meta {
+            margin-top: 14px !important;
+            font-size: 16px !important;
+          }
+
+          .schedule-calendar-link {
+            width: 100% !important;
+            font-size: 15px !important;
+          }
+        }
+
+        @media (max-width: 420px) {
+          .schedule-page {
+            padding: 10px !important;
+          }
+
+          .schedule-main-card {
+            padding: 14px !important;
+          }
+
+          .schedule-title {
+            font-size: 26px !important;
+          }
+
+          .schedule-team-name {
+            font-size: 16px !important;
+          }
+        }
+      `}</style>
+
+      <div style={shell} className="schedule-shell">
+        <section style={card} className="schedule-main-card">
           <h1
+            className="schedule-title"
             style={{
               fontSize: 38,
               marginTop: 0,
@@ -270,6 +500,7 @@ export default async function SchedulePage({ searchParams }) {
           </h1>
 
           <p
+            className="schedule-intro"
             style={{
               color: "#94a3b8",
               marginTop: 0,
@@ -282,7 +513,7 @@ export default async function SchedulePage({ searchParams }) {
           </p>
 
           {!gamesError && (
-            <form method="GET" style={filterWrap}>
+            <form method="GET" style={filterWrap} className="schedule-filter-form">
               <label
                 htmlFor="team"
                 style={{
@@ -328,8 +559,9 @@ export default async function SchedulePage({ searchParams }) {
                 const googleCalendarUrl = buildGoogleCalendarUrl(game);
 
                 return (
-                  <div key={game.id} style={subCard}>
+                  <div key={game.id} style={subCard} className="schedule-card">
                     <div
+                      className="schedule-date"
                       style={{
                         color: "#67e8f9",
                         fontSize: 20,
@@ -341,88 +573,41 @@ export default async function SchedulePage({ searchParams }) {
                       {formatDisplayDate(game.game_date)}
                     </div>
 
-                    <div
-                      style={{
-                        display: "grid",
-                        gridTemplateColumns: "1fr auto 1fr",
-                        alignItems: "center",
-                        gap: 14,
-                        marginTop: 4,
-                      }}
-                    >
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "center",
-                          textAlign: "center",
-                          gap: 10,
-                        }}
-                      >
+                    <div className="schedule-matchup-grid">
+                      <div className="schedule-team">
                         <img
+                          className="schedule-team-logo"
                           src={getTeamLogoSrc(game.home_team?.name)}
                           alt={`${game.home_team?.name || "Home team"} logo`}
-                          style={{
-                            width: 100,
-                            height: 100,
-                            objectFit: "contain",
-                          }}
                         />
-                        <div style={{ fontSize: 18, fontWeight: 800, lineHeight: 1.2 }}>
+                        <div className="schedule-team-name">
                           {game.home_team?.name}
                         </div>
                       </div>
 
-                      <div
-                        style={{
-                          fontSize: 18,
-                          fontWeight: 800,
-                          color: "#94a3b8",
-                          textAlign: "center",
-                        }}
-                      >
-                        vs
-                      </div>
+                      <div className="schedule-vs">vs</div>
 
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "center",
-                          textAlign: "center",
-                          gap: 10,
-                        }}
-                      >
+                      <div className="schedule-team">
                         <img
+                          className="schedule-team-logo"
                           src={getTeamLogoSrc(game.away_team?.name)}
                           alt={`${game.away_team?.name || "Away team"} logo`}
-                          style={{
-                            width: 100,
-                            height: 100,
-                            objectFit: "contain",
-                          }}
                         />
-                        <div style={{ fontSize: 18, fontWeight: 800, lineHeight: 1.2 }}>
+                        <div className="schedule-team-name">
                           {game.away_team?.name}
                         </div>
                       </div>
                     </div>
 
-                    <div
-                      style={{
-                        color: "#cbd5e1",
-                        marginTop: 16,
-                        fontSize: 20,
-                        fontWeight: 600,
-                        textAlign: "center",
-                      }}
-                    >
-                      {game.game_time || "TBD"} • {game.rink || "Codey Arena"} • {game.status}
+                    <div className="schedule-game-meta">
+                      {game.game_time || "TBD"} • {game.rink || "Codey Arena"} •{" "}
+                      {game.status}
                     </div>
 
                     {googleCalendarUrl ? (
                       <div style={{ textAlign: "center" }}>
                         <a
+                          className="schedule-calendar-link"
                           href={googleCalendarUrl}
                           target="_blank"
                           rel="noreferrer"
