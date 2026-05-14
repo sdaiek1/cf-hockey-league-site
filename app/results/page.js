@@ -7,12 +7,12 @@ function getTeamLogoSrc(teamName = "") {
   const TEAM_LOGOS = {
     "Team Rasta": "/Rasta_Logo.JPG",
     "Zero Pucks Given": "/ZPG_Logo.PNG",
-    "Mayhem": "/Mayhem_Logo.png",
+    Mayhem: "/Mayhem_Logo.png",
     "Swiss Army": "/Swiss_Logo.PNG",
-    "WCFD": "/WCFD_Logo.PNG",
+    WCFD: "/WCFD_Logo.PNG",
     "H-Town Assassins": "/H-Town_Logo.png",
-    "Replacements": "/Replacements_Logo.png",
-    "Venom": "/Venom_Logo.JPG",
+    Replacements: "/Replacements_Logo.png",
+    Venom: "/Venom_Logo.JPG",
   };
 
   return TEAM_LOGOS[teamName] || "/logo.png";
@@ -90,26 +90,236 @@ export default async function ResultsPage() {
   };
 
   const card = {
-    background: "#0f172a",
-    border: "1px solid #1e293b",
-    borderRadius: 20,
-    padding: 20,
+    background: "linear-gradient(180deg, #0f172a 0%, #0b1120 100%)",
+    border: "1px solid rgba(34,211,238,0.12)",
+    borderRadius: 24,
+    padding: 24,
     boxShadow: "0 18px 45px rgba(0,0,0,0.28)",
   };
 
   const subCard = {
-    background: "#111827",
-    border: "1px solid #1f2937",
-    borderRadius: 16,
-    padding: 16,
+    background: "linear-gradient(180deg, #111827 0%, #0b1220 100%)",
+    border: "1px solid rgba(34,211,238,0.10)",
+    borderRadius: 18,
+    padding: 18,
   };
 
   return (
-    <main style={pageWrap}>
-      <div style={shell}>
-        <section style={card}>
-          <h1 style={{ fontSize: 40, marginTop: 0, marginBottom: 10 }}>Results</h1>
+    <main style={pageWrap} className="results-page">
+      <style>{`
+        .results-card {
+          transition: transform 160ms ease, border-color 160ms ease;
+        }
+
+        .results-card:hover {
+          transform: translateY(-1px);
+          border-color: rgba(34,211,238,0.22);
+        }
+
+        .results-matchup-grid {
+          display: grid;
+          grid-template-columns: 1fr auto 1fr;
+          align-items: center;
+          gap: 14px;
+          margin-top: 4px;
+        }
+
+        .results-team {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+          gap: 10px;
+          min-width: 0;
+        }
+
+        .results-team-logo {
+          width: 68px;
+          height: 68px;
+          object-fit: contain;
+        }
+
+        .results-team-name {
+          font-size: 18px;
+          font-weight: 800;
+          line-height: 1.2;
+        }
+
+        .results-score-box {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          min-width: 110px;
+        }
+
+        .results-final-label {
+          font-size: 16px;
+          font-weight: 800;
+          color: #94a3b8;
+          text-align: center;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+        }
+
+        .results-score {
+          font-size: 30px;
+          font-weight: 900;
+          color: #ffffff;
+          text-align: center;
+          line-height: 1;
+          white-space: nowrap;
+        }
+
+        .results-game-meta {
+          color: #cbd5e1;
+          margin-top: 16px;
+          font-size: 20px;
+          font-weight: 600;
+          text-align: center;
+          line-height: 1.35;
+        }
+
+        @media (max-width: 760px) {
+          .results-page {
+            padding: 14px !important;
+          }
+
+          .results-shell {
+            max-width: 100% !important;
+          }
+
+          .results-main-card {
+            padding: 18px !important;
+            border-radius: 20px !important;
+          }
+
+          .results-title {
+            font-size: 30px !important;
+            line-height: 1.05 !important;
+          }
+
+          .results-intro {
+            font-size: 15px !important;
+            margin-bottom: 18px !important;
+          }
+
+          .results-card {
+            padding: 16px !important;
+            border-radius: 18px !important;
+          }
+
+          .results-date {
+            font-size: 17px !important;
+            line-height: 1.3 !important;
+            margin-bottom: 12px !important;
+          }
+
+          .results-matchup-grid {
+            grid-template-columns: 1fr !important;
+            gap: 10px !important;
+          }
+
+          .results-score-box {
+            order: -1;
+            width: 100%;
+            min-width: 0 !important;
+            background: rgba(2,6,23,0.34);
+            border: 1px solid rgba(34,211,238,0.10);
+            border-radius: 14px;
+            padding: 12px;
+          }
+
+          .results-final-label {
+            font-size: 13px !important;
+          }
+
+          .results-score {
+            font-size: 34px !important;
+          }
+
+          .results-team {
+            display: grid !important;
+            grid-template-columns: 56px 1fr auto !important;
+            align-items: center !important;
+            text-align: left !important;
+            gap: 12px !important;
+            width: 100% !important;
+            background: rgba(2,6,23,0.24) !important;
+            border: 1px solid rgba(34,211,238,0.08) !important;
+            border-radius: 14px !important;
+            padding: 10px !important;
+          }
+
+          .results-team-logo {
+            width: 50px !important;
+            height: 50px !important;
+          }
+
+          .results-team-name {
+            font-size: 17px !important;
+          }
+
+          .results-mobile-score {
+            display: block !important;
+            color: #ffffff;
+            font-size: 24px;
+            font-weight: 900;
+            line-height: 1;
+          }
+
+          .results-game-meta {
+            margin-top: 14px !important;
+            font-size: 16px !important;
+          }
+        }
+
+        @media (min-width: 761px) {
+          .results-mobile-score {
+            display: none !important;
+          }
+        }
+
+        @media (max-width: 420px) {
+          .results-page {
+            padding: 10px !important;
+          }
+
+          .results-main-card {
+            padding: 14px !important;
+          }
+
+          .results-title {
+            font-size: 26px !important;
+          }
+
+          .results-score {
+            font-size: 30px !important;
+          }
+
+          .results-team-name {
+            font-size: 16px !important;
+          }
+        }
+      `}</style>
+
+      <div style={shell} className="results-shell">
+        <section style={card} className="results-main-card">
+          <h1
+            className="results-title"
+            style={{
+              fontSize: 40,
+              marginTop: 0,
+              marginBottom: 10,
+              letterSpacing: "-0.03em",
+            }}
+          >
+            Results
+          </h1>
+
           <p
+            className="results-intro"
             style={{
               color: "#94a3b8",
               marginTop: 0,
@@ -127,123 +337,65 @@ export default async function ResultsPage() {
             <p style={{ color: "#cbd5e1" }}>No final results yet.</p>
           ) : (
             <div style={{ display: "grid", gap: 14 }}>
-              {games.map((game) => (
-                <div key={game.id} style={subCard}>
-                  <div
-                    style={{
-                      color: "#67e8f9",
-                      fontSize: 20,
-                      fontWeight: 800,
-                      textAlign: "center",
-                      marginBottom: 14,
-                    }}
-                  >
-                    {formatDisplayDate(game.game_date)}
-                  </div>
+              {games.map((game) => {
+                const homeScore = game.home_score ?? 0;
+                const awayScore = game.away_score ?? 0;
 
-                  <div
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns: "1fr auto 1fr",
-                      alignItems: "center",
-                      gap: 14,
-                      marginTop: 4,
-                    }}
-                  >
+                return (
+                  <div key={game.id} style={subCard} className="results-card">
                     <div
+                      className="results-date"
                       style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
+                        color: "#67e8f9",
+                        fontSize: 20,
+                        fontWeight: 800,
                         textAlign: "center",
-                        gap: 10,
+                        marginBottom: 14,
                       }}
                     >
-                      <img
-                        src={getTeamLogoSrc(game.home_team?.name)}
-                        alt={`${game.home_team?.name || "Home team"} logo`}
-                        style={{
-                          width: 68,
-                          height: 68,
-                          objectFit: "contain",
-                        }}
-                      />
-                      <div style={{ fontSize: 18, fontWeight: 800, lineHeight: 1.2 }}>
-                        {game.home_team?.name}
+                      {formatDisplayDate(game.game_date)}
+                    </div>
+
+                    <div className="results-matchup-grid">
+                      <div className="results-team">
+                        <img
+                          className="results-team-logo"
+                          src={getTeamLogoSrc(game.home_team?.name)}
+                          alt={`${game.home_team?.name || "Home team"} logo`}
+                        />
+                        <div className="results-team-name">
+                          {game.home_team?.name}
+                        </div>
+                        <div className="results-mobile-score">{homeScore}</div>
+                      </div>
+
+                      <div className="results-score-box">
+                        <div className="results-final-label">Final</div>
+                        <div className="results-score">
+                          {homeScore} - {awayScore}
+                        </div>
+                      </div>
+
+                      <div className="results-team">
+                        <img
+                          className="results-team-logo"
+                          src={getTeamLogoSrc(game.away_team?.name)}
+                          alt={`${game.away_team?.name || "Away team"} logo`}
+                        />
+                        <div className="results-team-name">
+                          {game.away_team?.name}
+                        </div>
+                        <div className="results-mobile-score">{awayScore}</div>
                       </div>
                     </div>
 
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: 8,
-                        minWidth: 110,
-                      }}
-                    >
-                      <div
-                        style={{
-                          fontSize: 16,
-                          fontWeight: 800,
-                          color: "#94a3b8",
-                          textAlign: "center",
-                        }}
-                      >
-                        FINAL
-                      </div>
-                      <div
-                        style={{
-                          fontSize: 30,
-                          fontWeight: 900,
-                          color: "#ffffff",
-                          textAlign: "center",
-                          lineHeight: 1,
-                        }}
-                      >
-                        {game.home_score} - {game.away_score}
-                      </div>
-                    </div>
-
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        textAlign: "center",
-                        gap: 10,
-                      }}
-                    >
-                      <img
-                        src={getTeamLogoSrc(game.away_team?.name)}
-                        alt={`${game.away_team?.name || "Away team"} logo`}
-                        style={{
-                          width: 68,
-                          height: 68,
-                          objectFit: "contain",
-                        }}
-                      />
-                      <div style={{ fontSize: 18, fontWeight: 800, lineHeight: 1.2 }}>
-                        {game.away_team?.name}
-                      </div>
+                    <div className="results-game-meta">
+                      {game.game_time || "TBD"} • {game.rink || "Codey Arena"} •{" "}
+                      {formatResultType(game.result_type)}
                     </div>
                   </div>
-
-                  <div
-                    style={{
-                      color: "#cbd5e1",
-                      marginTop: 16,
-                      fontSize: 20,
-                      fontWeight: 600,
-                      textAlign: "center",
-                    }}
-                  >
-                    {game.game_time || "TBD"} • {game.rink || "Codey Arena"} •{" "}
-                    {formatResultType(game.result_type)}
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </section>
