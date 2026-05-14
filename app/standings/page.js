@@ -154,10 +154,10 @@ export default async function StandingsPage() {
   };
 
   const card = {
-    background: "#0f172a",
-    border: "1px solid #1e293b",
-    borderRadius: 20,
-    padding: 20,
+    background: "linear-gradient(180deg, #0f172a 0%, #0b1120 100%)",
+    border: "1px solid rgba(34,211,238,0.12)",
+    borderRadius: 24,
+    padding: 24,
     boxShadow: "0 18px 45px rgba(0,0,0,0.28)",
   };
 
@@ -175,11 +175,192 @@ export default async function StandingsPage() {
   };
 
   return (
-    <main style={pageWrap}>
-      <div style={shell}>
-        <section style={card}>
-          <h1 style={{ fontSize: 40, marginTop: 0, marginBottom: 10 }}>Standings</h1>
-          <p style={{ color: "#94a3b8", marginTop: 0, marginBottom: 24 }}>
+    <main style={pageWrap} className="standings-page">
+      <style>{`
+        .standings-table-wrap {
+          overflow-x: auto;
+          background: rgba(2,6,23,0.20);
+          border: 1px solid rgba(34,211,238,0.08);
+          border-radius: 18px;
+          padding: 12px;
+        }
+
+        .standings-table {
+          width: 100%;
+          border-collapse: collapse;
+          min-width: 760px;
+        }
+
+        .standings-mobile-cards {
+          display: none;
+        }
+
+        .standings-card-row {
+          background: linear-gradient(180deg, #111827 0%, #0b1220 100%);
+          border: 1px solid rgba(34,211,238,0.10);
+          border-radius: 18px;
+          padding: 16px;
+        }
+
+        .standings-rank {
+          width: 36px;
+          height: 36px;
+          border-radius: 999px;
+          background: rgba(34,211,238,0.14);
+          color: #67e8f9;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: 900;
+          font-size: 16px;
+          flex-shrink: 0;
+        }
+
+        .standings-team-line {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          margin-bottom: 14px;
+        }
+
+        .standings-team-link {
+          color: #67e8f9;
+          text-decoration: none;
+          font-weight: 900;
+          font-size: 18px;
+          line-height: 1.2;
+        }
+
+        .standings-points-pill {
+          margin-left: auto;
+          background: rgba(34,211,238,0.12);
+          border: 1px solid rgba(34,211,238,0.18);
+          color: #67e8f9;
+          border-radius: 999px;
+          padding: 7px 10px;
+          font-size: 13px;
+          font-weight: 900;
+          white-space: nowrap;
+        }
+
+        .standings-stat-grid {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 8px;
+        }
+
+        .standings-stat {
+          background: rgba(2,6,23,0.28);
+          border: 1px solid rgba(148,163,184,0.10);
+          border-radius: 12px;
+          padding: 10px 8px;
+          text-align: center;
+        }
+
+        .standings-stat-label {
+          display: block;
+          color: #94a3b8;
+          font-size: 11px;
+          font-weight: 800;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          margin-bottom: 4px;
+        }
+
+        .standings-stat-value {
+          display: block;
+          color: #f8fafc;
+          font-size: 18px;
+          font-weight: 900;
+          line-height: 1;
+        }
+
+        .standings-stat-value.points {
+          color: #67e8f9;
+        }
+
+        @media (max-width: 760px) {
+          .standings-page {
+            padding: 14px !important;
+          }
+
+          .standings-shell {
+            max-width: 100% !important;
+          }
+
+          .standings-main-card {
+            padding: 18px !important;
+            border-radius: 20px !important;
+          }
+
+          .standings-title {
+            font-size: 30px !important;
+            line-height: 1.05 !important;
+          }
+
+          .standings-intro {
+            font-size: 15px !important;
+            line-height: 1.5 !important;
+            margin-bottom: 18px !important;
+          }
+
+          .standings-table-wrap {
+            display: none !important;
+          }
+
+          .standings-mobile-cards {
+            display: grid !important;
+            gap: 12px;
+          }
+        }
+
+        @media (max-width: 420px) {
+          .standings-page {
+            padding: 10px !important;
+          }
+
+          .standings-main-card {
+            padding: 14px !important;
+          }
+
+          .standings-title {
+            font-size: 26px !important;
+          }
+
+          .standings-team-link {
+            font-size: 16px !important;
+          }
+
+          .standings-stat-grid {
+            grid-template-columns: repeat(3, 1fr);
+          }
+        }
+      `}</style>
+
+      <div style={shell} className="standings-shell">
+        <section style={card} className="standings-main-card">
+          <h1
+            className="standings-title"
+            style={{
+              fontSize: 40,
+              marginTop: 0,
+              marginBottom: 10,
+              letterSpacing: "-0.03em",
+            }}
+          >
+            Standings
+          </h1>
+
+          <p
+            className="standings-intro"
+            style={{
+              color: "#94a3b8",
+              marginTop: 0,
+              marginBottom: 24,
+              fontSize: 17,
+              lineHeight: 1.6,
+            }}
+          >
             Win = 3 points, Tie = 2 points, OTL = 1 point, Loss = 0 points.
           </p>
 
@@ -188,51 +369,124 @@ export default async function StandingsPage() {
               Could not load standings: {teamsError || gamesError}
             </p>
           ) : (
-            <div style={{ overflowX: "auto" }}>
-              <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                <thead>
-                  <tr>
-                    <th style={thStyle}>Team</th>
-                    <th style={thStyle}>GP</th>
-                    <th style={thStyle}>W</th>
-                    <th style={thStyle}>L</th>
-                    <th style={thStyle}>OTL</th>
-                    <th style={thStyle}>T</th>
-                    <th style={thStyle}>GF</th>
-                    <th style={thStyle}>GA</th>
-                    <th style={thStyle}>PTS</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {standings.map((row) => (
-                    <tr key={row.team}>
-                      <td style={{ ...tdStyle, fontWeight: 700 }}>
-                        <Link
-                          href={`/standings/${slugifyTeamName(row.team)}`}
+            <>
+              <div className="standings-table-wrap">
+                <table className="standings-table">
+                  <thead>
+                    <tr>
+                      <th style={thStyle}>Team</th>
+                      <th style={thStyle}>GP</th>
+                      <th style={thStyle}>W</th>
+                      <th style={thStyle}>L</th>
+                      <th style={thStyle}>OTL</th>
+                      <th style={thStyle}>T</th>
+                      <th style={thStyle}>GF</th>
+                      <th style={thStyle}>GA</th>
+                      <th style={thStyle}>PTS</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {standings.map((row) => (
+                      <tr key={row.team}>
+                        <td style={{ ...tdStyle, fontWeight: 700 }}>
+                          <Link
+                            href={`/standings/${slugifyTeamName(row.team)}`}
+                            style={{
+                              color: "#67e8f9",
+                              textDecoration: "none",
+                              fontWeight: 800,
+                            }}
+                          >
+                            {row.team}
+                          </Link>
+                        </td>
+                        <td style={tdStyle}>{row.gp}</td>
+                        <td style={tdStyle}>{row.w}</td>
+                        <td style={tdStyle}>{row.l}</td>
+                        <td style={tdStyle}>{row.otl}</td>
+                        <td style={tdStyle}>{row.t}</td>
+                        <td style={tdStyle}>{row.gf}</td>
+                        <td style={tdStyle}>{row.ga}</td>
+                        <td
                           style={{
+                            ...tdStyle,
                             color: "#67e8f9",
-                            textDecoration: "none",
                             fontWeight: 800,
                           }}
                         >
-                          {row.team}
-                        </Link>
-                      </td>
-                      <td style={tdStyle}>{row.gp}</td>
-                      <td style={tdStyle}>{row.w}</td>
-                      <td style={tdStyle}>{row.l}</td>
-                      <td style={tdStyle}>{row.otl}</td>
-                      <td style={tdStyle}>{row.t}</td>
-                      <td style={tdStyle}>{row.gf}</td>
-                      <td style={tdStyle}>{row.ga}</td>
-                      <td style={{ ...tdStyle, color: "#67e8f9", fontWeight: 800 }}>
-                        {row.pts}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                          {row.pts}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="standings-mobile-cards">
+                {standings.map((row, index) => (
+                  <div key={`mobile-${row.team}`} className="standings-card-row">
+                    <div className="standings-team-line">
+                      <span className="standings-rank">{index + 1}</span>
+
+                      <Link
+                        href={`/standings/${slugifyTeamName(row.team)}`}
+                        className="standings-team-link"
+                      >
+                        {row.team}
+                      </Link>
+
+                      <span className="standings-points-pill">
+                        {row.pts} PTS
+                      </span>
+                    </div>
+
+                    <div className="standings-stat-grid">
+                      <div className="standings-stat">
+                        <span className="standings-stat-label">GP</span>
+                        <span className="standings-stat-value">{row.gp}</span>
+                      </div>
+
+                      <div className="standings-stat">
+                        <span className="standings-stat-label">W</span>
+                        <span className="standings-stat-value">{row.w}</span>
+                      </div>
+
+                      <div className="standings-stat">
+                        <span className="standings-stat-label">L</span>
+                        <span className="standings-stat-value">{row.l}</span>
+                      </div>
+
+                      <div className="standings-stat">
+                        <span className="standings-stat-label">OTL</span>
+                        <span className="standings-stat-value">{row.otl}</span>
+                      </div>
+
+                      <div className="standings-stat">
+                        <span className="standings-stat-label">T</span>
+                        <span className="standings-stat-value">{row.t}</span>
+                      </div>
+
+                      <div className="standings-stat">
+                        <span className="standings-stat-label">GF</span>
+                        <span className="standings-stat-value">{row.gf}</span>
+                      </div>
+
+                      <div className="standings-stat">
+                        <span className="standings-stat-label">GA</span>
+                        <span className="standings-stat-value">{row.ga}</span>
+                      </div>
+
+                      <div className="standings-stat">
+                        <span className="standings-stat-label">PTS</span>
+                        <span className="standings-stat-value points">
+                          {row.pts}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
           )}
         </section>
       </div>
