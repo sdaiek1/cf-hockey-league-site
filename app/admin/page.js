@@ -60,8 +60,8 @@ export default function AdminPage() {
     goals: "",
     assists: "",
     penalty_minutes: "",
-    goalie_wins: "",
-    goalie_shutouts: ""
+    wins: "",
+    shutouts: ""
   });
 
   const [newsForm, setNewsForm] = useState({
@@ -191,8 +191,8 @@ export default function AdminPage() {
         points,
         points_per_game,
         penalty_minutes,
-        goalie_wins,
-        goalie_shutouts,
+        wins,
+        shutouts,
         team:team_id(name)
       `)
       .order("player_name", { ascending: true });
@@ -357,8 +357,8 @@ export default function AdminPage() {
       goals: 0,
       assists: 0,
       penalty_minutes: 0,
-      goalie_wins: 0,
-      goalie_shutouts: 0,
+      wins: 0,
+      shutouts: 0,
       is_active: true
     });
 
@@ -413,15 +413,15 @@ export default function AdminPage() {
     const currentGoals = Number(selectedPlayer.goals || 0);
     const currentAssists = Number(selectedPlayer.assists || 0);
     const currentPenaltyMinutes = Number(selectedPlayer.penalty_minutes || 0);
-    const currentGoalieWins = Number(selectedPlayer.goalie_wins || 0);
-    const currentGoalieShutouts = Number(selectedPlayer.goalie_shutouts || 0);
+    const currentGoalieWins = Number(selectedPlayer.wins || 0);
+    const currentGoalieShutouts = Number(selectedPlayer.shutouts || 0);
 
     const addedGamesPlayed = Number(statsForm.games_played || 0);
     const addedGoals = Number(statsForm.goals || 0);
     const addedAssists = Number(statsForm.assists || 0);
     const addedPenaltyMinutes = Number(statsForm.penalty_minutes || 0);
-    const addedGoalieWins = Number(statsForm.goalie_wins || 0);
-    const addedGoalieShutouts = Number(statsForm.goalie_shutouts || 0);
+    const addedGoalieWins = Number(statsForm.wins || 0);
+    const addedGoalieShutouts = Number(statsForm.shutouts || 0);
 
     const { error } = await supabase
       .from("players")
@@ -430,8 +430,8 @@ export default function AdminPage() {
         goals: currentGoals + addedGoals,
         assists: currentAssists + addedAssists,
         penalty_minutes: currentPenaltyMinutes + addedPenaltyMinutes,
-        goalie_wins: currentGoalieWins + addedGoalieWins,
-        goalie_shutouts: currentGoalieShutouts + addedGoalieShutouts
+        wins: currentGoalieWins + addedGoalieWins,
+        shutouts: currentGoalieShutouts + addedGoalieShutouts
       })
       .eq("id", statsForm.player_id);
 
@@ -448,8 +448,8 @@ export default function AdminPage() {
       goals: "",
       assists: "",
       penalty_minutes: "",
-      goalie_wins: "",
-      goalie_shutouts: ""
+      wins: "",
+      shutouts: ""
     });
 
     loadPlayers();
@@ -882,8 +882,8 @@ export default function AdminPage() {
               <input name="goals" type="number" min="0" value={statsForm.goals} onChange={handleStatsChange} placeholder="+ Goals this game" style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }} />
               <input name="assists" type="number" min="0" value={statsForm.assists} onChange={handleStatsChange} placeholder="+ Assists this game" style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }} />
               <input name="penalty_minutes" type="number" min="0" value={statsForm.penalty_minutes} onChange={handleStatsChange} placeholder="+ Penalty minutes this game" style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }} />
-              <input name="goalie_wins" type="number" min="0" value={statsForm.goalie_wins} onChange={handleStatsChange} placeholder="+ Goalie wins, usually 0 or 1" style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }} />
-              <input name="goalie_shutouts" type="number" min="0" value={statsForm.goalie_shutouts} onChange={handleStatsChange} placeholder="+ Goalie shutouts, usually 0 or 1" style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }} />
+              <input name="wins" type="number" min="0" value={statsForm.wins} onChange={handleStatsChange} placeholder="+ Goalie wins, usually 0 or 1" style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }} />
+              <input name="shutouts" type="number" min="0" value={statsForm.shutouts} onChange={handleStatsChange} placeholder="+ Goalie shutouts, usually 0 or 1" style={{ padding: 12, borderRadius: 12, border: "1px solid #334155", background: "#020617", color: "white" }} />
 
               <button type="submit" style={{ padding: 12, borderRadius: 12, border: 0, background: "#22d3ee", color: "#082f49", fontWeight: 700 }}>
                 Add Stats
@@ -905,7 +905,7 @@ export default function AdminPage() {
                   <div style={{ color: "#e2e8f0", lineHeight: 1.6 }}>
                     GP: {player.games_played || 0} • G: {player.goals || 0} • A: {player.assists || 0} • PTS: {playerPoints(player)} • PPG: {playerPpg(player)} • PIM: {player.penalty_minutes || 0}
                     <br />
-                    Goalie W: {player.goalie_wins || 0} • SO: {player.goalie_shutouts || 0}
+                    Goalie W: {player.wins || 0} • SO: {player.shutouts || 0}
                   </div>
                 </div>
               ))}
