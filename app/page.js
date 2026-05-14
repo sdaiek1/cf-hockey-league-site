@@ -115,7 +115,6 @@ export default async function HomePage() {
 
     playersOfWeek = playerOfWeekRows || [];
 
-    const standingsMap = {};
     for (const team of teams) {
       standingsMap[team.name] = {
         team: team.name,
@@ -125,6 +124,8 @@ export default async function HomePage() {
         otl: 0,
         t: 0,
         pts: 0,
+        gf: 0,
+        ga: 0,
       };
     }
 
