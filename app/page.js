@@ -1024,13 +1024,6 @@ export default async function HomePage() {
             }
           }
 
-          @media (max-width: 390px) {
-            .announcement-item {
-              min-width: 82vw !important;
-              max-width: 82vw !important;
-              flex-basis: 82vw !important;
-            }
-
             .score-game-card {
               min-width: 82vw !important;
               max-width: 82vw !important;
