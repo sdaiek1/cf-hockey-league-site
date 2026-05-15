@@ -706,22 +706,67 @@ export default async function HomePage() {
             }
 
             .announcement-bar {
+              display: flex !important;
+              border-radius: 14px !important;
+              margin-bottom: 12px !important;
               min-height: 40px !important;
             }
-
+            
             .announcement-label {
-              font-size: 11px !important;
+              flex-shrink: 0 !important;
+              height: 40px !important;
+              width: auto !important;
+              justify-content: center !important;
+              border-right: 1px solid rgba(34,211,238,0.14) !important;
+              border-bottom: 0 !important;
               padding: 0 10px !important;
-              height: 40px !important;
+              font-size: 11px !important;
+              letter-spacing: 0.06em !important;
             }
-
+            
             .announcement-viewport {
+              position: relative !important;
+              overflow: hidden !important;
+              flex: 1 !important;
               height: 40px !important;
+              display: block !important;
+              padding: 0 !important;
             }
-
+            
             .announcement-item {
+              position: absolute !important;
+              left: 100% !important;
+              top: 0 !important;
+              bottom: 0 !important;
+              display: flex !important;
+              align-items: center !important;
+              white-space: nowrap !important;
+              width: max-content !important;
+              min-width: auto !important;
+              max-width: none !important;
+              min-height: 40px !important;
+              flex: none !important;
+              scroll-snap-align: none !important;
+              background: transparent !important;
+              border: 0 !important;
+              border-radius: 0 !important;
+              padding: 0 8px !important;
+              line-height: 1.2 !important;
               font-size: 14px !important;
-              padding: 0 6px !important;
+              opacity: 0;
+              animation-name: leagueAnnouncementScroll !important;
+              animation-timing-function: linear !important;
+              animation-iteration-count: infinite !important;
+              animation-fill-mode: both !important;
+            }
+            
+            .announcement-item span:last-child {
+              display: inline !important;
+            }
+            
+            .announcement-item span:first-child {
+              flex-shrink: 0 !important;
+              margin-top: 0 !important;
             }
 
             .hero-grid {
