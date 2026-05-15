@@ -65,7 +65,7 @@ export default function RootLayout({ children }) {
             margin: 0 auto;
             padding: 12px 18px;
             display: grid;
-            grid-template-columns: minmax(360px, 1fr) auto;
+            grid-template-columns: minmax(380px, 1fr) auto;
             align-items: center;
             gap: 18px;
           }
@@ -73,19 +73,19 @@ export default function RootLayout({ children }) {
           .brand-wrap {
             display: flex;
             align-items: center;
-            gap: 13px;
+            gap: 15px;
             min-width: 0;
           }
 
           .site-logo {
-            width: 58px;
-            height: 58px;
+            width: 74px;
+            height: 74px;
             object-fit: contain;
-            border-radius: 12px;
+            border-radius: 14px;
             background: #0b1220;
             border: 1px solid #1e293b;
             padding: 6px;
-            box-shadow: 0 0 18px rgba(34,211,238,0.16);
+            box-shadow: 0 0 22px rgba(34,211,238,0.20);
             flex-shrink: 0;
           }
 
@@ -279,9 +279,9 @@ export default function RootLayout({ children }) {
             }
 
             .site-logo {
-              width: 50px;
-              height: 50px;
-              border-radius: 10px;
+              width: 58px;
+              height: 58px;
+              border-radius: 11px;
               padding: 5px;
             }
 
@@ -337,8 +337,8 @@ export default function RootLayout({ children }) {
             }
 
             .site-logo {
-              width: 46px;
-              height: 46px;
+              width: 52px;
+              height: 52px;
             }
           }
         `}</style>
