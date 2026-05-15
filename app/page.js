@@ -555,13 +555,15 @@ export default async function HomePage() {
   };
 
   const scoreGameCard = {
+    width: 225,
     minWidth: 225,
+    maxWidth: 225,
+    flex: "0 0 225px",
     background:
       "linear-gradient(180deg, rgba(6,14,30,0.88) 0%, rgba(3,8,20,0.94) 100%)",
     border: "1px solid rgba(34,211,238,0.10)",
     borderRadius: 14,
     padding: 12,
-    flexShrink: 0,
     scrollSnapAlign: "start",
   };
 
@@ -700,18 +702,63 @@ export default async function HomePage() {
             }
           }
 
+          .announcement-bar {
+            display: flex !important;
+            overflow: hidden !important;
+          }
+
+          .announcement-viewport {
+            position: relative !important;
+            overflow: hidden !important;
+            display: block !important;
+          }
+
+          .announcement-item {
+            position: absolute !important;
+            left: 100% !important;
+            top: 0 !important;
+            bottom: 0 !important;
+            display: flex !important;
+            align-items: center !important;
+            white-space: nowrap !important;
+            width: max-content !important;
+            min-width: 0 !important;
+            max-width: none !important;
+            flex: none !important;
+            background: transparent !important;
+            border: 0 !important;
+            border-radius: 0 !important;
+            opacity: 0;
+            transform: translateX(0);
+            animation-name: leagueAnnouncementScroll !important;
+            animation-timing-function: linear !important;
+            animation-iteration-count: infinite !important;
+            animation-fill-mode: both !important;
+          }
+
+          .score-strip-scroller {
+            scroll-snap-type: x mandatory;
+          }
+
+          .score-game-card {
+            width: 225px !important;
+            min-width: 225px !important;
+            max-width: 225px !important;
+            flex: 0 0 225px !important;
+            scroll-snap-align: start !important;
+          }
+
           @media (max-width: 900px) {
             .home-shell {
               padding: 14px !important;
             }
 
             .announcement-bar {
-              display: flex !important;
+              min-height: 40px !important;
               border-radius: 14px !important;
               margin-bottom: 12px !important;
-              min-height: 40px !important;
             }
-            
+
             .announcement-label {
               flex-shrink: 0 !important;
               height: 40px !important;
@@ -723,47 +770,28 @@ export default async function HomePage() {
               font-size: 11px !important;
               letter-spacing: 0.06em !important;
             }
-            
+
             .announcement-viewport {
-              position: relative !important;
-              overflow: hidden !important;
               flex: 1 !important;
               height: 40px !important;
-              display: block !important;
               padding: 0 !important;
+              scroll-snap-type: none !important;
+              -webkit-overflow-scrolling: auto !important;
             }
-            
+
             .announcement-item {
-              position: absolute !important;
-              left: 100% !important;
-              top: 0 !important;
-              bottom: 0 !important;
-              display: flex !important;
-              align-items: center !important;
-              white-space: nowrap !important;
-              width: max-content !important;
-              min-width: auto !important;
-              max-width: none !important;
               min-height: 40px !important;
-              flex: none !important;
-              scroll-snap-align: none !important;
-              background: transparent !important;
-              border: 0 !important;
-              border-radius: 0 !important;
               padding: 0 8px !important;
               line-height: 1.2 !important;
               font-size: 14px !important;
-              opacity: 0;
-              animation-name: leagueAnnouncementScroll !important;
-              animation-timing-function: linear !important;
-              animation-iteration-count: infinite !important;
-              animation-fill-mode: both !important;
+              scroll-snap-align: unset !important;
             }
-            
+
             .announcement-item span:last-child {
               display: inline !important;
+              white-space: nowrap !important;
             }
-            
+
             .announcement-item span:first-child {
               flex-shrink: 0 !important;
               margin-top: 0 !important;
@@ -882,32 +910,32 @@ export default async function HomePage() {
             }
 
             .announcement-bar {
-              display: block !important;
               border-radius: 14px !important;
               margin-bottom: 12px !important;
-              min-height: 0 !important;
+              min-height: 40px !important;
             }
 
             .announcement-label {
-              height: auto !important;
-              min-height: 36px !important;
-              width: 100% !important;
-              justify-content: flex-start !important;
-              border-right: 0 !important;
-              border-bottom: 1px solid rgba(34,211,238,0.14) !important;
-              padding: 9px 11px !important;
-              font-size: 11px !important;
-              letter-spacing: 0.06em !important;
+              flex-shrink: 0 !important;
+              height: 40px !important;
+              width: auto !important;
+              max-width: 112px !important;
+              justify-content: center !important;
+              border-right: 1px solid rgba(34,211,238,0.14) !important;
+              border-bottom: 0 !important;
+              padding: 0 10px !important;
+              font-size: 10px !important;
+              letter-spacing: 0.05em !important;
+              line-height: 1.1 !important;
+              text-align: center !important;
             }
 
             .announcement-viewport {
-              height: auto !important;
-              display: flex !important;
-              gap: 9px !important;
-              overflow-x: auto !important;
-              padding: 10px !important;
-              scroll-snap-type: x mandatory !important;
-              -webkit-overflow-scrolling: touch !important;
+              flex: 1 !important;
+              height: 40px !important;
+              padding: 0 !important;
+              scroll-snap-type: none !important;
+              -webkit-overflow-scrolling: auto !important;
               scrollbar-width: none !important;
             }
 
@@ -916,36 +944,21 @@ export default async function HomePage() {
             }
 
             .announcement-item {
-              position: static !important;
-              left: auto !important;
-              top: auto !important;
-              bottom: auto !important;
-              animation: none !important;
-              transform: none !important;
-              opacity: 1 !important;
-              width: auto !important;
-              min-width: 78vw !important;
-              max-width: 78vw !important;
-              min-height: 58px !important;
-              white-space: normal !important;
-              flex: 0 0 78vw !important;
-              scroll-snap-align: start !important;
-              background: rgba(2,6,23,0.34) !important;
-              border: 1px solid rgba(34,211,238,0.10) !important;
-              border-radius: 13px !important;
-              padding: 12px !important;
-              align-items: flex-start !important;
-              line-height: 1.35 !important;
-              font-size: 14px !important;
+              min-height: 40px !important;
+              padding: 0 8px !important;
+              line-height: 1.2 !important;
+              font-size: 13px !important;
+              scroll-snap-align: unset !important;
             }
 
             .announcement-item span:last-child {
-              display: block !important;
+              display: inline !important;
+              white-space: nowrap !important;
             }
 
             .announcement-item span:first-child {
               flex-shrink: 0 !important;
-              margin-top: 1px !important;
+              margin-top: 0 !important;
             }
 
             .score-strip-bar {
@@ -983,8 +996,10 @@ export default async function HomePage() {
             }
 
             .score-game-card {
+              width: 78vw !important;
               min-width: 78vw !important;
               max-width: 78vw !important;
+              flex: 0 0 78vw !important;
               scroll-snap-align: start !important;
               border-radius: 14px !important;
               padding: 12px !important;
@@ -1024,13 +1039,26 @@ export default async function HomePage() {
             }
           }
 
+          @media (max-width: 390px) {
             .score-game-card {
+              width: 82vw !important;
               min-width: 82vw !important;
               max-width: 82vw !important;
+              flex: 0 0 82vw !important;
             }
 
             .score-strip-header {
               align-items: flex-start !important;
+            }
+
+            .announcement-label {
+              max-width: 98px !important;
+              font-size: 9px !important;
+              padding: 0 7px !important;
+            }
+
+            .announcement-item {
+              font-size: 12px !important;
             }
           }
         `}</style>
@@ -1061,7 +1089,7 @@ export default async function HomePage() {
         <div style={scoreStripBar} className="score-strip-bar">
           <div style={scoreStripHeader} className="score-strip-header">
             <div style={scoreStripTitle} className="score-strip-title">
-              Scores & Upcoming Games
+              Recent Scores & Upcoming Games
             </div>
             <a href="/schedule" style={scoreStripLink} className="score-strip-link">
               Full Schedule →
@@ -1124,7 +1152,7 @@ export default async function HomePage() {
                           fontWeight: 800,
                         }}
                       >
-                        {game.rink || "Codey Arena *No Affiliation, Privately Operated"}
+                        {game.rink || "Codey Arena"}
                       </div>
                     )}
                   </div>
