@@ -21,12 +21,12 @@ function getTeamLogoSrc(teamName = "") {
   const TEAM_LOGOS = {
     "Team Rasta": "/Rasta_Logo.JPG",
     "Zero Pucks Given": "/ZPG_Logo.PNG",
-    "Mayhem": "/Mayhem_Logo.png",
+    Mayhem: "/Mayhem_Logo.png",
     "Swiss Army": "/Swiss_Logo.PNG",
-    "WCFD": "/WCFD_Logo.PNG",
+    WCFD: "/WCFD_Logo.PNG",
     "H-Town Assassins": "/H-Town_Logo.png",
-    "Replacements": "/Replacements_Logo.png",
-    "Venom": "/Venom_Logo.JPG",
+    Replacements: "/Replacements_Logo.png",
+    Venom: "/Venom_Logo.JPG",
   };
 
   return TEAM_LOGOS[teamName] || "/logo.png";
@@ -134,49 +134,260 @@ export default async function RosterPage() {
   };
 
   const card = {
-    background: "#0f172a",
-    border: "1px solid #1e293b",
-    borderRadius: 20,
-    padding: 20,
+    background: "linear-gradient(180deg, #0f172a 0%, #0b1120 100%)",
+    border: "1px solid rgba(34,211,238,0.12)",
+    borderRadius: 24,
+    padding: 24,
     boxShadow: "0 18px 45px rgba(0,0,0,0.28)",
   };
 
   const teamCard = {
-    background: "#111827",
-    border: "1px solid rgba(148,163,184,0.12)",
+    background: "linear-gradient(180deg, #111827 0%, #0b1220 100%)",
+    border: "1px solid rgba(34,211,238,0.10)",
     borderRadius: 18,
     padding: 20,
   };
 
   const buttonStyle = {
-    display: "inline-block",
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
     marginTop: 16,
     color: "#082f49",
     background: "linear-gradient(180deg, #67e8f9 0%, #22d3ee 100%)",
-    padding: "10px 14px",
+    padding: "11px 14px",
     borderRadius: 12,
     fontWeight: 800,
     textDecoration: "none",
     fontSize: 14,
+    minHeight: 44,
     boxShadow: "0 8px 20px rgba(34,211,238,0.18)",
   };
 
   const quickLinkStyle = {
-    display: "inline-block",
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
     color: "#67e8f9",
+    background: "rgba(17,24,39,0.72)",
+    border: "1px solid rgba(34,211,238,0.10)",
+    borderRadius: 12,
+    padding: "10px 13px",
     textDecoration: "none",
-    fontWeight: 700,
-    marginRight: 18,
-    marginBottom: 10,
+    fontWeight: 800,
+    minHeight: 44,
   };
 
   return (
-    <main style={pageWrap}>
-      <div style={shell}>
-        <section style={card}>
-          <h1 style={{ fontSize: 40, marginTop: 0, marginBottom: 10 }}>Rosters</h1>
+    <main style={pageWrap} className="rosters-page">
+      <style>{`
+        .rosters-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+          gap: 16px;
+        }
+
+        .rosters-team-card {
+          transition: transform 160ms ease, border-color 160ms ease;
+        }
+
+        .rosters-team-card:hover {
+          transform: translateY(-1px);
+          border-color: rgba(34,211,238,0.22);
+        }
+
+        .rosters-logo-box {
+          width: 100%;
+          height: 110px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 14px;
+          background: rgba(255,255,255,0.02);
+          border-radius: 14px;
+          border: 1px solid rgba(148,163,184,0.10);
+          padding: 10px;
+        }
+
+        .rosters-logo {
+          max-width: 100%;
+          max-height: 105px;
+          object-fit: contain;
+        }
+
+        .rosters-team-name {
+          font-size: 24px;
+          font-weight: 900;
+          margin-bottom: 14px;
+          line-height: 1.15;
+        }
+
+        .rosters-stat-grid {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 9px;
+        }
+
+        .rosters-stat {
+          background: rgba(2,6,23,0.28);
+          border: 1px solid rgba(148,163,184,0.10);
+          border-radius: 12px;
+          padding: 10px;
+        }
+
+        .rosters-stat-label {
+          display: block;
+          color: #94a3b8;
+          font-size: 11px;
+          font-weight: 800;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          margin-bottom: 4px;
+        }
+
+        .rosters-stat-value {
+          display: block;
+          color: #f8fafc;
+          font-size: 20px;
+          font-weight: 900;
+          line-height: 1;
+        }
+
+        .quick-links-row {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px;
+        }
+
+        @media (max-width: 760px) {
+          .rosters-page {
+            padding: 14px !important;
+          }
+
+          .rosters-shell {
+            max-width: 100% !important;
+          }
+
+          .rosters-main-card {
+            padding: 18px !important;
+            border-radius: 20px !important;
+          }
+
+          .rosters-title {
+            font-size: 30px !important;
+            line-height: 1.05 !important;
+          }
+
+          .rosters-intro {
+            font-size: 15px !important;
+            line-height: 1.5 !important;
+            margin-bottom: 22px !important;
+          }
+
+          .rosters-section-title {
+            font-size: 24px !important;
+          }
+
+          .rosters-grid {
+            grid-template-columns: 1fr !important;
+            gap: 12px !important;
+          }
+
+          .rosters-team-card {
+            padding: 16px !important;
+            border-radius: 18px !important;
+          }
+
+          .rosters-team-top {
+            display: grid !important;
+            grid-template-columns: 72px 1fr !important;
+            gap: 13px !important;
+            align-items: center !important;
+            margin-bottom: 14px !important;
+          }
+
+          .rosters-logo-box {
+            height: 72px !important;
+            margin-bottom: 0 !important;
+            padding: 7px !important;
+          }
+
+          .rosters-logo {
+            max-height: 64px !important;
+          }
+
+          .rosters-team-name {
+            font-size: 21px !important;
+            margin-bottom: 0 !important;
+          }
+
+          .rosters-stat-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+          }
+
+          .rosters-view-button {
+            width: 100% !important;
+            font-size: 15px !important;
+          }
+
+          .quick-links-row {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr !important;
+            gap: 10px !important;
+          }
+        }
+
+        @media (max-width: 420px) {
+          .rosters-page {
+            padding: 10px !important;
+          }
+
+          .rosters-main-card {
+            padding: 14px !important;
+          }
+
+          .rosters-title {
+            font-size: 26px !important;
+          }
+
+          .rosters-team-top {
+            grid-template-columns: 64px 1fr !important;
+          }
+
+          .rosters-logo-box {
+            height: 64px !important;
+          }
+
+          .rosters-logo {
+            max-height: 56px !important;
+          }
+
+          .rosters-team-name {
+            font-size: 19px !important;
+          }
+
+          .quick-links-row {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
+
+      <div style={shell} className="rosters-shell">
+        <section style={card} className="rosters-main-card">
+          <h1
+            className="rosters-title"
+            style={{
+              fontSize: 40,
+              marginTop: 0,
+              marginBottom: 10,
+              letterSpacing: "-0.03em",
+            }}
+          >
+            Rosters
+          </h1>
 
           <p
+            className="rosters-intro"
             style={{
               color: "#94a3b8",
               marginTop: 0,
@@ -193,65 +404,73 @@ export default async function RosterPage() {
           ) : (
             <>
               <div style={{ marginBottom: 32 }}>
-                <h2 style={{ fontSize: 28, marginBottom: 14 }}>Team Directory</h2>
+                <h2
+                  className="rosters-section-title"
+                  style={{
+                    fontSize: 28,
+                    marginTop: 0,
+                    marginBottom: 14,
+                  }}
+                >
+                  Team Directory
+                </h2>
 
                 {teams.length === 0 ? (
                   <p style={{ color: "#cbd5e1" }}>No roster data has been added yet.</p>
                 ) : (
-                  <div
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-                      gap: 16,
-                    }}
-                  >
+                  <div className="rosters-grid">
                     {teams.map((team) => (
-                      <div key={team.id} style={teamCard}>
-                        <div
-                          style={{
-                            width: "100%",
-                            height: 100,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            marginBottom: 14,
-                            background: "rgba(255,255,255,0.02)",
-                            borderRadius: 14,
-                            border: "1px solid rgba(148,163,184,0.10)",
-                            padding: 10,
-                          }}
-                        >
-                          <img
-                            src={getTeamLogoSrc(team.name)}
-                            alt={`${team.name} logo`}
-                            style={{
-                              maxWidth: "100%",
-                              maxHeight: 120,
-                              objectFit: "contain",
-                            }}
-                          />
+                      <div
+                        key={team.id}
+                        style={teamCard}
+                        className="rosters-team-card"
+                      >
+                        <div className="rosters-team-top">
+                          <div className="rosters-logo-box">
+                            <img
+                              className="rosters-logo"
+                              src={getTeamLogoSrc(team.name)}
+                              alt={`${team.name} logo`}
+                            />
+                          </div>
+
+                          <div className="rosters-team-name">{team.name}</div>
                         </div>
 
-                        <div
-                          style={{
-                            fontSize: 24,
-                            fontWeight: 800,
-                            marginBottom: 14,
-                          }}
-                        >
-                          {team.name}
-                        </div>
+                        <div className="rosters-stat-grid">
+                          <div className="rosters-stat">
+                            <span className="rosters-stat-label">Players</span>
+                            <span className="rosters-stat-value">
+                              {team.totalPlayers}
+                            </span>
+                          </div>
 
-                        <div style={{ color: "#cbd5e1", lineHeight: 1.8, fontSize: 15 }}>
-                          <div><strong>Players:</strong> {team.totalPlayers}</div>
-                          <div><strong>Games Played:</strong> {team.gamesPlayed}</div>
-                          <div><strong>Goalies:</strong> {team.goalies}</div>
-                          <div><strong>Skaters:</strong> {team.skaters}</div>
+                          <div className="rosters-stat">
+                            <span className="rosters-stat-label">Games</span>
+                            <span className="rosters-stat-value">
+                              {team.gamesPlayed}
+                            </span>
+                          </div>
+
+                          <div className="rosters-stat">
+                            <span className="rosters-stat-label">Goalies</span>
+                            <span className="rosters-stat-value">
+                              {team.goalies}
+                            </span>
+                          </div>
+
+                          <div className="rosters-stat">
+                            <span className="rosters-stat-label">Skaters</span>
+                            <span className="rosters-stat-value">
+                              {team.skaters}
+                            </span>
+                          </div>
                         </div>
 
                         <Link
                           href={`/rosters/${slugifyTeamName(team.name)}`}
                           style={buttonStyle}
+                          className="rosters-view-button"
                         >
                           View Full Roster
                         </Link>
@@ -262,8 +481,18 @@ export default async function RosterPage() {
               </div>
 
               <div style={{ marginTop: 8 }}>
-                <h2 style={{ fontSize: 24, marginBottom: 12 }}>Quick Links</h2>
-                <div>
+                <h2
+                  className="rosters-section-title"
+                  style={{
+                    fontSize: 24,
+                    marginTop: 0,
+                    marginBottom: 12,
+                  }}
+                >
+                  Quick Links
+                </h2>
+
+                <div className="quick-links-row">
                   <Link href="/standings" style={quickLinkStyle}>
                     Standings
                   </Link>
