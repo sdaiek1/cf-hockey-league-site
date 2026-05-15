@@ -89,6 +89,10 @@ export default function RootLayout({ children }) {
             flex-shrink: 0;
           }
 
+          .brand-text {
+            min-width: 0;
+          }
+
           .site-title {
             color: white;
             text-decoration: none;
@@ -102,6 +106,12 @@ export default function RootLayout({ children }) {
             color: #94a3b8;
             font-size: 14px;
             margin-top: 4px;
+            line-height: 1.35;
+          }
+
+          .site-disclaimer {
+            color: #cbd5e1;
+            font-style: italic;
           }
 
           .desktop-nav {
@@ -109,6 +119,7 @@ export default function RootLayout({ children }) {
             gap: 10px;
             flex-wrap: wrap;
             justify-content: flex-end;
+            align-items: center;
           }
 
           .nav-link {
@@ -251,23 +262,20 @@ export default function RootLayout({ children }) {
               padding: 5px;
             }
 
-            .brand-text {
-              min-width: 0;
-            }
-
             .site-title {
               font-size: 18px;
               line-height: 1.08;
-              max-width: 210px;
+              max-width: 230px;
             }
 
             .site-subtitle {
-              font-size: 12px;
+              font-size: 11.5px;
               margin-top: 3px;
-              white-space: nowrap;
+              max-width: 250px;
+              display: -webkit-box;
+              -webkit-line-clamp: 2;
+              -webkit-box-orient: vertical;
               overflow: hidden;
-              text-overflow: ellipsis;
-              max-width: 210px;
             }
 
             .mobile-menu-button {
@@ -286,11 +294,12 @@ export default function RootLayout({ children }) {
           @media (max-width: 390px) {
             .site-title {
               font-size: 16px;
-              max-width: 180px;
+              max-width: 185px;
             }
 
             .site-subtitle {
-              max-width: 180px;
+              max-width: 205px;
+              font-size: 10.5px;
             }
 
             .site-logo {
@@ -351,8 +360,12 @@ export default function RootLayout({ children }) {
                 <a href="/" className="site-title">
                   Cold Fusion Summer Hockey League
                 </a>
+
                 <div className="site-subtitle">
-                  Codey Arena • West Orange, NJ
+                  Codey Arena • West Orange, NJ •{" "}
+                  <span className="site-disclaimer">
+                    *Not Affiliated with Codey Arena, Privately Run
+                  </span>
                 </div>
               </div>
             </div>
@@ -363,6 +376,7 @@ export default function RootLayout({ children }) {
                   {link.label}
                 </a>
               ))}
+
               <a href="/admin" className="nav-link nav-link-admin">
                 Admin
               </a>
@@ -379,6 +393,7 @@ export default function RootLayout({ children }) {
                     {link.label}
                   </a>
                 ))}
+
                 <a href="/admin" className="mobile-nav-link mobile-admin-link">
                   Admin
                 </a>
