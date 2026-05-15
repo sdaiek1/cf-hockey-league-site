@@ -1124,7 +1124,7 @@ export default async function HomePage() {
                           fontWeight: 800,
                         }}
                       >
-                        {game.rink || "Codey Arena" *No Affiliation, Privately Run}
+                        {game.rink || "Codey Arena *No Affiliation, Privately Operated"}
                       </div>
                     )}
                   </div>
