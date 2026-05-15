@@ -364,7 +364,7 @@ export default function RootLayout({ children }) {
                 <div className="site-subtitle">
                   Codey Arena • West Orange, NJ •{" "}
                   <span className="site-disclaimer">
-                    *Not Affiliated, Privately Run
+                    *No Affiliation
                   </span>
                 </div>
               </div>
