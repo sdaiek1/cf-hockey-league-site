@@ -836,6 +836,73 @@ export default async function HomePage() {
               padding: 10px !important;
             }
 
+            .announcement-bar {
+              display: block !important;
+              border-radius: 14px !important;
+              margin-bottom: 12px !important;
+              min-height: 0 !important;
+            }
+
+            .announcement-label {
+              height: auto !important;
+              min-height: 36px !important;
+              width: 100% !important;
+              justify-content: flex-start !important;
+              border-right: 0 !important;
+              border-bottom: 1px solid rgba(34,211,238,0.14) !important;
+              padding: 9px 11px !important;
+              font-size: 11px !important;
+              letter-spacing: 0.06em !important;
+            }
+
+            .announcement-viewport {
+              height: auto !important;
+              display: flex !important;
+              gap: 9px !important;
+              overflow-x: auto !important;
+              padding: 10px !important;
+              scroll-snap-type: x mandatory !important;
+              -webkit-overflow-scrolling: touch !important;
+              scrollbar-width: none !important;
+            }
+
+            .announcement-viewport::-webkit-scrollbar {
+              display: none !important;
+            }
+
+            .announcement-item {
+              position: static !important;
+              left: auto !important;
+              top: auto !important;
+              bottom: auto !important;
+              animation: none !important;
+              transform: none !important;
+              opacity: 1 !important;
+              width: auto !important;
+              min-width: 78vw !important;
+              max-width: 78vw !important;
+              min-height: 58px !important;
+              white-space: normal !important;
+              flex: 0 0 78vw !important;
+              scroll-snap-align: start !important;
+              background: rgba(2,6,23,0.34) !important;
+              border: 1px solid rgba(34,211,238,0.10) !important;
+              border-radius: 13px !important;
+              padding: 12px !important;
+              align-items: flex-start !important;
+              line-height: 1.35 !important;
+              font-size: 14px !important;
+            }
+
+            .announcement-item span:last-child {
+              display: block !important;
+            }
+
+            .announcement-item span:first-child {
+              flex-shrink: 0 !important;
+              margin-top: 1px !important;
+            }
+
             .score-strip-bar {
               border-radius: 14px !important;
               margin-bottom: 14px !important;
@@ -913,6 +980,12 @@ export default async function HomePage() {
           }
 
           @media (max-width: 390px) {
+            .announcement-item {
+              min-width: 82vw !important;
+              max-width: 82vw !important;
+              flex-basis: 82vw !important;
+            }
+
             .score-game-card {
               min-width: 82vw !important;
               max-width: 82vw !important;
