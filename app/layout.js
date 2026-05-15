@@ -61,25 +61,25 @@ export default function RootLayout({ children }) {
           }
 
           .site-header-inner {
-            max-width: 1220px;
+            max-width: 1480px;
             margin: 0 auto;
-            padding: 16px 20px;
-            display: flex;
-            justify-content: space-between;
+            padding: 12px 18px;
+            display: grid;
+            grid-template-columns: minmax(360px, 1fr) auto;
             align-items: center;
-            gap: 16px;
+            gap: 18px;
           }
 
           .brand-wrap {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 13px;
             min-width: 0;
           }
 
           .site-logo {
-            width: 64px;
-            height: 64px;
+            width: 58px;
+            height: 58px;
             object-fit: contain;
             border-radius: 12px;
             background: #0b1220;
@@ -96,30 +96,49 @@ export default function RootLayout({ children }) {
           .site-title {
             color: white;
             text-decoration: none;
-            font-size: 24px;
-            font-weight: 800;
-            line-height: 1.08;
+            font-size: 25px;
+            font-weight: 900;
+            line-height: 1.02;
             display: inline-block;
+            letter-spacing: -0.03em;
+            max-width: 520px;
+          }
+
+          .site-meta-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 5px;
+            line-height: 1.2;
           }
 
           .site-subtitle {
             color: #94a3b8;
             font-size: 14px;
-            margin-top: 4px;
-            line-height: 1.35;
+            font-weight: 700;
           }
 
-          .site-disclaimer {
+          .site-disclaimer-pill {
             color: #cbd5e1;
-            font-style: italic;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            border: 1px solid rgba(148,163,184,0.20);
+            background: rgba(15,23,42,0.72);
+            border-radius: 999px;
+            padding: 4px 8px;
+            white-space: nowrap;
           }
 
           .desktop-nav {
             display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
+            gap: 8px;
+            flex-wrap: nowrap;
             justify-content: flex-end;
             align-items: center;
+            min-width: 0;
           }
 
           .nav-link {
@@ -127,28 +146,32 @@ export default function RootLayout({ children }) {
             color: #e2e8f0;
             background: rgba(17, 24, 39, 0.82);
             border: 1px solid #1f2937;
-            padding: 10px 14px;
+            padding: 9px 13px;
             border-radius: 999px;
             font-size: 14px;
-            font-weight: 700;
-            min-height: 42px;
+            font-weight: 800;
+            min-height: 40px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            white-space: nowrap;
           }
 
           .nav-link-admin {
             color: #082f49;
             background: #22d3ee;
             border: 1px solid rgba(34,211,238,0.55);
-            font-weight: 800;
+            font-weight: 900;
             box-shadow: 0 0 16px rgba(34,211,238,0.28);
+            padding-left: 18px;
+            padding-right: 18px;
           }
 
           .mobile-menu {
             display: none;
             position: relative;
             flex-shrink: 0;
+            justify-self: end;
           }
 
           .mobile-menu summary {
@@ -223,17 +246,17 @@ export default function RootLayout({ children }) {
             color: #082f49;
           }
 
-          @media (max-width: 980px) {
+          @media (max-width: 1240px) {
+            .site-header-inner {
+              grid-template-columns: 1fr auto;
+            }
+
             .desktop-nav {
               display: none;
             }
 
             .mobile-menu {
               display: block;
-            }
-
-            .site-header-inner {
-              flex-wrap: nowrap;
             }
           }
 
@@ -247,11 +270,11 @@ export default function RootLayout({ children }) {
             .site-header-inner {
               padding: 10px 12px;
               gap: 10px;
+              grid-template-columns: 1fr auto;
             }
 
             .brand-wrap {
               gap: 10px;
-              flex: 1;
               min-width: 0;
             }
 
@@ -268,14 +291,21 @@ export default function RootLayout({ children }) {
               max-width: 230px;
             }
 
+            .site-meta-row {
+              gap: 5px;
+              margin-top: 3px;
+            }
+
             .site-subtitle {
               font-size: 11.5px;
-              margin-top: 3px;
-              max-width: 250px;
-              display: -webkit-box;
-              -webkit-line-clamp: 2;
-              -webkit-box-orient: vertical;
+            }
+
+            .site-disclaimer-pill {
+              font-size: 9px;
+              padding: 3px 6px;
+              max-width: 215px;
               overflow: hidden;
+              text-overflow: ellipsis;
             }
 
             .mobile-menu-button {
@@ -298,8 +328,12 @@ export default function RootLayout({ children }) {
             }
 
             .site-subtitle {
-              max-width: 205px;
               font-size: 10.5px;
+            }
+
+            .site-disclaimer-pill {
+              font-size: 8.5px;
+              max-width: 185px;
             }
 
             .site-logo {
@@ -361,10 +395,13 @@ export default function RootLayout({ children }) {
                   Cold Fusion Summer Hockey League
                 </a>
 
-                <div className="site-subtitle">
-                  Codey Arena • West Orange, NJ •{" "}
-                  <span className="site-disclaimer">
-                    *No Affiliation
+                <div className="site-meta-row">
+                  <span className="site-subtitle">
+                    Codey Arena • West Orange, NJ
+                  </span>
+
+                  <span className="site-disclaimer-pill">
+                    Privately Run • Not Affiliated
                   </span>
                 </div>
               </div>
