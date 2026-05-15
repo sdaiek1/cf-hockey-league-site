@@ -550,6 +550,8 @@ export default async function HomePage() {
     overflowX: "auto",
     padding: 12,
     scrollbarWidth: "thin",
+    scrollSnapType: "x mandatory",
+    WebkitOverflowScrolling: "touch",
   };
 
   const scoreGameCard = {
@@ -560,6 +562,7 @@ export default async function HomePage() {
     borderRadius: 14,
     padding: 12,
     flexShrink: 0,
+    scrollSnapAlign: "start",
   };
 
   const scoreGameStatus = {
@@ -833,6 +836,48 @@ export default async function HomePage() {
               padding: 10px !important;
             }
 
+            .score-strip-bar {
+              border-radius: 14px !important;
+              margin-bottom: 14px !important;
+            }
+
+            .score-strip-header {
+              padding: 9px 10px !important;
+              gap: 8px !important;
+            }
+
+            .score-strip-title {
+              font-size: 11px !important;
+              letter-spacing: 0.06em !important;
+              line-height: 1.2 !important;
+            }
+
+            .score-strip-link {
+              font-size: 12px !important;
+              white-space: nowrap !important;
+            }
+
+            .score-strip-scroller {
+              padding: 10px !important;
+              gap: 9px !important;
+              overflow-x: auto !important;
+              scroll-snap-type: x mandatory !important;
+              -webkit-overflow-scrolling: touch !important;
+              scrollbar-width: none !important;
+            }
+
+            .score-strip-scroller::-webkit-scrollbar {
+              display: none !important;
+            }
+
+            .score-game-card {
+              min-width: 78vw !important;
+              max-width: 78vw !important;
+              scroll-snap-align: start !important;
+              border-radius: 14px !important;
+              padding: 12px !important;
+            }
+
             .hero-title {
               font-size: 22px !important;
             }
@@ -866,6 +911,17 @@ export default async function HomePage() {
               height: 52px !important;
             }
           }
+
+          @media (max-width: 390px) {
+            .score-game-card {
+              min-width: 82vw !important;
+              max-width: 82vw !important;
+            }
+
+            .score-strip-header {
+              align-items: flex-start !important;
+            }
+          }
         `}</style>
 
         <div style={announcementBar} className="announcement-bar">
@@ -892,9 +948,11 @@ export default async function HomePage() {
         </div>
 
         <div style={scoreStripBar} className="score-strip-bar">
-          <div style={scoreStripHeader}>
-            <div style={scoreStripTitle}>Recent Scores & Upcoming Games</div>
-            <a href="/schedule" style={scoreStripLink}>
+          <div style={scoreStripHeader} className="score-strip-header">
+            <div style={scoreStripTitle} className="score-strip-title">
+              Scores & Upcoming Games
+            </div>
+            <a href="/schedule" style={scoreStripLink} className="score-strip-link">
               Full Schedule →
             </a>
           </div>
@@ -909,7 +967,11 @@ export default async function HomePage() {
                 const isFinal = game.stripType === "final";
 
                 return (
-                  <div key={`${game.stripType}-${game.id}`} style={scoreGameCard}>
+                  <div
+                    key={`${game.stripType}-${game.id}`}
+                    style={scoreGameCard}
+                    className="score-game-card"
+                  >
                     <div style={scoreGameStatus}>
                       {isFinal
                         ? "Final"
