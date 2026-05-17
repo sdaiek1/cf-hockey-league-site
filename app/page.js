@@ -1642,6 +1642,9 @@ export default async function HomePage() {
                         <th style={{ paddingBottom: 10 }}>Team</th>
                         <th>GP</th>
                         <th>W</th>
+                        <th>L</th>
+                        <th>OTL</th>
+                        <th>T</th>
                         <th>PTS</th>
                       </tr>
                     </thead>
@@ -1670,6 +1673,27 @@ export default async function HomePage() {
                             }}
                           >
                             {row.w}
+                          </td>
+                          <td
+                            style={{
+                              borderTop: "1px solid rgba(51,65,85,0.30)",
+                            }}
+                          >
+                            {row.l}
+                          </td>
+                          <td
+                            style={{
+                              borderTop: "1px solid rgba(51,65,85,0.30)",
+                            }}
+                          >
+                            {row.otl}
+                          </td>
+                          <td
+                            style={{
+                              borderTop: "1px solid rgba(51,65,85,0.30)",
+                            }}
+                          >
+                            {row.t}
                           </td>
                           <td
                             style={{
