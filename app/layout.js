@@ -1,3 +1,5 @@
+import { Analytics } from '@vercel/analytics/next';
+
 export const metadata = {
   title: "Cold Fusion Summer Hockey League",
   description: "Adult ice hockey league website"
@@ -442,6 +444,7 @@ export default function RootLayout({ children }) {
         <div style={{ position: "relative", zIndex: 1 }}>
           {children}
         </div>
+        <Analytics />
       </body>
     </html>
   );
