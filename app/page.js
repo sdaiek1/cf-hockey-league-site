@@ -325,7 +325,7 @@ export default async function HomePage() {
         ];
 
   const announcements = [
-    "A signed waiver is required before your first game",
+    "New 3-Stars of the week posted every Friday",
     "IMPORTANT: WCFD vs ZPG 6/3 has been moved from 9:15pm to 8:45pm",
     "Remember: This is just for fun... Its not that serious!",
   ];
