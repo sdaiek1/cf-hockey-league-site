@@ -54,7 +54,7 @@ export default function RulesPage() {
         "Tag-up offsides",
         "Stick penalties such as high sticking and slashing are 4-minute penalties",
         "All other penalties follow USA Hockey rules",
-        "Abuse of officials can result in ejection",
+        "Abuse of officials can result in ejection and 1 game suspension",
         "Deliberate body checking and deliberate head contact can result in suspensions"
       ]
     },
