@@ -326,7 +326,7 @@ export default async function HomePage() {
 
   const announcements = [
     "New 3-Stars of the week posted every Friday",
-    "IMPORTANT: WCFD vs ZPG 6/3 has been moved from 9:15pm to 8:45pm",
+    "Remember, you need to check-in before games",
     "A reminder: None of us are going to the NHL!",
     "Dont be an A-Hole. Have fun, its ok to lose. Its just a game",
   ];
