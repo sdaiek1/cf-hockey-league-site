@@ -327,7 +327,7 @@ export default async function HomePage() {
   const announcements = [
     "New 3-Stars of the week posted every Friday",
     "Remember, you need to check-in before games",
-    "A reminder: None of us are going to the NHL!",
+    "The Hockey Truck is available for sharpenings, tape, and laces before games",
     "Dont be an A-Hole. Have fun, its ok to lose. Its just a game",
   ];
 
