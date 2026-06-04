@@ -1536,8 +1536,7 @@ export default async function HomePage() {
                       fontWeight: 600,
                     }}
                   >
-                    Remember to arrive to your first game with enough time to fill
-                    out a waiver.
+                    Remember, this isnt the pros. Chill out, play some hockey, and dont be an A-Hole.
                   </div>
                 </div>
 
