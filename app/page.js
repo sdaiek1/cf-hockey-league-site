@@ -325,10 +325,9 @@ export default async function HomePage() {
         ];
 
   const announcements = [
-    "New 3-Stars of the week posted every Friday",
     "Remember, you need to check-in before games",
     "The Hockey Truck is available for sharpenings, tape, and laces before games",
-    "Dont be an A-Hole. Have fun, its ok to lose. Its just a game",
+    "Codey is closing down for 2nd half of June. This is why we have a long break",
   ];
 
   const heroRotatingImages = [
