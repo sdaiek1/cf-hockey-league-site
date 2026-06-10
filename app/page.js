@@ -328,6 +328,7 @@ export default async function HomePage() {
     "Remember, you need to check-in before games",
     "The Hockey Truck is available for sharpenings, tape, and laces before games",
     "Codey is closing down for 2nd half of June. This is why we have a long break",
+    "IMPORTANT: ZPG vs Swiss Army Sun 6/14 has been moved to 9pm start",
   ];
 
   const heroRotatingImages = [
