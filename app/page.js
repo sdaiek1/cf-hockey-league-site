@@ -328,7 +328,7 @@ export default async function HomePage() {
     "Remember, you need to check-in before games",
     "The Hockey Truck is available for sharpenings, tape, and laces before games",
     "No non-rostered players are permitted to play",
-    "Playoff schedule has been posted",
+    "Playoffs - 8/4 3v6 8pm & 4v5 9:30pm.. 8/5 1vX 8pm & 2vX 9:30pm.. Finals 8/9 8:45pm",
   ];
 
   const heroRotatingImages = [
