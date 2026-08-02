@@ -325,7 +325,7 @@ export default async function HomePage() {
         ];
 
   const announcements = [
-    "Playoffs - 8/4 3v6 8pm & 4v5 9:30pm.. 8/5 1vX 8pm & 2vX 9:30pm.. Finals 8/9 8:45pm",];
+    "Playoffs - 8/4 3v6 8pm & 4v5 9:30pm..    8/5 1vX 8pm & 2vX 9:30pm..    Finals 8/9 8:45pm",];
 
   const heroRotatingImages = [
     "/logo.png",
@@ -347,8 +347,8 @@ export default async function HomePage() {
   const heroSlideHoldPct = heroSlideVisiblePct * 0.82;
   const heroSlideFadeOutPct = heroSlideVisiblePct;
 
-  const announcementScrollSeconds = 50;
-  const announcementStartEverySeconds = 50;
+  const announcementScrollSeconds = 80;
+  const announcementStartEverySeconds = 25;
   const announcementCount = announcements.length;
   const announcementLoopSeconds =
     announcementCount * announcementStartEverySeconds;
