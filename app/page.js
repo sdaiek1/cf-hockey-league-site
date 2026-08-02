@@ -325,9 +325,6 @@ export default async function HomePage() {
         ];
 
   const announcements = [
-    "Remember, you need to check-in before games",
-    "The Hockey Truck is available for sharpenings, tape, and laces before games",
-    "No non-rostered players are permitted to play",
     "Playoffs - 8/4 3v6 8pm & 4v5 9:30pm.. 8/5 1vX 8pm & 2vX 9:30pm.. Finals 8/9 8:45pm",
   ];
 
@@ -351,7 +348,7 @@ export default async function HomePage() {
   const heroSlideHoldPct = heroSlideVisiblePct * 0.82;
   const heroSlideFadeOutPct = heroSlideVisiblePct;
 
-  const announcementScrollSeconds = 18;
+  const announcementScrollSeconds = 25;
   const announcementStartEverySeconds = 7;
   const announcementCount = announcements.length;
   const announcementLoopSeconds =
