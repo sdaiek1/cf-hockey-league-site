@@ -1057,6 +1057,13 @@ export default async function HomePage() {
               font-size: 12px !important;
             }
           }
+/* TEMPORARY: Keep announcement stationary */
+.announcement-item {
+  left: 0 !important;
+  opacity: 1 !important;
+  transform: none !important;
+  animation: none !important;
+}
         `}</style>
 
         <div style={announcementBar} className="announcement-bar">
