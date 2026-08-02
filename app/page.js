@@ -359,19 +359,16 @@ export default async function HomePage() {
   // const announcementTravelPct = announcementVisiblePct * 1.00;
   // const announcementFadeOutPct = announcementVisiblePct;
 
-const announcementScrollSeconds = 100;
-const announcementStartEverySeconds = 40;
-const announcementCount = announcements.length;
-
-const announcementLoopSeconds =
-  announcementCount * announcementStartEverySeconds;
-
-const announcementVisiblePct =
-  (announcementScrollSeconds / announcementLoopSeconds) * 50;
-
-const announcementFadeInPct = 0;
-const announcementTravelPct = 0;
-const announcementFadeOutPct = announcementVisiblePct;
+  const announcementScrollSeconds = 100;
+  const announcementStartEverySeconds = 40;
+  const announcementCount = announcements.length;
+  const announcementLoopSeconds =
+    announcementCount * announcementStartEverySeconds;
+  const announcementVisiblePct =
+    (announcementScrollSeconds / announcementLoopSeconds) * 50;
+  const announcementFadeInPct = 0;
+  const announcementTravelPct = 0;
+  const announcementFadeOutPct = announcementVisiblePct;
   
   const shell = {
     maxWidth: 1220,
