@@ -353,9 +353,9 @@ export default async function HomePage() {
   const announcementLoopSeconds =
     announcementCount * announcementStartEverySeconds;
   const announcementVisiblePct =
-    (announcementScrollSeconds / announcementLoopSeconds) * 100;
-  const announcementFadeInPct = 2;
-  const announcementTravelPct = announcementVisiblePct * 0.92;
+    (announcementScrollSeconds / announcementLoopSeconds) * 50;
+  const announcementFadeInPct = 0;
+  const announcementTravelPct = announcementVisiblePct * 1.00;
   const announcementFadeOutPct = announcementVisiblePct;
 
   const shell = {
