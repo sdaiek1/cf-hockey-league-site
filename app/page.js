@@ -346,18 +346,33 @@ export default async function HomePage() {
   const heroSlideFadeInPct = heroSlideVisiblePct * 0.14;
   const heroSlideHoldPct = heroSlideVisiblePct * 0.82;
   const heroSlideFadeOutPct = heroSlideVisiblePct;
+  
+#For scrolling bar
+  // const announcementScrollSeconds = 100;
+  // const announcementStartEverySeconds = 40;
+  // const announcementCount = announcements.length;
+  // const announcementLoopSeconds =
+  //   announcementCount * announcementStartEverySeconds;
+  // const announcementVisiblePct =
+  //   (announcementScrollSeconds / announcementLoopSeconds) * 50;
+  // const announcementFadeInPct = 0;
+  // const announcementTravelPct = announcementVisiblePct * 1.00;
+  // const announcementFadeOutPct = announcementVisiblePct;
 
-  const announcementScrollSeconds = 100;
-  const announcementStartEverySeconds = 40;
-  const announcementCount = announcements.length;
-  const announcementLoopSeconds =
-    announcementCount * announcementStartEverySeconds;
-  const announcementVisiblePct =
-    (announcementScrollSeconds / announcementLoopSeconds) * 50;
-  const announcementFadeInPct = 0;
-  const announcementTravelPct = announcementVisiblePct * 1.00;
-  const announcementFadeOutPct = announcementVisiblePct;
+const announcementScrollSeconds = 100;
+const announcementStartEverySeconds = 40;
+const announcementCount = announcements.length;
 
+const announcementLoopSeconds =
+  announcementCount * announcementStartEverySeconds;
+
+const announcementVisiblePct =
+  (announcementScrollSeconds / announcementLoopSeconds) * 50;
+
+const announcementFadeInPct = 0;
+const announcementTravelPct = 0;
+const announcementFadeOutPct = announcementVisiblePct;
+  
   const shell = {
     maxWidth: 1220,
     margin: "0 auto",
