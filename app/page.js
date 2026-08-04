@@ -325,7 +325,7 @@ export default async function HomePage() {
         ];
 
   const announcements = [
-    "Playoffs - 8/4: 8pm H-Town vs Replacements.. 9:30pm Swiss Army vs WCFD.. 8/5 1vX 8pm & 2vX 9:30pm.. Finals 8/9 7:00pm",];
+    "Playoffs - 8/4: 8pm H-Town vs Replacements.. 9:30pm Swiss Army vs WCFD.. 8/5 1 vs TBD 8pm & 2 vs TBD 9:30pm.. Finals 8/9 7:00pm",];
 
   const heroRotatingImages = [
     "/logo.png",
