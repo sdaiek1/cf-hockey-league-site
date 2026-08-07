@@ -325,7 +325,7 @@ export default async function HomePage() {
         ];
 
   const announcements = [
-    "Playoff Schedule - 8/5 8pm: Rasta vs WCFD... 9:30pm Mayhem vs H-Town...  Final 8/9 @ 7:00pm"];
+    "Championship Game - Sunday 8/9 @ 7:00pm - Team Rasta vs H-Town"];
 
   const heroRotatingImages = [
     "/logo.png",
