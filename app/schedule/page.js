@@ -7,14 +7,10 @@ const EVENT_DURATION_MINUTES = 90;
 
 function getTeamLogoSrc(teamName = "") {
   const TEAM_LOGOS = {
-    "Team Rasta": "/Rasta_Logo.JPG",
-    "Zero Pucks Given": "/ZPG_Logo.PNG",
-    Mayhem: "/Mayhem_Logo.png",
-    "Swiss Army": "/Swiss_Logo.PNG",
-    WCFD: "/WCFD_Logo.PNG",
-    "H-Town Assassins": "/H-Town_Logo.png",
-    Replacements: "/Replacements_Logo.png",
-    Venom: "/Venom_Logo.JPG",
+    Pterodactyls: "/Pterodactyls_Logo.png",
+    IceHoles: "/IceHoles_Logo.png",
+    "Flying V": "/FlyingV_Logo.png",
+    "Mad Men": "/Mad_Men_Logo.png",
   };
 
   return TEAM_LOGOS[teamName] || "/logo.png";
