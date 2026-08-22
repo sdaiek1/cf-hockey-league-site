@@ -1935,7 +1935,7 @@ export default async function HomePage() {
                   </div>
 
                   <div className="reminder-text">
-                    Players MUST check-in upon arrival.
+                    Players Do Not Need to check-in upon arrival.
                   </div>
 
                 </div>
