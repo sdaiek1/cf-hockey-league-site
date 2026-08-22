@@ -325,7 +325,7 @@ export default async function HomePage() {
         ];
 
   const announcements = [
-    "Championship Game - Sunday 8/9 @ 7:00pm - Team Rasta vs H-Town"];
+    "Live Draft 8/27 @ 7pm"];
 
   const heroRotatingImages = [
     "/logo.png",
