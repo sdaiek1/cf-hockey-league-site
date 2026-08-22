@@ -394,7 +394,7 @@ export default function RootLayout({ children }) {
 
               <div className="brand-text">
                 <a href="/" className="site-title">
-                  Cold Fusion Summer Hockey League
+                  Cold Fusion Summer Hockey Draft League
                 </a>
 
                 <div className="site-meta-row">
