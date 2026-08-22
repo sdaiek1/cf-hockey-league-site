@@ -17,11 +17,11 @@ export default function RulesPage() {
     {
       title: "League Overview",
       items: [
-        "Season Dates: May 11th, 2026 to August 9th, 2026",
-        "Teams: 8 teams",
-        "Cost: $5,300 per team",
-        "Regular Season: 12 games",
-        "Top 6 teams qualify for playoffs",
+        "Season Dates: Sept 2nd to Oct 7th, Wednesday Nights 9 & 10:30pm",
+        "Teams: 4 teams",
+        "Teams Drafted 16 skaters 1 Goalie",
+        "Regular Season: 5 games",
+        "All teams qualify for playoffs",
         "Standings points: Win 3, Tie 2, OTL 1, Loss 0"
       ]
     },
@@ -38,13 +38,12 @@ export default function RulesPage() {
     {
       title: "Rosters & Eligibility",
       items: [
-        "Roster limit: 25 players per team",
-        "Roster changes allowed until July 1st",
-        "*Changes to roster due to IR are an exception*",
-        "Players must check in and present ID",
+        "Roster limit: 17 players per team",
+        "No Roster Changes Permitted",
+        "Players Do Not need to check in prior to games",
         "Players must sign a waiver before their first game",
         "Players must wear a jersey number matching the submitted roster",
-        "Playoff eligibility requires at least 4 regular season games"
+        "No playoff eligibility required"
       ]
     },
     {
@@ -61,7 +60,7 @@ export default function RulesPage() {
     {
       title: "Championship Prize",
       items: [
-        "Championship team receives a $400 Verona Inn gift card and trophy"
+        "Championship team receives a $200 Verona Inn gift card"
       ]
     }
   ];
