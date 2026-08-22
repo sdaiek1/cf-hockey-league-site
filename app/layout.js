@@ -1,7 +1,7 @@
 import { Analytics } from "@vercel/analytics/next";
 
 export const metadata = {
-  title: "Cold Fusion Summer Hockey League",
+  title: "Cold Fusion Summer Draft Hockey League",
   description: "Adult ice hockey league website"
 };
 
