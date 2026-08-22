@@ -3,6 +3,10 @@ export const revalidate = 0;
 
 import { createClient } from "@supabase/supabase-js";
 
+/* =========================================================
+   TEAM LOGOS
+========================================================= */
+
 function getTeamLogoSrc(teamName = "") {
   const TEAM_LOGOS = {
     Pterodactyls: "/Pterodactyls_Logo.png",
@@ -13,6 +17,10 @@ function getTeamLogoSrc(teamName = "") {
 
   return TEAM_LOGOS[teamName] || "/CF_Summer_Draft_League_Logo.png";
 }
+
+/* =========================================================
+   PLAYERS OF THE WEEK
+========================================================= */
 
 function getStarImageSrc(rank) {
   if (rank === 1) return "/1st_Star.png";
@@ -26,6 +34,10 @@ function getStarLabel(rank) {
   return "3rd Star";
 }
 
+/* =========================================================
+   MAIN PAGE
+========================================================= */
+
 export default async function HomePage() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -35,6 +47,10 @@ export default async function HomePage() {
   let standings = [];
   let recentNews = [];
   let playersOfWeek = [];
+
+  /* =========================================================
+     SUPABASE
+  ========================================================= */
 
   if (supabaseUrl && supabaseKey) {
     const supabase = createClient(supabaseUrl, supabaseKey);
@@ -96,13 +112,21 @@ export default async function HomePage() {
       .slice(0, 5);
 
     const futureGames = games
-      .filter((game) => !isCompletedGame(game) && isUpcomingGame(game, nowEastern))
+      .filter(
+        (game) =>
+          !isCompletedGame(game) &&
+          isUpcomingGame(game, nowEastern)
+      )
       .sort(compareGamesAsc);
 
     upcomingGames = futureGames.slice(0, 3);
 
     scoreStripGames = [
-      ...completedGames.map((game) => ({ ...game, stripType: "final" })),
+      ...completedGames.map((game) => ({
+        ...game,
+        stripType: "final",
+      })),
+
       ...futureGames.slice(0, 5).map((game) => ({
         ...game,
         stripType: "upcoming",
@@ -110,6 +134,10 @@ export default async function HomePage() {
     ].slice(0, 10);
 
     playersOfWeek = playerOfWeekRows || [];
+
+    /* =========================================================
+       STANDINGS
+    ========================================================= */
 
     const standingsMap = {};
 
@@ -139,6 +167,7 @@ export default async function HomePage() {
 
       const home = standingsMap[game.home_team.name];
       const away = standingsMap[game.away_team.name];
+
       if (!home || !away) continue;
 
       home.gp += 1;
@@ -146,6 +175,7 @@ export default async function HomePage() {
 
       home.gf += Number(game.home_score || 0);
       home.ga += Number(game.away_score || 0);
+
       away.gf += Number(game.away_score || 0);
       away.ga += Number(game.home_score || 0);
 
@@ -156,23 +186,31 @@ export default async function HomePage() {
       if (tied || game.result_type === "tie") {
         home.t += 1;
         away.t += 1;
+
         home.pts += 2;
         away.pts += 2;
+
         continue;
       }
 
-      if (game.result_type === "overtime" || game.result_type === "shootout") {
+      if (
+        game.result_type === "overtime" ||
+        game.result_type === "shootout"
+      ) {
         if (homeWon) {
           home.w += 1;
           home.pts += 3;
+
           away.otl += 1;
           away.pts += 1;
         } else if (awayWon) {
           away.w += 1;
           away.pts += 3;
+
           home.otl += 1;
           home.pts += 1;
         }
+
         continue;
       }
 
@@ -189,10 +227,16 @@ export default async function HomePage() {
 
     standings = Object.values(standingsMap).sort((a, b) => {
       if (b.pts !== a.pts) return b.pts - a.pts;
+
       if (b.gf !== a.gf) return b.gf - a.gf;
+
       return a.team.localeCompare(b.team);
     });
   }
+
+  /* =========================================================
+     DATE / TIME HELPERS
+  ========================================================= */
 
   function getEasternNowParts() {
     const parts = new Intl.DateTimeFormat("en-US", {
@@ -206,13 +250,16 @@ export default async function HomePage() {
     }).formatToParts(new Date());
 
     const values = {};
+
     for (const part of parts) {
       values[part.type] = part.value;
     }
 
     return {
       dateString: `${values.year}-${values.month}-${values.day}`,
-      minutes: Number(values.hour) * 60 + Number(values.minute),
+      minutes:
+        Number(values.hour) * 60 +
+        Number(values.minute),
     };
   }
 
@@ -226,7 +273,10 @@ export default async function HomePage() {
   }
 
   function isCompletedGame(game) {
-    return String(game.status || "").toLowerCase() === "final" || hasGameScore(game);
+    return (
+      String(game.status || "").toLowerCase() === "final" ||
+      hasGameScore(game)
+    );
   }
 
   function parseGameTimeToMinutes(timeString = "") {
@@ -236,62 +286,106 @@ export default async function HomePage() {
       .split("-")[0]
       .trim();
 
-    if (!cleaned || cleaned === "TBD") return 23 * 60 + 59;
+    if (!cleaned || cleaned === "TBD") {
+      return 23 * 60 + 59;
+    }
 
-    const twelveHourMatch = cleaned.match(/^(\d{1,2})(?::(\d{2}))?\s*(AM|PM)$/);
+    const twelveHourMatch = cleaned.match(
+      /^(\d{1,2})(?::(\d{2}))?\s*(AM|PM)$/
+    );
+
     if (twelveHourMatch) {
       let hours = Number(twelveHourMatch[1]);
-      const minutes = Number(twelveHourMatch[2] || 0);
+      const minutes = Number(
+        twelveHourMatch[2] || 0
+      );
+
       const meridiem = twelveHourMatch[3];
 
-      if (meridiem === "PM" && hours !== 12) hours += 12;
-      if (meridiem === "AM" && hours === 12) hours = 0;
+      if (meridiem === "PM" && hours !== 12) {
+        hours += 12;
+      }
+
+      if (meridiem === "AM" && hours === 12) {
+        hours = 0;
+      }
 
       return hours * 60 + minutes;
     }
 
-    const twentyFourHourMatch = cleaned.match(/^(\d{1,2}):(\d{2})(?::\d{2})?$/);
+    const twentyFourHourMatch = cleaned.match(
+      /^(\d{1,2}):(\d{2})(?::\d{2})?$/
+    );
+
     if (twentyFourHourMatch) {
-      return Number(twentyFourHourMatch[1]) * 60 + Number(twentyFourHourMatch[2]);
+      return (
+        Number(twentyFourHourMatch[1]) * 60 +
+        Number(twentyFourHourMatch[2])
+      );
     }
 
     return 23 * 60 + 59;
   }
 
   function getGameSortValue(game) {
-    const dateValue = Number(String(game.game_date || "").replaceAll("-", ""));
-    return dateValue * 1440 + parseGameTimeToMinutes(game.game_time);
+    const dateValue = Number(
+      String(game.game_date || "").replaceAll("-", "")
+    );
+
+    return (
+      dateValue * 1440 +
+      parseGameTimeToMinutes(game.game_time)
+    );
   }
 
   function compareGamesAsc(a, b) {
-    return getGameSortValue(a) - getGameSortValue(b);
+    return (
+      getGameSortValue(a) -
+      getGameSortValue(b)
+    );
   }
 
   function compareGamesDesc(a, b) {
-    return getGameSortValue(b) - getGameSortValue(a);
+    return (
+      getGameSortValue(b) -
+      getGameSortValue(a)
+    );
   }
 
   function isUpcomingGame(game, nowEastern) {
     if (!game.game_date) return false;
 
-    if (game.game_date > nowEastern.dateString) return true;
-    if (game.game_date < nowEastern.dateString) return false;
+    if (game.game_date > nowEastern.dateString) {
+      return true;
+    }
 
-    return parseGameTimeToMinutes(game.game_time) >= nowEastern.minutes;
+    if (game.game_date < nowEastern.dateString) {
+      return false;
+    }
+
+    return (
+      parseGameTimeToMinutes(game.game_time) >=
+      nowEastern.minutes
+    );
   }
 
   function formatGameDate(dateString) {
     if (!dateString) return "";
 
-    const d = new Date(`${dateString}T12:00:00`);
+    const d = new Date(
+      `${dateString}T12:00:00`
+    );
 
     return d.toLocaleDateString("en-US", {
       weekday: "long",
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
+      month: "long",
+      day: "numeric",
     });
   }
+
+  /* =========================================================
+     FALLBACK PLAYERS OF WEEK
+  ========================================================= */
 
   const displayPlayers =
     playersOfWeek.length > 0
@@ -300,29 +394,39 @@ export default async function HomePage() {
           {
             star_rank: 1,
             player_name: "Player 1",
-            team_name: "Team A",
+            team_name: "Team",
             position: "F",
             blurb: "Add player stats here.",
           },
           {
             star_rank: 2,
             player_name: "Player 2",
-            team_name: "Team B",
+            team_name: "Team",
             position: "F",
             blurb: "Add player stats here.",
           },
           {
             star_rank: 3,
             player_name: "Player 3",
-            team_name: "Team C",
+            team_name: "Team",
             position: "G",
             blurb: "Add player stats here.",
           },
         ];
 
+  /* =========================================================
+     ANNOUNCEMENTS
+
+     ADD NEW ANNOUNCEMENTS HERE
+  ========================================================= */
+
   const announcements = [
-    "Live Draft 8/27 @ 7pm",
+    "Live Draft 8/27 @ 7:00 PM",
   ];
+
+  /* =========================================================
+     ROTATING HERO LOGOS
+  ========================================================= */
 
   const heroRotatingImages = [
     "/CF_Summer_Draft_League_Logo.png",
@@ -332,52 +436,43 @@ export default async function HomePage() {
     "/Mad_Men_Logo.png",
   ];
 
-  const heroSlideSeconds = 4;
-  const heroSlideCount = heroRotatingImages.length;
-  const heroSlideDuration = heroSlideCount * heroSlideSeconds;
-  const heroSlideVisiblePct = (heroSlideSeconds / heroSlideDuration) * 100;
-  const heroSlideFadeInPct = heroSlideVisiblePct * 0.14;
-  const heroSlideHoldPct = heroSlideVisiblePct * 0.82;
-  const heroSlideFadeOutPct = heroSlideVisiblePct;
-
-  // Slow announcement ticker.
-  // Each announcement takes 28 seconds to travel across the bar.
-  const announcementScrollSeconds = 28;
-  const announcementStartEverySeconds = 28;
-
-  const shell = {
-    maxWidth: 1220,
-    margin: "0 auto",
-    padding: 24,
-    color: "#ffffff",
-    position: "relative",
-    zIndex: 1,
-  };
+  /* =========================================================
+     REUSABLE STYLES
+  ========================================================= */
 
   const card = {
     background:
-      "linear-gradient(180deg, rgba(7,16,34,0.56) 0%, rgba(4,10,24,0.68) 100%)",
-    border: "1px solid rgba(34, 211, 238, 0.14)",
-    borderRadius: 24,
+      "linear-gradient(180deg, rgba(7,16,34,0.60), rgba(4,10,24,0.78))",
+
+    border:
+      "1px solid rgba(34,211,238,0.14)",
+
+    borderRadius: 22,
+
     padding: 22,
-    boxShadow: "0 18px 45px rgba(0, 0, 0, 0.26)",
+
+    boxShadow:
+      "0 18px 45px rgba(0,0,0,0.26)",
+
     backdropFilter: "blur(7px)",
   };
 
   const subCard = {
     background:
-      "linear-gradient(180deg, rgba(6,14,30,0.78) 0%, rgba(3,8,20,0.88) 100%)",
-    border: "1px solid rgba(34, 211, 238, 0.10)",
+      "linear-gradient(180deg, rgba(6,14,30,0.78), rgba(3,8,20,0.90))",
+
+    border:
+      "1px solid rgba(34,211,238,0.10)",
+
     borderRadius: 18,
+
     padding: 16,
-    boxShadow: "inset 0 1px 0 rgba(255,255,255,0.03)",
   };
 
   const sectionTitle = {
     fontSize: 28,
     marginTop: 0,
     marginBottom: 8,
-    letterSpacing: "-0.02em",
   };
 
   const sectionText = {
@@ -387,624 +482,1194 @@ export default async function HomePage() {
     lineHeight: 1.6,
   };
 
-  const heroBadgeWrap = {
-    display: "flex",
-    justifyContent: "center",
-    marginBottom: 12,
-  };
-
-  const heroActions = {
-    display: "flex",
-    gap: 12,
-    flexWrap: "nowrap",
-    justifyContent: "center",
-    alignItems: "stretch",
-    marginTop: 6,
-  };
-
-  const heroButtonBase = {
-    textDecoration: "none",
-    padding: "8px 12px",
-    borderRadius: 14,
-    fontWeight: 800,
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    textAlign: "center",
-    width: 170,
-    minHeight: 54,
-    lineHeight: 1.08,
-  };
-
-  const heroButtonTitle = {
-    fontSize: 16,
-    fontWeight: 800,
-  };
-
-  const heroButtonSubtitle = {
-    fontSize: 10,
-    fontWeight: 700,
-    marginTop: 3,
-    opacity: 0.85,
-    letterSpacing: "0.01em",
-  };
-
-  const announcementBar = {
-    marginBottom: 14,
-    overflow: "hidden",
-    borderRadius: 16,
-    border: "1px solid rgba(34,211,238,0.16)",
-    background:
-      "linear-gradient(90deg, rgba(6,14,30,0.88) 0%, rgba(8,37,70,0.78) 50%, rgba(6,14,30,0.88) 100%)",
-    boxShadow: "0 10px 26px rgba(0,0,0,0.18)",
-    minHeight: 42,
-    display: "flex",
-    alignItems: "center",
-  };
-
-  const announcementLabel = {
-    flexShrink: 0,
-    padding: "0 14px",
-    height: 42,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    fontSize: 13,
-    fontWeight: 800,
-    color: "#67e8f9",
-    borderRight: "1px solid rgba(34,211,238,0.14)",
-    background: "rgba(2,6,23,0.30)",
-    textTransform: "uppercase",
-    letterSpacing: "0.06em",
-  };
-
-  const announcementViewport = {
-    position: "relative",
-    overflow: "hidden",
-    flex: 1,
-    height: 42,
-  };
-
-  const announcementItemBase = {
-    position: "absolute",
-    left: "100%",
-    top: 0,
-    bottom: 0,
-    display: "flex",
-    alignItems: "center",
-    whiteSpace: "nowrap",
-    width: "max-content",
-    color: "#e2e8f0",
-    fontSize: 16,
-    fontWeight: 700,
-    opacity: 0,
-    padding: "0 8px",
-    animationName: "leagueAnnouncementScroll",
-    animationTimingFunction: "linear",
-    animationIterationCount: "infinite",
-    animationFillMode: "both",
-  };
-
-  const announcementDot = {
-    color: "#67e8f9",
-    marginRight: 10,
-    fontSize: 16,
-    lineHeight: 1,
-  };
-
-  const scoreStripBar = {
-    marginBottom: 18,
-    overflow: "hidden",
-    borderRadius: 18,
-    border: "1px solid rgba(34,211,238,0.16)",
-    background:
-      "linear-gradient(90deg, rgba(3,8,20,0.90) 0%, rgba(8,30,58,0.82) 50%, rgba(3,8,20,0.90) 100%)",
-    boxShadow: "0 12px 30px rgba(0,0,0,0.22)",
-  };
-
-  const scoreStripHeader = {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 12,
-    padding: "10px 14px",
-    borderBottom: "1px solid rgba(34,211,238,0.12)",
-  };
-
-  const scoreStripTitle = {
-    color: "#67e8f9",
-    fontSize: 13,
-    fontWeight: 900,
-    textTransform: "uppercase",
-    letterSpacing: "0.08em",
-  };
-
-  const scoreStripLink = {
-    color: "#cbd5e1",
-    fontSize: 13,
-    fontWeight: 800,
-    textDecoration: "none",
-  };
-
-  const scoreStripScroller = {
-    display: "flex",
-    gap: 10,
-    overflowX: "auto",
-    padding: 12,
-    scrollbarWidth: "thin",
-    scrollSnapType: "x mandatory",
-    WebkitOverflowScrolling: "touch",
-  };
-
-  const scoreGameCard = {
-    width: 225,
-    minWidth: 225,
-    maxWidth: 225,
-    flex: "0 0 225px",
-    background:
-      "linear-gradient(180deg, rgba(6,14,30,0.88) 0%, rgba(3,8,20,0.94) 100%)",
-    border: "1px solid rgba(34,211,238,0.10)",
-    borderRadius: 14,
-    padding: 12,
-    scrollSnapAlign: "start",
-  };
-
-  const scoreGameStatus = {
-    color: "#94a3b8",
-    fontSize: 12,
-    fontWeight: 800,
-    textTransform: "uppercase",
-    letterSpacing: "0.06em",
-    marginBottom: 8,
-  };
-
-  const scoreTeamLine = {
-    display: "grid",
-    gridTemplateColumns: "26px 1fr auto",
-    alignItems: "center",
-    gap: 8,
-    marginTop: 7,
-  };
-
-  const scoreTeamLogo = {
-    width: 24,
-    height: 24,
-    objectFit: "contain",
-  };
-
-  const scoreTeamName = {
-    color: "#f8fafc",
-    fontSize: 14,
-    fontWeight: 800,
-    lineHeight: 1.15,
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    whiteSpace: "nowrap",
-  };
-
-  const scoreNumber = {
-    color: "#ffffff",
-    fontSize: 18,
-    fontWeight: 900,
-  };
+  /* =========================================================
+     PAGE
+  ========================================================= */
 
   return (
-    <main
-      style={{
-        minHeight: "100vh",
-        position: "relative",
-        overflow: "hidden",
-        backgroundImage: `
-          linear-gradient(rgba(2,6,23,0.38), rgba(2,6,23,0.54)),
-          url("/cold-fusion-rink-bg.png")
-        `,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundAttachment: "fixed",
-        paddingBottom: 32,
-      }}
-    >
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          pointerEvents: "none",
-          background: `
-            radial-gradient(circle at top left, rgba(56,189,248,0.08) 0%, rgba(56,189,248,0) 24%),
-            radial-gradient(circle at top right, rgba(37,99,235,0.08) 0%, rgba(37,99,235,0) 22%),
-            radial-gradient(circle at 50% 0%, rgba(14,165,233,0.04) 0%, rgba(14,165,233,0) 28%)
-          `,
-        }}
-      />
+    <main className="page">
+      {/* =====================================================
+          GLOBAL PAGE CSS
+      ====================================================== */}
 
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          pointerEvents: "none",
-          opacity: 0.018,
-          backgroundImage: `
-            linear-gradient(115deg, rgba(255,255,255,0.08) 0%, transparent 22%, transparent 75%, rgba(255,255,255,0.04) 100%),
-            repeating-linear-gradient(
-              0deg,
-              rgba(255,255,255,0.03) 0px,
-              rgba(255,255,255,0.03) 1px,
-              transparent 1px,
-              transparent 42px
+      <style>{`
+
+        * {
+          box-sizing: border-box;
+        }
+
+        body {
+          margin: 0;
+        }
+
+        .page {
+          min-height: 100vh;
+
+          padding-bottom: 40px;
+
+          color: #ffffff;
+
+          background-image:
+            linear-gradient(
+              rgba(2,6,23,0.42),
+              rgba(2,6,23,0.62)
+            ),
+            url("/cold-fusion-rink-bg.png");
+
+          background-size: cover;
+
+          background-position: center;
+
+          background-attachment: fixed;
+        }
+
+        .shell {
+          width: 100%;
+
+          max-width: 1220px;
+
+          margin: 0 auto;
+
+          padding: 24px;
+        }
+
+        /* ===============================================
+           ANNOUNCEMENT TICKER
+        =============================================== */
+
+        .announcement-bar {
+          height: 44px;
+
+          display: flex;
+
+          align-items: center;
+
+          overflow: hidden;
+
+          margin-bottom: 16px;
+
+          border-radius: 16px;
+
+          border:
+            1px solid rgba(34,211,238,0.18);
+
+          background:
+            linear-gradient(
+              90deg,
+              rgba(6,14,30,0.95),
+              rgba(8,37,70,0.90),
+              rgba(6,14,30,0.95)
+            );
+        }
+
+        .announcement-label {
+          height: 100%;
+
+          display: flex;
+
+          align-items: center;
+
+          justify-content: center;
+
+          padding: 0 16px;
+
+          flex-shrink: 0;
+
+          color: #67e8f9;
+
+          font-size: 12px;
+
+          font-weight: 900;
+
+          text-transform: uppercase;
+
+          letter-spacing: 0.06em;
+
+          border-right:
+            1px solid rgba(34,211,238,0.18);
+        }
+
+        .announcement-window {
+          position: relative;
+
+          height: 100%;
+
+          flex: 1;
+
+          overflow: hidden;
+        }
+
+        .announcement-item {
+          position: absolute;
+
+          top: 0;
+
+          left: 100%;
+
+          height: 100%;
+
+          display: flex;
+
+          align-items: center;
+
+          width: max-content;
+
+          white-space: nowrap;
+
+          color: #e2e8f0;
+
+          font-size: 15px;
+
+          font-weight: 700;
+
+          animation:
+            announcementScroll 25s linear infinite;
+        }
+
+        @keyframes announcementScroll {
+
+          0% {
+            transform: translateX(0);
+          }
+
+          100% {
+            transform:
+              translateX(calc(-100% - 100vw));
+          }
+
+        }
+
+        /* ===============================================
+           SCORE STRIP
+        =============================================== */
+
+        .score-strip {
+          margin-bottom: 20px;
+
+          overflow: hidden;
+
+          border-radius: 18px;
+
+          border:
+            1px solid rgba(34,211,238,0.16);
+
+          background:
+            rgba(3,8,20,0.90);
+        }
+
+        .score-strip-header {
+          display: flex;
+
+          justify-content: space-between;
+
+          align-items: center;
+
+          padding: 10px 14px;
+
+          border-bottom:
+            1px solid rgba(34,211,238,0.12);
+        }
+
+        .score-strip-title {
+          color: #67e8f9;
+
+          font-size: 13px;
+
+          font-weight: 900;
+
+          text-transform: uppercase;
+
+          letter-spacing: 0.07em;
+        }
+
+        .score-strip-link {
+          color: #cbd5e1;
+
+          font-size: 13px;
+
+          font-weight: 800;
+
+          text-decoration: none;
+        }
+
+        .score-strip-games {
+          display: flex;
+
+          gap: 10px;
+
+          padding: 12px;
+
+          overflow-x: auto;
+        }
+
+        .score-game {
+          min-width: 225px;
+
+          padding: 12px;
+
+          border-radius: 14px;
+
+          background:
+            rgba(6,14,30,0.92);
+
+          border:
+            1px solid rgba(34,211,238,0.10);
+        }
+
+        .score-status {
+          color: #94a3b8;
+
+          font-size: 11px;
+
+          font-weight: 800;
+
+          text-transform: uppercase;
+
+          margin-bottom: 8px;
+        }
+
+        .score-team {
+          display: grid;
+
+          grid-template-columns:
+            26px 1fr auto;
+
+          gap: 8px;
+
+          align-items: center;
+
+          margin-top: 7px;
+        }
+
+        .score-team img {
+          width: 24px;
+
+          height: 24px;
+
+          object-fit: contain;
+        }
+
+        .score-team-name {
+          font-size: 14px;
+
+          font-weight: 800;
+        }
+
+        .score-number {
+          font-size: 18px;
+
+          font-weight: 900;
+        }
+
+        /* ===============================================
+           HERO
+        =============================================== */
+
+        .hero {
+          ${Object.entries(card)
+            .map(
+              ([key, value]) =>
+                `${key.replace(
+                  /[A-Z]/g,
+                  (m) => `-${m.toLowerCase()}`
+                )}:${value};`
             )
-          `,
-        }}
-      />
+            .join("")}
 
-      <div style={shell} className="home-shell">
-        <style>{`
-          @keyframes leagueAnnouncementScroll {
-            0% {
-              transform: translateX(0);
-              opacity: 0;
-            }
-            4% {
-              transform: translateX(0);
-              opacity: 1;
-            }
-            96% {
-              transform: translateX(calc(-100% - 112vw));
-              opacity: 1;
-            }
-            100% {
-              transform: translateX(calc(-100% - 112vw));
-              opacity: 0;
-            }
+          margin-bottom: 22px;
+
+          padding: 16px;
+        }
+
+        .hero-grid {
+          display: grid;
+
+          grid-template-columns:
+            0.8fr 1.2fr;
+
+          gap: 22px;
+
+          align-items: center;
+        }
+
+        .hero-logo-box {
+          min-height: 190px;
+
+          display: flex;
+
+          align-items: center;
+
+          justify-content: center;
+
+          position: relative;
+
+          overflow: hidden;
+
+          border-radius: 20px;
+
+          background:
+            radial-gradient(
+              circle,
+              rgba(34,211,238,0.15),
+              rgba(2,6,23,0.85)
+            );
+        }
+
+        .hero-logo {
+          position: absolute;
+
+          width: 90%;
+
+          height: 160px;
+
+          object-fit: contain;
+
+          opacity: 0;
+
+          animation:
+            heroRotate 20s linear infinite;
+        }
+
+        .hero-logo:nth-child(1) {
+          animation-delay: 0s;
+        }
+
+        .hero-logo:nth-child(2) {
+          animation-delay: 4s;
+        }
+
+        .hero-logo:nth-child(3) {
+          animation-delay: 8s;
+        }
+
+        .hero-logo:nth-child(4) {
+          animation-delay: 12s;
+        }
+
+        .hero-logo:nth-child(5) {
+          animation-delay: 16s;
+        }
+
+        @keyframes heroRotate {
+
+          0% {
+            opacity: 0;
+            transform: scale(.96);
           }
 
-          @keyframes heroLogoRotate {
-            0% {
-              opacity: 0;
-              transform: scale(0.98);
-            }
-            ${heroSlideFadeInPct}% {
-              opacity: 1;
-              transform: scale(1);
-            }
-            ${heroSlideHoldPct}% {
-              opacity: 1;
-              transform: scale(1);
-            }
-            ${heroSlideFadeOutPct}% {
-              opacity: 0;
-              transform: scale(1.02);
-            }
-            100% {
-              opacity: 0;
-              transform: scale(1.02);
-            }
+          4% {
+            opacity: 1;
+            transform: scale(1);
           }
 
-          .announcement-bar {
-            display: flex !important;
-            overflow: hidden !important;
+          18% {
+            opacity: 1;
+            transform: scale(1);
           }
 
-          .announcement-viewport {
-            position: relative !important;
-            overflow: hidden !important;
-            display: block !important;
+          20% {
+            opacity: 0;
+            transform: scale(1.03);
+          }
+
+          100% {
+            opacity: 0;
+          }
+
+        }
+
+        .hero-copy {
+          text-align: center;
+        }
+
+        .hero-title {
+          margin:
+            8px 0 10px;
+
+          font-size: 30px;
+
+          line-height: 1.05;
+        }
+
+        .hero-description {
+          max-width: 650px;
+
+          margin:
+            0 auto 16px;
+
+          color: #dbe7f3;
+
+          font-size: 16px;
+
+          line-height: 1.5;
+        }
+
+        .hero-contact {
+          display: inline-block;
+
+          padding: 7px 16px;
+
+          margin-bottom: 8px;
+
+          border-radius: 999px;
+
+          background:
+            rgba(8,20,42,0.70);
+
+          border:
+            1px solid rgba(34,211,238,0.14);
+
+          color: #7dd3fc;
+
+          font-size: 13px;
+
+          font-weight: 800;
+        }
+
+        .hero-buttons {
+          display: flex;
+
+          justify-content: center;
+
+          flex-wrap: wrap;
+
+          gap: 10px;
+        }
+
+        .hero-button {
+          display: inline-flex;
+
+          flex-direction: column;
+
+          justify-content: center;
+
+          align-items: center;
+
+          min-width: 160px;
+
+          min-height: 52px;
+
+          padding: 9px 14px;
+
+          border-radius: 14px;
+
+          text-decoration: none;
+
+          font-weight: 800;
+        }
+
+        .hero-button-primary {
+          color: #082f49;
+
+          background:
+            linear-gradient(
+              #67e8f9,
+              #22d3ee
+            );
+        }
+
+        .hero-button-secondary {
+          color: #ffffff;
+
+          background:
+            rgba(8,20,42,0.75);
+
+          border:
+            1px solid rgba(34,211,238,0.15);
+        }
+
+        .button-subtitle {
+          margin-top: 3px;
+
+          font-size: 10px;
+
+          opacity: .8;
+        }
+
+        /* ===============================================
+           MAIN GRID
+        =============================================== */
+
+        .main-grid {
+          display: grid;
+
+          grid-template-columns:
+            1fr 1fr;
+
+          gap: 20px;
+
+          align-items: start;
+        }
+
+        .column {
+          display: grid;
+
+          gap: 20px;
+        }
+
+        .section-card {
+          border-radius: 22px;
+
+          padding: 22px;
+
+          background:
+            linear-gradient(
+              rgba(7,16,34,0.68),
+              rgba(4,10,24,0.82)
+            );
+
+          border:
+            1px solid rgba(34,211,238,0.14);
+        }
+
+        .section-title {
+          margin: 0 0 8px;
+
+          font-size: 28px;
+        }
+
+        .section-text {
+          margin:
+            0 0 18px;
+
+          color: #94a3b8;
+
+          line-height: 1.6;
+        }
+
+        /* ===============================================
+           UPCOMING GAMES
+        =============================================== */
+
+        .upcoming-list {
+          display: grid;
+
+          gap: 12px;
+        }
+
+        .game-card {
+          padding: 16px;
+
+          border-radius: 18px;
+
+          background:
+            rgba(3,8,20,0.78);
+
+          border:
+            1px solid rgba(34,211,238,0.10);
+        }
+
+        .game-date {
+          margin-bottom: 14px;
+
+          color: #67e8f9;
+
+          font-size: 19px;
+
+          font-weight: 900;
+
+          text-align: center;
+        }
+
+        .matchup {
+          display: grid;
+
+          grid-template-columns:
+            1fr auto 1fr;
+
+          align-items: center;
+
+          gap: 14px;
+        }
+
+        .matchup-team {
+          display: flex;
+
+          flex-direction: column;
+
+          align-items: center;
+
+          gap: 8px;
+
+          text-align: center;
+
+          font-size: 18px;
+
+          font-weight: 800;
+        }
+
+        .matchup-team img {
+          width: 70px;
+
+          height: 70px;
+
+          object-fit: contain;
+        }
+
+        .versus {
+          color: #94a3b8;
+
+          font-weight: 900;
+        }
+
+        .game-details {
+          margin-top: 14px;
+
+          color: #cbd5e1;
+
+          text-align: center;
+
+          font-size: 17px;
+
+          font-weight: 700;
+        }
+
+        /* ===============================================
+           REMINDERS
+        =============================================== */
+
+        .reminders {
+          display: grid;
+
+          gap: 12px;
+        }
+
+        .reminder {
+          display: flex;
+
+          gap: 14px;
+
+          align-items: flex-start;
+
+          padding: 16px;
+
+          border-radius: 16px;
+
+          background:
+            rgba(3,8,20,0.72);
+        }
+
+        .reminder-number {
+          width: 34px;
+
+          height: 34px;
+
+          flex-shrink: 0;
+
+          display: flex;
+
+          align-items: center;
+
+          justify-content: center;
+
+          border-radius: 999px;
+
+          color: #67e8f9;
+
+          background:
+            rgba(34,211,238,0.14);
+
+          font-weight: 900;
+        }
+
+        .reminder-text {
+          color: #e5e7eb;
+
+          font-size: 17px;
+
+          font-weight: 600;
+
+          line-height: 1.5;
+        }
+
+        /* ===============================================
+           STANDINGS
+        =============================================== */
+
+        .standings-table {
+          width: 100%;
+
+          border-collapse: collapse;
+        }
+
+        .standings-table th {
+          color: #94a3b8;
+
+          text-align: left;
+
+          padding-bottom: 10px;
+        }
+
+        .standings-table td {
+          padding:
+            10px 4px;
+
+          border-top:
+            1px solid rgba(51,65,85,0.35);
+        }
+
+        .standings-table td:last-child {
+          color: #67e8f9;
+
+          font-weight: 900;
+        }
+
+        /* ===============================================
+           PLAYERS OF WEEK
+        =============================================== */
+
+        .player-row {
+          display: flex;
+
+          gap: 16px;
+
+          align-items: center;
+
+          padding: 16px;
+
+          margin-top: 12px;
+
+          border-radius: 16px;
+
+          background:
+            rgba(3,8,20,0.75);
+        }
+
+        .player-star {
+          width: 72px;
+
+          height: 72px;
+
+          object-fit: contain;
+
+          flex-shrink: 0;
+        }
+
+        .player-rank {
+          color: #67e8f9;
+
+          font-size: 12px;
+
+          font-weight: 900;
+
+          text-transform: uppercase;
+        }
+
+        .player-name {
+          margin-top: 3px;
+
+          font-size: 23px;
+
+          font-weight: 900;
+        }
+
+        .player-meta {
+          margin-top: 4px;
+
+          color: #67e8f9;
+
+          font-weight: 700;
+        }
+
+        .player-blurb {
+          margin-top: 7px;
+
+          color: #e5e7eb;
+
+          line-height: 1.45;
+        }
+
+        /* ===============================================
+           HOCKEY TRUCK
+        =============================================== */
+
+        .truck-section {
+          margin-top: 20px;
+        }
+
+        .truck-inner {
+          display: flex;
+
+          gap: 24px;
+
+          align-items: center;
+
+          padding: 18px;
+
+          border-radius: 18px;
+
+          background:
+            rgba(3,8,20,0.75);
+        }
+
+        .truck-image {
+          width: 290px;
+
+          height: 140px;
+
+          object-fit: contain;
+
+          background: #000;
+
+          border-radius: 16px;
+
+          padding: 10px;
+        }
+
+        .truck-name {
+          margin-bottom: 10px;
+
+          font-size: 28px;
+
+          font-weight: 900;
+        }
+
+        .truck-info {
+          color: #e2e8f0;
+
+          line-height: 1.9;
+        }
+
+        .truck-info a {
+          color: #67e8f9;
+
+          text-decoration: none;
+        }
+
+        /* ===============================================
+           NEWS
+        =============================================== */
+
+        .news-section {
+          margin-top: 20px;
+        }
+
+        .news-grid {
+          display: grid;
+
+          grid-template-columns:
+            repeat(
+              auto-fit,
+              minmax(260px,1fr)
+            );
+
+          gap: 16px;
+        }
+
+        .news-card {
+          padding: 16px;
+
+          border-radius: 16px;
+
+          background:
+            rgba(3,8,20,0.75);
+        }
+
+        .news-title {
+          font-size: 21px;
+
+          font-weight: 900;
+
+          line-height: 1.25;
+        }
+
+        .news-date {
+          margin-top: 7px;
+
+          color: #67e8f9;
+        }
+
+        .news-summary {
+          margin-top: 10px;
+
+          color: #e2e8f0;
+
+          line-height: 1.6;
+        }
+
+        .section-link {
+          display: inline-block;
+
+          margin-top: 16px;
+
+          color: #67e8f9;
+
+          font-weight: 900;
+
+          text-decoration: none;
+        }
+
+        /* ===============================================
+           MOBILE
+        =============================================== */
+
+        @media (max-width: 850px) {
+
+          .shell {
+            padding: 14px;
+          }
+
+          .main-grid {
+            grid-template-columns: 1fr;
+          }
+
+          .hero-grid {
+            grid-template-columns: 1fr;
+          }
+
+          .hero-logo-box {
+            min-height: 160px;
+          }
+
+          .matchup-team img {
+            width: 60px;
+
+            height: 60px;
+          }
+
+          .truck-inner {
+            flex-direction: column;
+
+            align-items: flex-start;
+          }
+
+          .truck-image {
+            width: 100%;
+
+            max-width: 320px;
+          }
+
+        }
+
+        @media (max-width: 520px) {
+
+          .shell {
+            padding: 10px;
+          }
+
+          .announcement-label {
+            max-width: 105px;
+
+            padding: 0 8px;
+
+            font-size: 9px;
+
+            text-align: center;
           }
 
           .announcement-item {
-            position: absolute !important;
-            left: 100% !important;
-            top: 0 !important;
-            bottom: 0 !important;
-            display: flex !important;
-            align-items: center !important;
-            white-space: nowrap !important;
-            width: max-content !important;
-            min-width: 0 !important;
-            max-width: none !important;
-            flex: none !important;
-            background: transparent !important;
-            border: 0 !important;
-            border-radius: 0 !important;
-            opacity: 0;
-            transform: translateX(0);
-            animation-name: leagueAnnouncementScroll !important;
-            animation-timing-function: linear !important;
-            animation-iteration-count: infinite !important;
-            animation-fill-mode: both !important;
+            font-size: 13px;
           }
 
-          .score-strip-scroller {
-            scroll-snap-type: x mandatory;
+          .hero-title {
+            font-size: 24px;
           }
 
-          .score-game-card {
-            width: 225px !important;
-            min-width: 225px !important;
-            max-width: 225px !important;
-            flex: 0 0 225px !important;
-            scroll-snap-align: start !important;
+          .hero-button {
+            width: 100%;
           }
 
-          @media (max-width: 900px) {
-            .home-shell {
-              padding: 14px !important;
-            }
-
-            .announcement-bar {
-              min-height: 40px !important;
-              border-radius: 14px !important;
-              margin-bottom: 12px !important;
-            }
-
-            .announcement-label {
-              flex-shrink: 0 !important;
-              height: 40px !important;
-              width: auto !important;
-              justify-content: center !important;
-              border-right: 1px solid rgba(34,211,238,0.14) !important;
-              border-bottom: 0 !important;
-              padding: 0 10px !important;
-              font-size: 11px !important;
-              letter-spacing: 0.06em !important;
-            }
-
-            .announcement-viewport {
-              flex: 1 !important;
-              height: 40px !important;
-              padding: 0 !important;
-              scroll-snap-type: none !important;
-              -webkit-overflow-scrolling: auto !important;
-            }
-
-            .announcement-item {
-              min-height: 40px !important;
-              padding: 0 8px !important;
-              line-height: 1.2 !important;
-              font-size: 14px !important;
-              scroll-snap-align: unset !important;
-            }
-
-            .announcement-item span:last-child {
-              display: inline !important;
-              white-space: nowrap !important;
-            }
-
-            .announcement-item span:first-child {
-              flex-shrink: 0 !important;
-              margin-top: 0 !important;
-            }
-
-            .hero-grid {
-              grid-template-columns: 1fr !important;
-              gap: 16px !important;
-            }
-
-            .hero-logo-box {
-              min-height: 145px !important;
-              padding: 12px !important;
-            }
-
-            .hero-rotating-stage {
-              height: 135px !important;
-            }
-
-            .hero-rotating-image {
-              max-height: 125px !important;
-            }
-
-            .hero-copy {
-              text-align: center !important;
-            }
-
-            .hero-title {
-              font-size: 26px !important;
-              line-height: 1.05 !important;
-            }
-
-            .hero-description {
-              font-size: 16px !important;
-              max-width: none !important;
-            }
-
-            .hero-actions {
-              flex-wrap: wrap !important;
-              gap: 10px !important;
-            }
-
-            .hero-button {
-              width: calc(50% - 6px) !important;
-              min-width: 150px !important;
-              min-height: 56px !important;
-            }
-
-            .home-main-grid {
-              grid-template-columns: 1fr !important;
-            }
-
-            .players-week-card {
-              padding-right: 22px !important;
-            }
-
-            .players-week-top-image {
-              position: static !important;
-              display: block !important;
-              width: 72px !important;
-              height: 72px !important;
-              margin: 0 0 12px auto !important;
-            }
-
-            .players-week-row {
-              min-height: 118px !important;
-              padding: 16px !important;
-            }
-
-            .players-week-star {
-              width: 70px !important;
-              height: 70px !important;
-            }
-
-            .players-week-name {
-              font-size: 24px !important;
-            }
-
-            .players-week-meta {
-              font-size: 16px !important;
-            }
-
-            .players-week-blurb {
-              font-size: 17px !important;
-            }
-
-            .matchup-grid {
-              grid-template-columns: 1fr !important;
-              gap: 10px !important;
-            }
-
-            .matchup-vs {
-              margin: 2px 0 !important;
-            }
-
-            .team-logo {
-              width: 58px !important;
-              height: 58px !important;
-            }
-
-            .hockey-truck-inner {
-              flex-direction: column !important;
-              align-items: flex-start !important;
-            }
-
-            .hockey-truck-image-box {
-              width: 100% !important;
-              max-width: 320px !important;
-              height: 120px !important;
-            }
-          }
-            .players-week-name {
-              font-size: 21px !important;
-            }
-
-            .players-week-meta {
-              font-size: 15px !important;
-            }
-
-            .players-week-blurb {
-              font-size: 15px !important;
-            }
-
-            .team-logo {
-              width: 52px !important;
-              height: 52px !important;
-            }
+          .section-card {
+            padding: 16px;
           }
 
-          @media (max-width: 390px) {
-            .score-game-card {
-              width: 82vw !important;
-              min-width: 82vw !important;
-              max-width: 82vw !important;
-              flex: 0 0 82vw !important;
-            }
-
-            .score-strip-header {
-              align-items: flex-start !important;
-            }
-
-            .announcement-label {
-              max-width: 98px !important;
-              font-size: 9px !important;
-              padding: 0 7px !important;
-            }
-
-            .announcement-item {
-              font-size: 12px !important;
-            }
+          .section-title {
+            font-size: 24px;
           }
-        `}</style>
 
-        <div style={announcementBar} className="announcement-bar">
-          <div style={announcementLabel} className="announcement-label">
+          .matchup {
+            grid-template-columns:
+              1fr auto 1fr;
+
+            gap: 8px;
+          }
+
+          .matchup-team {
+            font-size: 15px;
+          }
+
+          .matchup-team img {
+            width: 52px;
+
+            height: 52px;
+          }
+
+          .player-row {
+            align-items: flex-start;
+          }
+
+          .player-star {
+            width: 58px;
+
+            height: 58px;
+          }
+
+          .player-name {
+            font-size: 20px;
+          }
+
+          .score-game {
+            min-width: 78vw;
+          }
+
+        }
+
+      `}</style>
+
+      <div className="shell">
+
+        {/* =================================================
+            LEAGUE ANNOUNCEMENTS
+        ================================================== */}
+
+        <div className="announcement-bar">
+
+          <div className="announcement-label">
             League Announcements
           </div>
 
-          <div style={announcementViewport} className="announcement-viewport">
-            {announcements.map((item, index) => (
-              <div
-                key={index}
-                className="announcement-item"
-                style={{
-                  ...announcementItemBase,
-                  animationDuration: `${announcementScrollSeconds}s`,
-                  animationDelay: `${index * announcementStartEverySeconds}s`,
-                }}
-              >
-                <span style={announcementDot}>•</span>
-                <span>{item}</span>
-              </div>
-            ))}
+          <div className="announcement-window">
+
+            {announcements.map(
+              (announcement, index) => (
+
+                <div
+                  key={index}
+
+                  className="announcement-item"
+
+                  style={{
+                    animationDelay:
+                      `${index * 25}s`,
+                  }}
+                >
+
+                  <span
+                    style={{
+                      color: "#67e8f9",
+                      marginRight: 10,
+                    }}
+                  >
+                    •
+                  </span>
+
+                  {announcement}
+
+                </div>
+
+              )
+            )}
+
           </div>
+
         </div>
 
-        <div style={scoreStripBar} className="score-strip-bar">
-          <div style={scoreStripHeader} className="score-strip-header">
-            <div style={scoreStripTitle} className="score-strip-title">
+        {/* =================================================
+            RECENT SCORES / UPCOMING STRIP
+        ================================================== */}
+
+        <div className="score-strip">
+
+          <div className="score-strip-header">
+
+            <div className="score-strip-title">
               Recent Scores & Upcoming Games
             </div>
-            <a href="/schedule" style={scoreStripLink} className="score-strip-link">
+
+            <a
+              href="/schedule"
+              className="score-strip-link"
+            >
               Full Schedule →
             </a>
+
           </div>
 
           {scoreStripGames.length === 0 ? (
-            <div style={{ padding: 14, color: "#cbd5e1", fontWeight: 700 }}>
+
+            <div
+              style={{
+                padding: 14,
+                color: "#cbd5e1",
+              }}
+            >
               No recent or upcoming games posted yet.
             </div>
+
           ) : (
-            <div style={scoreStripScroller} className="score-strip-scroller">
+
+            <div className="score-strip-games">
+
               {scoreStripGames.map((game) => {
-                const isFinal = game.stripType === "final";
+
+                const isFinal =
+                  game.stripType === "final";
 
                 return (
+
                   <div
+                    className="score-game"
                     key={`${game.stripType}-${game.id}`}
-                    style={scoreGameCard}
-                    className="score-game-card"
                   >
-                    <div style={scoreGameStatus}>
+
+                    <div className="score-status">
+
                       {isFinal
                         ? "Final"
-                        : `${formatGameDate(game.game_date)} • ${
-                            game.game_time || "TBD"
-                          }`}
+                        : `${formatGameDate(
+                            game.game_date
+                          )} • ${
+                            game.game_time ||
+                            "TBD"
+                          }`
+                      }
+
                     </div>
 
-                    <div style={scoreTeamLine}>
+                    <div className="score-team">
+
                       <img
-                        src={getTeamLogoSrc(game.away_team?.name)}
-                        alt={`${game.away_team?.name || "Away team"} logo`}
-                        style={scoreTeamLogo}
+                        src={getTeamLogoSrc(
+                          game.away_team?.name
+                        )}
+                        alt=""
                       />
-                      <div style={scoreTeamName}>{game.away_team?.name}</div>
-                      <div style={scoreNumber}>
-                        {isFinal ? game.away_score : ""}
+
+                      <div className="score-team-name">
+                        {game.away_team?.name}
                       </div>
+
+                      <div className="score-number">
+                        {isFinal
+                          ? game.away_score
+                          : ""}
+                      </div>
+
                     </div>
 
-                    <div style={scoreTeamLine}>
+                    <div className="score-team">
+
                       <img
-                        src={getTeamLogoSrc(game.home_team?.name)}
-                        alt={`${game.home_team?.name || "Home team"} logo`}
-                        style={scoreTeamLogo}
+                        src={getTeamLogoSrc(
+                          game.home_team?.name
+                        )}
+                        alt=""
                       />
-                      <div style={scoreTeamName}>{game.home_team?.name}</div>
-                      <div style={scoreNumber}>
-                        {isFinal ? game.home_score : ""}
+
+                      <div className="score-team-name">
+                        {game.home_team?.name}
                       </div>
+
+                      <div className="score-number">
+                        {isFinal
+                          ? game.home_score
+                          : ""}
+                      </div>
+
                     </div>
 
                     {!isFinal && (
+
                       <div
                         style={{
                           marginTop: 10,
@@ -1013,893 +1678,640 @@ export default async function HomePage() {
                           fontWeight: 800,
                         }}
                       >
-                        {game.rink || "Codey Arena"}
+                        {game.rink ||
+                          "Codey Arena"}
                       </div>
+
                     )}
+
                   </div>
+
                 );
+
               })}
+
             </div>
+
           )}
+
         </div>
 
-        <section
-          style={{
-            ...card,
-            position: "relative",
-            overflow: "hidden",
-            background:
-              "linear-gradient(135deg, rgba(8,37,70,0.52) 0%, rgba(5,23,48,0.60) 42%, rgba(2,10,28,0.72) 100%)",
-            border: "1px solid rgba(34,211,238,0.18)",
-            padding: 14,
-            marginBottom: 22,
-            boxShadow:
-              "0 0 50px rgba(34,211,238,0.04), 0 20px 44px rgba(0,0,0,0.24), inset 0 1px 0 rgba(255,255,255,0.03)",
-          }}
-        >
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              background: `
-                radial-gradient(circle at 16% 50%, rgba(34,211,238,0.16) 0%, rgba(34,211,238,0.05) 18%, rgba(2,6,23,0) 38%),
-                radial-gradient(circle at 84% 14%, rgba(59,130,246,0.08) 0%, rgba(2,6,23,0) 28%),
-                linear-gradient(120deg, rgba(125,211,252,0.03) 0%, rgba(125,211,252,0) 35%)
-              `,
-              pointerEvents: "none",
-            }}
-          />
+        {/* =================================================
+            HERO
+        ================================================== */}
 
-          <div
-            className="hero-grid"
-            style={{
-              position: "relative",
-              zIndex: 1,
-              display: "grid",
-              gridTemplateColumns: "0.8fr 1.2fr",
-              gap: 22,
-              alignItems: "center",
-            }}
-          >
-            <div
-              className="hero-logo-box"
-              style={{
-                minHeight: 180,
-                borderRadius: 22,
-                background:
-                  "radial-gradient(circle at center, rgba(34,211,238,0.14) 0%, rgba(3,15,33,0.28) 42%, rgba(2,6,23,0.88) 100%)",
-                border: "1px solid rgba(34,211,238,0.12)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: 14,
-                boxShadow:
-                  "inset 0 0 60px rgba(34,211,238,0.07), 0 0 24px rgba(34,211,238,0.05)",
-              }}
-            >
-              <div
-                className="hero-rotating-stage"
-                style={{
-                  position: "relative",
-                  width: "100%",
-                  height: 165,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                {heroRotatingImages.map((src, index) => (
+        <section className="hero">
+
+          <div className="hero-grid">
+
+            <div className="hero-logo-box">
+
+              {heroRotatingImages.map(
+                (src, index) => (
+
                   <img
                     key={src}
-                    className="hero-rotating-image"
                     src={src}
-                    alt="Cold Fusion Hockey League team logo"
-                    style={{
-                      position: "absolute",
-                      inset: 0,
-                      margin: "auto",
-                      maxWidth: "100%",
-                      maxHeight: 155,
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "contain",
-                      filter: "drop-shadow(0 0 20px rgba(34,211,238,0.18))",
-                      opacity: 0,
-                      animationName: "heroLogoRotate",
-                      animationDuration: `${heroSlideDuration}s`,
-                      animationTimingFunction: "linear",
-                      animationIterationCount: "infinite",
-                      animationFillMode: "both",
-                      animationDelay: `${index * heroSlideSeconds}s`,
-                    }}
+                    className="hero-logo"
+                    alt="Cold Fusion Draft League logo"
                   />
-                ))}
-              </div>
+
+                )
+              )}
+
             </div>
 
             <div className="hero-copy">
-              <div style={heroBadgeWrap}>
-                <div
-                  style={{
-                    display: "inline-block",
-                    padding: "7px 16px",
-                    borderRadius: 999,
-                    background: "rgba(8,20,42,0.62)",
-                    color: "#7dd3fc",
-                    border: "1px solid rgba(34,211,238,0.14)",
-                    fontSize: 13,
-                    fontWeight: 800,
-                    textAlign: "center",
-                  }}
-                >
-                  For more info, contact: Shane - cfhockeyleague@gmail.com
-                </div>
+
+              <div className="hero-contact">
+                For more info, contact: Shane - cfhockeyleague@gmail.com
               </div>
 
-              <h1
-                className="hero-title"
-                style={{
-                  fontSize: 26,
-                  lineHeight: 1.0,
-                  marginTop: 0,
-                  marginBottom: 8,
-                  color: "#f8fafc",
-                  letterSpacing: "-0.04em",
-                  textShadow: "0 8px 24px rgba(0,0,0,0.26)",
-                }}
-              >
-                Welcome to Cold Fusion Hockey League 2026!
+              <h1 className="hero-title">
+                Cold Fusion Summer Draft League
               </h1>
 
-              <p
-                className="hero-description"
-                style={{
-                  fontSize: 15,
-                  color: "#dbe7f3",
-                  maxWidth: 680,
-                  lineHeight: 1.45,
-                  marginBottom: 14,
-                }}
-              >
-                Competitive adult summer hockey with league news, upcoming games,
-                standings, stats, team rosters, and featured stories all in one
-                place.
+              <p className="hero-description">
+                Competitive adult hockey featuring four
+                drafted teams, league standings, stats,
+                schedules, news and weekly highlights.
               </p>
 
-              <div style={heroActions} className="hero-actions">
+              <div className="hero-buttons">
+
                 <a
-                  className="hero-button"
                   href="/schedule"
-                  style={{
-                    ...heroButtonBase,
-                    color: "#082f49",
-                    background:
-                      "linear-gradient(180deg, #67e8f9 0%, #22d3ee 100%)",
-                    boxShadow: "0 0 16px rgba(34,211,238,0.18)",
-                  }}
+                  className="
+                    hero-button
+                    hero-button-primary
+                  "
                 >
-                  <span style={heroButtonTitle}>View Schedule</span>
-                  <span style={heroButtonSubtitle}>
-                    (Link it to your Google Calendar)
+                  View Schedule
+
+                  <span className="button-subtitle">
+                    League games and times
                   </span>
                 </a>
 
                 <a
-                  className="hero-button"
                   href="/cf-waiver-2026.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
-                  style={{
-                    ...heroButtonBase,
-                    color: "#082f49",
-                    background:
-                      "linear-gradient(180deg, #a5f3fc 0%, #67e8f9 100%)",
-                    boxShadow: "0 0 16px rgba(34,211,238,0.18)",
-                  }}
+                  className="
+                    hero-button
+                    hero-button-primary
+                  "
                 >
-                  <span style={heroButtonTitle}>Printable Waiver</span>
-                  <span style={heroButtonSubtitle}>Download PDF Form</span>
+                  Printable Waiver
+
+                  <span className="button-subtitle">
+                    Download PDF Form
+                  </span>
                 </a>
 
                 <a
-                  className="hero-button"
                   href="/news"
-                  style={{
-                    ...heroButtonBase,
-                    color: "#ffffff",
-                    background: "rgba(8,20,42,0.58)",
-                    border: "1px solid rgba(34,211,238,0.12)",
-                    boxShadow: "0 0 16px rgba(34,211,238,0.10)",
-                  }}
+                  className="
+                    hero-button
+                    hero-button-secondary
+                  "
                 >
-                  <span style={heroButtonTitle}>Recent News</span>
-                  <span style={heroButtonSubtitle}>Game recaps and updates</span>
+                  Recent News
+
+                  <span className="button-subtitle">
+                    Game recaps and updates
+                  </span>
                 </a>
+
               </div>
+
             </div>
+
           </div>
+
         </section>
 
-        <section
-          className="home-main-grid"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: 20,
-            marginBottom: 24,
-            alignItems: "start",
-          }}
-        >
-          <div style={{ display: "grid", gap: 20 }}>
-            <div style={card}>
-              <h2 className="section-title" style={sectionTitle}>
+        {/* =================================================
+            TWO COLUMN CONTENT
+        ================================================== */}
+
+        <div className="main-grid">
+
+          {/* LEFT COLUMN */}
+
+          <div className="column">
+
+            {/* UPCOMING GAMES */}
+
+            <section className="section-card">
+
+              <h2 className="section-title">
                 Upcoming Games
               </h2>
-              <p style={sectionText}>The next games on the league calendar.</p>
+
+              <p className="section-text">
+                The next games on the league calendar.
+              </p>
 
               {upcomingGames.length === 0 ? (
-                <p style={{ color: "#cbd5e1" }}>No upcoming games posted yet.</p>
+
+                <p style={{ color: "#cbd5e1" }}>
+                  No upcoming games posted yet.
+                </p>
+
               ) : (
-                <div style={{ display: "grid", gap: 12 }}>
+
+                <div className="upcoming-list">
+
                   {upcomingGames.map((game) => (
-                    <div key={game.id} style={subCard}>
-                      <div
-                        style={{
-                          color: "#67e8f9",
-                          fontSize: 20,
-                          fontWeight: 800,
-                          textAlign: "center",
-                          marginBottom: 14,
-                        }}
-                      >
-                        {formatGameDate(game.game_date)}
+
+                    <div
+                      className="game-card"
+                      key={game.id}
+                    >
+
+                      <div className="game-date">
+                        {formatGameDate(
+                          game.game_date
+                        )}
                       </div>
 
-                      <div
-                        className="matchup-grid"
-                        style={{
-                          display: "grid",
-                          gridTemplateColumns: "1fr auto 1fr",
-                          alignItems: "center",
-                          gap: 14,
-                          marginTop: 4,
-                        }}
-                      >
-                        <div
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            textAlign: "center",
-                            gap: 10,
-                          }}
-                        >
+                      <div className="matchup">
+
+                        <div className="matchup-team">
+
                           <img
-                            className="team-logo"
-                            src={getTeamLogoSrc(game.home_team?.name)}
-                            alt={`${game.home_team?.name || "Home team"} logo`}
-                            style={{
-                              width: 68,
-                              height: 68,
-                              objectFit: "contain",
-                            }}
+                            src={getTeamLogoSrc(
+                              game.home_team?.name
+                            )}
+                            alt=""
                           />
-                          <div
-                            style={{
-                              fontSize: 18,
-                              fontWeight: 800,
-                              lineHeight: 1.2,
-                            }}
-                          >
+
+                          <div>
                             {game.home_team?.name}
                           </div>
+
                         </div>
 
-                        <div
-                          className="matchup-vs"
-                          style={{
-                            fontSize: 18,
-                            fontWeight: 800,
-                            color: "#94a3b8",
-                            textAlign: "center",
-                          }}
-                        >
+                        <div className="versus">
                           vs
                         </div>
 
-                        <div
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            textAlign: "center",
-                            gap: 10,
-                          }}
-                        >
+                        <div className="matchup-team">
+
                           <img
-                            className="team-logo"
-                            src={getTeamLogoSrc(game.away_team?.name)}
-                            alt={`${game.away_team?.name || "Away team"} logo`}
-                            style={{
-                              width: 68,
-                              height: 68,
-                              objectFit: "contain",
-                            }}
+                            src={getTeamLogoSrc(
+                              game.away_team?.name
+                            )}
+                            alt=""
                           />
-                          <div
-                            style={{
-                              fontSize: 18,
-                              fontWeight: 800,
-                              lineHeight: 1.2,
-                            }}
-                          >
+
+                          <div>
                             {game.away_team?.name}
                           </div>
+
                         </div>
+
                       </div>
 
-                      <div
-                        style={{
-                          color: "#cbd5e1",
-                          marginTop: 16,
-                          fontSize: 20,
-                          fontWeight: 600,
-                          textAlign: "center",
-                        }}
-                      >
-                        {game.game_time || "TBD"} • {game.rink || "Codey Arena"} •{" "}
+                      <div className="game-details">
+
+                        {game.game_time || "TBD"}
+
+                        {" • "}
+
+                        {game.rink ||
+                          "Codey Arena"}
+
+                        {" • "}
+
                         {game.status}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
 
-            <div style={card}>
-              <h2 className="section-title" style={sectionTitle}>
+                      </div>
+
+                    </div>
+
+                  ))}
+
+                </div>
+
+              )}
+
+            </section>
+
+            {/* LEAGUE REMINDERS */}
+
+            <section className="section-card">
+
+              <h2 className="section-title">
                 League Reminders
               </h2>
-              <p style={sectionText}>
-                Important reminders for all players before and during game night.
+
+              <p className="section-text">
+                Important reminders for all players
+                before and during game night.
               </p>
 
-              <div style={{ display: "grid", gap: 12 }}>
-                <div
-                  style={{
-                    ...subCard,
-                    display: "flex",
-                    gap: 14,
-                    alignItems: "flex-start",
-                  }}
-                >
-                  <div
-                    style={{
-                      minWidth: 34,
-                      height: 34,
-                      borderRadius: 999,
-                      background: "rgba(34,211,238,0.14)",
-                      color: "#67e8f9",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontWeight: 800,
-                      fontSize: 18,
-                    }}
-                  >
+              <div className="reminders">
+
+                <div className="reminder">
+
+                  <div className="reminder-number">
                     1
                   </div>
-                  <div
-                    style={{
-                      fontSize: 18,
-                      lineHeight: 1.5,
-                      color: "#e5e7eb",
-                      fontWeight: 600,
-                    }}
-                  >
-                    Remember, this isnt the pros. Chill out, play some hockey, and dont be an A-Hole.
+
+                  <div className="reminder-text">
+                    Remember, this isnt the pros.
+                    Chill out, play some hockey,
+                    and dont be an A-Hole.
                   </div>
+
                 </div>
 
-                <div
-                  style={{
-                    ...subCard,
-                    display: "flex",
-                    gap: 14,
-                    alignItems: "flex-start",
-                  }}
-                >
-                  <div
-                    style={{
-                      minWidth: 34,
-                      height: 34,
-                      borderRadius: 999,
-                      background: "rgba(34,211,238,0.14)",
-                      color: "#67e8f9",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontWeight: 800,
-                      fontSize: 18,
-                    }}
-                  >
+                <div className="reminder">
+
+                  <div className="reminder-number">
                     2
                   </div>
-                  <div
-                    style={{
-                      fontSize: 18,
-                      lineHeight: 1.5,
-                      color: "#e5e7eb",
-                      fontWeight: 600,
-                    }}
-                  >
+
+                  <div className="reminder-text">
                     Players MUST check-in upon arrival.
                   </div>
+
                 </div>
 
-                <div
-                  style={{
-                    ...subCard,
-                    display: "flex",
-                    gap: 14,
-                    alignItems: "flex-start",
-                  }}
-                >
-                  <div
-                    style={{
-                      minWidth: 34,
-                      height: 34,
-                      borderRadius: 999,
-                      background: "rgba(34,211,238,0.14)",
-                      color: "#67e8f9",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontWeight: 800,
-                      fontSize: 18,
-                    }}
-                  >
+                <div className="reminder">
+
+                  <div className="reminder-number">
                     3
                   </div>
-                  <div
-                    style={{
-                      fontSize: 18,
-                      lineHeight: 1.5,
-                      color: "#e5e7eb",
-                      fontWeight: 600,
-                    }}
-                  >
-                    All players should have a jersey number matching the number
-                    listed on the roster.
+
+                  <div className="reminder-text">
+                    All players should have a jersey
+                    number matching the number listed
+                    on the roster.
                   </div>
+
                 </div>
+
               </div>
-            </div>
+
+            </section>
+
           </div>
 
-          <div style={{ display: "grid", gap: 20 }}>
-            <div style={card}>
-              <h2 className="section-title" style={sectionTitle}>
+          {/* RIGHT COLUMN */}
+
+          <div className="column">
+
+            {/* STANDINGS */}
+
+            <section className="section-card">
+
+              <h2 className="section-title">
                 Standings
               </h2>
-              <p style={sectionText}>Current standings for all teams.</p>
+
+              <p className="section-text">
+                Current standings for all teams.
+              </p>
 
               {standings.length === 0 ? (
-                <p style={{ color: "#cbd5e1" }}>No standings yet.</p>
+
+                <p style={{ color: "#cbd5e1" }}>
+                  No standings yet.
+                </p>
+
               ) : (
+
                 <div
                   style={{
                     overflowX: "auto",
-                    background: "rgba(2,6,23,0.20)",
-                    borderRadius: 16,
-                    padding: 12,
-                    border: "1px solid rgba(34,211,238,0.10)",
                   }}
                 >
-                  <table style={{ width: "100%", borderCollapse: "collapse" }}>
+
+                  <table className="standings-table">
+
                     <thead>
-                      <tr style={{ color: "#94a3b8", textAlign: "left" }}>
-                        <th style={{ paddingBottom: 10 }}>Team</th>
+
+                      <tr>
+
+                        <th>Team</th>
+
                         <th>GP</th>
+
                         <th>W</th>
+
                         <th>L</th>
+
                         <th>OTL</th>
+
                         <th>T</th>
+
                         <th>PTS</th>
+
                       </tr>
+
                     </thead>
+
                     <tbody>
+
                       {standings.map((row) => (
+
                         <tr key={row.team}>
+
                           <td
                             style={{
-                              padding: "10px 0",
-                              fontWeight: 700,
-                              borderTop: "1px solid rgba(51,65,85,0.30)",
+                              fontWeight: 800,
                             }}
                           >
                             {row.team}
                           </td>
-                          <td
-                            style={{
-                              borderTop: "1px solid rgba(51,65,85,0.30)",
-                            }}
-                          >
+
+                          <td>
                             {row.gp}
                           </td>
-                          <td
-                            style={{
-                              borderTop: "1px solid rgba(51,65,85,0.30)",
-                            }}
-                          >
-                          >
+
+                          <td>
                             {row.w}
                           </td>
-                          <td
-                            style={{
-                              borderTop: "1px solid rgba(51,65,85,0.30)",
-                            }}
-                          >
+
+                          <td>
                             {row.l}
                           </td>
-                          <td
-                            style={{
-                              borderTop: "1px solid rgba(51,65,85,0.30)",
-                            }}
-                          >
+
+                          <td>
                             {row.otl}
                           </td>
-                          <td
-                            style={{
-                              borderTop: "1px solid rgba(51,65,85,0.30)",
-                            }}
-                          >
+
+                          <td>
                             {row.t}
                           </td>
-                          <td
-                            style={{
-                              color: "#67e8f9",
-                              fontWeight: 800,
-                              borderTop: "1px solid rgba(51,65,85,0.30)",
-                            }}
-                          >
+
+                          <td>
                             {row.pts}
                           </td>
+
                         </tr>
+
                       ))}
+
                     </tbody>
+
                   </table>
+
                 </div>
+
               )}
 
               <a
                 href="/standings"
-                style={{
-                  display: "inline-block",
-                  marginTop: 16,
-                  color: "#67e8f9",
-                  textDecoration: "none",
-                  fontWeight: 800,
-                }}
+                className="section-link"
               >
                 Full standings →
               </a>
-            </div>
 
-            <div
-              className="players-week-card"
-              style={{
-                ...card,
-                position: "relative",
-                overflow: "hidden",
-                paddingRight: 140,
-              }}
-            >
-              <img
-                className="players-week-top-image"
-                src="/player-placeholder.png"
-                alt="Players of the Week graphic"
-                style={{
-                  position: "absolute",
-                  top: 18,
-                  right: 18,
-                  width: 96,
-                  height: 96,
-                  objectFit: "cover",
-                  borderRadius: 18,
-                  border: "1px solid rgba(34,211,238,0.14)",
-                  background: "#020617",
-                }}
-              />
+            </section>
 
-              <h2 className="section-title" style={sectionTitle}>
+            {/* PLAYERS OF THE WEEK */}
+
+            <section className="section-card">
+
+              <h2 className="section-title">
                 Players of the Week
               </h2>
-              <p style={{ ...sectionText, maxWidth: 420 }}>
-                1st Star, 2nd Star, and 3rd Star from around the league.
+
+              <p className="section-text">
+                1st Star, 2nd Star, and 3rd Star
+                from around the league.
               </p>
 
-              <div style={{ display: "grid", gap: 12 }}>
-                {displayPlayers.map((player, index) => {
-                  const rank = player?.star_rank || index + 1;
-                  const starLabel = getStarLabel(rank);
+              {displayPlayers.map(
+                (player, index) => {
+
+                  const rank =
+                    player.star_rank ||
+                    index + 1;
 
                   return (
+
                     <div
-                      key={player?.id || `pow-${index}`}
-                      className="players-week-row"
-                      style={{
-                        ...subCard,
-                        display: "flex",
-                        gap: 18,
-                        alignItems: "center",
-                        minHeight: 132,
-                        padding: 18,
-                      }}
+                      key={
+                        player.id ||
+                        `player-${index}`
+                      }
+                      className="player-row"
                     >
+
                       <img
-                        className="players-week-star"
+                        className="player-star"
                         src={getStarImageSrc(rank)}
-                        alt={starLabel}
-                        style={{
-                          width: 82,
-                          height: 82,
-                          objectFit: "contain",
-                          borderRadius: 14,
-                          flexShrink: 0,
-                          background: "rgba(255,255,255,0.04)",
-                          padding: 6,
-                        }}
+                        alt={getStarLabel(rank)}
                       />
 
-                      <div
-                        style={{
-                          flex: 1,
-                          display: "flex",
-                          flexDirection: "column",
-                          justifyContent: "center",
-                          minWidth: 0,
-                        }}
-                      >
-                        <div
-                          style={{
-                            fontSize: 15,
-                            fontWeight: 800,
-                            color: "#67e8f9",
-                            textTransform: "uppercase",
-                            letterSpacing: "0.05em",
-                            marginBottom: 4,
-                          }}
-                        >
-                          {starLabel}
+                      <div>
+
+                        <div className="player-rank">
+                          {getStarLabel(rank)}
                         </div>
 
-                        <div
-                          className="players-week-name"
-                          style={{
-                            fontSize: 28,
-                            fontWeight: 800,
-                            lineHeight: 1.05,
-                            color: "#f8fafc",
-                          }}
-                        >
-                          {player?.player_name || "Player Name Here"}
+                        <div className="player-name">
+                          {player.player_name}
                         </div>
 
-                        <div
-                          className="players-week-meta"
-                          style={{
-                            marginTop: 6,
-                            color: "#67e8f9",
-                            fontSize: 17,
-                            fontWeight: 700,
-                            lineHeight: 1.25,
-                          }}
-                        >
-                          {player
-                            ? `${player.team_name || "Team Name"} • ${
-                                player.position || "Position"
-                              }`
-                            : "Team Name • Position"}
+                        <div className="player-meta">
+
+                          {player.team_name ||
+                            "Team"}
+
+                          {" • "}
+
+                          {player.position ||
+                            "Position"}
+
                         </div>
 
-                        <div
-                          className="players-week-blurb"
-                          style={{
-                            marginTop: 10,
-                            fontSize: 18,
-                            lineHeight: 1.45,
-                            color: "#e5e7eb",
-                          }}
-                        >
-                          {player?.blurb ||
-                            "Add a featured player with a short stat line or highlight summary."}
+                        <div className="player-blurb">
+                          {player.blurb}
                         </div>
+
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        </section>
 
-        <section style={{ ...card, marginBottom: 24 }}>
-          <h2 className="section-title" style={sectionTitle}>
+                    </div>
+
+                  );
+
+                }
+              )}
+
+            </section>
+
+          </div>
+
+        </div>
+
+        {/* =================================================
+            HOCKEY TRUCK
+        ================================================== */}
+
+        <section
+          className="
+            section-card
+            truck-section
+          "
+        >
+
+          <h2 className="section-title">
             The Hockey Truck
           </h2>
-          <p style={sectionText}>
-            Providing ice hockey pro-shop services like skate sharpening, and the
-            sale of accessories on the go!
+
+          <p className="section-text">
+            Providing ice hockey pro-shop services
+            like skate sharpening and the sale of
+            accessories on the go.
           </p>
 
-          <div
-            className="hockey-truck-inner"
-            style={{
-              ...subCard,
-              display: "flex",
-              gap: 24,
-              alignItems: "center",
-              minHeight: 184,
-              padding: 20,
-            }}
-          >
-            <div
-              className="hockey-truck-image-box"
-              style={{
-                width: 300,
-                height: 145,
-                flexShrink: 0,
-                borderRadius: 18,
-                overflow: "hidden",
-                background: "#000",
-                border: "1px solid rgba(34,211,238,0.12)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: 12,
-              }}
-            >
-              <img
-                src="/hockeytruck.png"
-                alt="The Hockey Truck"
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "contain",
-                }}
-              />
-            </div>
+          <div className="truck-inner">
 
-            <div
-              style={{
-                flex: 1,
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: 34,
-                  fontWeight: 800,
-                  marginBottom: 14,
-                  lineHeight: 1.05,
-                }}
-              >
+            <img
+              src="/hockeytruck.png"
+              alt="The Hockey Truck"
+              className="truck-image"
+            />
+
+            <div>
+
+              <div className="truck-name">
                 The Hockey Truck LLC.
               </div>
 
-              <p
-                style={{
-                  color: "#e2e8f0",
-                  lineHeight: 1.9,
-                  margin: 0,
-                  fontSize: 18,
-                }}
-              >
+              <div className="truck-info">
+
                 <strong>Phone:</strong>{" "}
-                <a
-                  href="tel:9736464273"
-                  style={{ color: "#67e8f9", textDecoration: "none" }}
-                >
+
+                <a href="tel:9736464273">
                   973-646-4273
                 </a>
+
                 <br />
+
                 <strong>Email:</strong>{" "}
+
                 <a
-                  href="mailto:thehockeytruck@gmail.com"
-                  style={{ color: "#67e8f9", textDecoration: "none" }}
+                  href="
+                    mailto:thehockeytruck@gmail.com
+                  "
                 >
                   thehockeytruck@gmail.com
                 </a>
+
                 <br />
+
                 <strong>Instagram:</strong>{" "}
+
                 <a
-                  href="https://www.instagram.com/thehockeytruck"
+                  href="
+                    https://www.instagram.com/thehockeytruck
+                  "
                   target="_blank"
                   rel="noreferrer"
-                  style={{ color: "#67e8f9", textDecoration: "none" }}
                 >
                   thehockeytruck
                 </a>
+
                 <br />
+
                 <strong>Website:</strong>{" "}
+
                 <a
-                  href="https://www.thehockeytruck.com"
+                  href="
+                    https://www.thehockeytruck.com
+                  "
                   target="_blank"
                   rel="noreferrer"
-                  style={{ color: "#67e8f9", textDecoration: "none" }}
                 >
                   www.thehockeytruck.com
                 </a>
-              </p>
+
+              </div>
+
             </div>
+
           </div>
+
         </section>
 
-        <section style={{ ...card, marginBottom: 24 }}>
-          <h2 className="section-title" style={sectionTitle}>
+        {/* =================================================
+            RECENT NEWS
+        ================================================== */}
+
+        <section
+          className="
+            section-card
+            news-section
+          "
+        >
+
+          <h2 className="section-title">
             Recent News
           </h2>
-          <p style={sectionText}>Latest game summaries and league stories.</p>
+
+          <p className="section-text">
+            Latest game summaries and league stories.
+          </p>
 
           {recentNews.length === 0 ? (
-            <p style={{ color: "#cbd5e1" }}>No news posted yet.</p>
+
+            <p style={{ color: "#cbd5e1" }}>
+              No news posted yet.
+            </p>
+
           ) : (
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-                gap: 16,
-              }}
-            >
+
+            <div className="news-grid">
+
               {recentNews.map((post) => (
-                <div key={post.id} style={subCard}>
-                  <div
-                    style={{
-                      fontSize: 24,
-                      fontWeight: 800,
-                      lineHeight: 1.2,
-                    }}
-                  >
+
+                <div
+                  key={post.id}
+                  className="news-card"
+                >
+
+                  <div className="news-title">
                     {post.title}
                   </div>
-                  <div style={{ color: "#67e8f9", marginTop: 8 }}>
-                    {new Date(post.created_at).toLocaleDateString()}
+
+                  <div className="news-date">
+
+                    {new Date(
+                      post.created_at
+                    ).toLocaleDateString()}
+
                   </div>
-                  <div
-                    style={{
-                      color: "#e2e8f0",
-                      marginTop: 12,
-                      lineHeight: 1.7,
-                      display: "-webkit-box",
-                      WebkitLineClamp: 5,
-                      WebkitBoxOrient: "vertical",
-                      overflow: "hidden",
-                    }}
-                  >
+
+                  <div className="news-summary">
                     {post.summary}
                   </div>
+
                 </div>
+
               ))}
+
             </div>
+
           )}
 
           <a
             href="/news"
-            style={{
-              display: "inline-block",
-              marginTop: 18,
-              color: "#67e8f9",
-              textDecoration: "none",
-              fontWeight: 800,
-            }}
+            className="section-link"
           >
             View all news →
           </a>
+
         </section>
+
       </div>
+
     </main>
   );
 }
