@@ -421,7 +421,7 @@ export default async function HomePage() {
   ========================================================= */
 
   const announcements = [
-    "Live Draft 8/27 @ 7:00 PM",
+    "Reminder: Playoff dates Sun Oct 4th - G1 9:15pm & G2 9:30pm... Final Wed Oct 7th - 9pm ",
   ];
 
   /* =========================================================
