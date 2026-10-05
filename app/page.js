@@ -421,7 +421,7 @@ export default async function HomePage() {
   ========================================================= */
 
   const announcements = [
-    "Reminder: Playoff dates Sun Oct 4th - G1 9:15pm & G2 9:30pm... Final Wed Oct 7th - 9pm ",
+    "Championship Matchup - Mad Men vs IceHoles Wed 10/7 @ 8:45pm",
   ];
 
   /* =========================================================
