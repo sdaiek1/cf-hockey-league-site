@@ -421,7 +421,8 @@ export default async function HomePage() {
   ========================================================= */
 
   const announcements = [
-    "Championship Matchup - Mad Men vs IceHoles Wed 10/7 @ 8:45pm",
+    "OPY Curtis McGriskin - DPY Peter Cross, GOY Lee Appolino",
+    "Draft League will return in the spring 2027",
   ];
 
   /* =========================================================
