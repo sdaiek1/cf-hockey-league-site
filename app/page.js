@@ -421,8 +421,7 @@ export default async function HomePage() {
   ========================================================= */
 
   const announcements = [
-    "OPY Curtis McGriskin - DPY Peter Cross, GOY Lee Appolino",
-    "Draft League will return in the spring 2027",
+    "OPY Curtis McGriskin   -   DPY Peter Cross   -   GOY Lee Appolino.  -   Draft League will return in the spring 2027",
   ];
 
   /* =========================================================
